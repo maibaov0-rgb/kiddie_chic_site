@@ -1,0 +1,209 @@
+{
+  "common": {
+    "loading": "",
+    "error": "",
+    "back": "",
+    "close": "",
+    "save": "",
+    "cancel": "",
+    "delete": "",
+    "edit": "",
+    "add": "",
+    "search": "",
+    "currency": "₴"
+  },
+  "nav": {
+    "home": "",
+    "about": "",
+    "catalog": "",
+    "dresses": "",
+    "couture": "",
+    "accessories": "",
+    "terms": "",
+    "contacts": ""
+  },
+  "home": {
+    "hero": {
+      "line1": "Children's dresses",
+      "line2": "Festive children's dresses",
+      "line3": "Prom dresses",
+      "brand": "Kiddie Chic",
+      "cta": "View collection",
+      "dressAlt": "Festive children's dress from the Kiddie Chic collection"
+    },
+    "featured": {
+      "title": ""
+    },
+    "about": {
+      "title": "",
+      "body": ""
+    }
+  },
+  "product": {
+    "addToCart": "",
+    "askDelivery": "",
+    "customOrder": "",
+    "size": "",
+    "fabric": "",
+    "color": "",
+    "accessories": "",
+    "inStock": "",
+    "outOfStock": "",
+    "isNew": "",
+    "isBestseller": "",
+    "getConsultation": "",
+    "price": ""
+  },
+  "cart": {
+    "title": "",
+    "empty": "",
+    "total": "",
+    "checkout": "",
+    "remove": "",
+    "qty": ""
+  },
+  "checkout": {
+    "title": "",
+    "name": "",
+    "phone": "",
+    "email": "",
+    "city": "",
+    "branch": "",
+    "note": "",
+    "pay": "",
+    "processing": ""
+  },
+  "orderSuccess": {
+    "title": "",
+    "message": "",
+    "orderNumber": ""
+  },
+  "about": {
+    "title": "",
+    "story": "",
+    "showroom": "",
+    "reviews": ""
+  },
+  "contacts": {
+    "title": "",
+    "phone": "",
+    "address": "",
+    "form": {
+      "name": "",
+      "phone": "",
+      "message": "",
+      "submit": ""
+    }
+  },
+  "terms": {
+    "title": "",
+    "delivery": "",
+    "payment": "",
+    "returns": ""
+  },
+  "callbackButton": {
+    "label": "",
+    "modal": {
+      "title": "",
+      "name": "",
+      "phone": "",
+      "submit": ""
+    }
+  },
+  "cookies": {
+    "message": "",
+    "accept": "",
+    "necessary": ""
+  },
+  "catalog": {
+    "title": "Catalog",
+    "dresses": "Dresses",
+    "couture": "Couture dresses",
+    "dressesDesc": "Ready-made models available to order online",
+    "coutureDesc": "Exclusive handcrafted dresses made to individual order",
+    "empty": "No products match the selected filters",
+    "resultsOne": "{count} model",
+    "resultsFew": "{count} models",
+    "resultsMany": "{count} models",
+    "priceFrom": "from",
+    "filters": {
+      "title": "Filters",
+      "open": "Filters",
+      "size": "Size",
+      "color": "Color",
+      "fabric": "Fabric",
+      "reset": "Reset",
+      "apply": "Show"
+    }
+  },
+  "couture": {
+    "title": "Couture dresses",
+    "subtitle": "Exclusive handcrafted models tailored to individual measurements",
+    "cta": "Get a consultation",
+    "modal": {
+      "title": "Get a consultation",
+      "subtitle": "Leave your number — we'll get in touch, answer your questions and help pick a model to your taste.",
+      "name": "Your name",
+      "phone": "Phone number",
+      "submit": "Send request",
+      "success": "Thank you! We'll get in touch with you shortly."
+    }
+  },
+  "admin": {
+    "nav": {
+      "products": "",
+      "orders": "",
+      "reviews": "",
+      "pages": "",
+      "settings": "",
+      "categories": ""
+    },
+    "products": {
+      "title": "",
+      "new": "",
+      "edit": "",
+      "delete": ""
+    },
+    "orders": {
+      "title": "",
+      "status": {
+        "new": "",
+        "paid": "",
+        "processing": "",
+        "shipped": "",
+        "done": "",
+        "cancelled": ""
+      }
+    },
+    "reviews": {
+      "title": "",
+      "visible": "",
+      "hidden": ""
+    },
+    "settings": {
+      "title": ""
+    }
+  },
+  "metadata": {
+    "home": {
+      "title": "",
+      "description": ""
+    },
+    "about": {
+      "title": "",
+      "description": ""
+    },
+    "catalog": {
+      "title": "",
+      "description": ""
+    },
+    "contacts": {
+      "title": "",
+      "description": ""
+    },
+    "terms": {
+      "title": "",
+      "description": ""
+    }
+  }
+}
