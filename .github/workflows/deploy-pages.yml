@@ -1,0 +1,67 @@
+name: Deploy demo to GitHub Pages
+
+# Temporary static demo of the storefront design (no backend).
+# Builds a static export of the public pages and publishes it to GitHub Pages.
+# The real app keeps its full backend and will later run on a VPS.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      STATIC_EXPORT: "true"
+      NEXT_PUBLIC_BASE_PATH: "/kiddie_chic_site"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Static export can't include server-only code (API routes, auth,
+      # admin, middleware) — drop it for this build only (CI checkout, the
+      # repo itself is untouched).
+      - name: Remove server-only code
+        run: rm -rf app/api app/admin auth.ts proxy.ts
+
+      - name: Build static export
+        run: npm run build
+
+      # The app uses unprefixed links; flatten the default locale (uk) to the
+      # site root so navigation works without middleware. English stays at /en/.
+      - name: Flatten default locale to root
+        run: cp -a out/uk/. out/
+
+      - name: Disable Jekyll (so _next assets are served)
+        run: touch out/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

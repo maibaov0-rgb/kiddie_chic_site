@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 import "@/app/globals.css";
@@ -37,6 +37,9 @@ export default async function LocaleLayout({
   if (!routing.locales.includes(locale as Locale)) {
     notFound();
   }
+
+  // Enable static rendering (required for static export / GitHub Pages)
+  setRequestLocale(locale);
 
   const messages = await getMessages();
 

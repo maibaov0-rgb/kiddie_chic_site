@@ -6,7 +6,10 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const VIDEO_SRC = '/videos/hero.mp4';
+// next/image applies basePath automatically, but a raw <video> src does not —
+// prefix it so the hero video resolves under GitHub Pages' /repo base path.
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
+const VIDEO_SRC = `${BASE_PATH}/videos/hero.mp4`;
 
 /** Intro: doors closed → doors sliding open → final hero layout */
 type Phase = 'doors' | 'reveal' | 'final';

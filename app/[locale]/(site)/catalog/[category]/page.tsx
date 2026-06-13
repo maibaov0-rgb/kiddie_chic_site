@@ -1,23 +1,28 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { categoryFromSlug, getProductsByCategory } from '@/lib/catalog';
 import CatalogView from '@/components/features/catalog/CatalogView';
 import CoutureGallery from '@/components/features/catalog/CoutureGallery';
 
 type Params = { locale: string; category: string };
 
+// Static export: only Dresses and Couture sub-menus are live
+export function generateStaticParams() {
+  return [{ category: 'dresses' }, { category: 'couture' }];
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const { category } = await params;
+  const { locale, category } = await params;
   const cat = categoryFromSlug(category);
   if (!cat) return {};
 
-  const t = await getTranslations('catalog');
+  const t = await getTranslations({ locale, namespace: 'catalog' });
   const title = cat === 'couture' ? t('couture') : t('dresses');
   const description = cat === 'couture' ? t('coutureDesc') : t('dressesDesc');
   return { title, description };
@@ -28,15 +33,16 @@ export default async function CatalogCategoryPage({
 }: {
   params: Promise<Params>;
 }) {
-  const { category } = await params;
+  const { locale, category } = await params;
+  setRequestLocale(locale);
   const cat = categoryFromSlug(category);
 
   // Only Dresses and Couture are live for now
   if (cat !== 'dress' && cat !== 'couture') notFound();
 
   const products = getProductsByCategory(cat);
-  const t = await getTranslations('catalog');
-  const tCouture = await getTranslations('couture');
+  const t = await getTranslations({ locale, namespace: 'catalog' });
+  const tCouture = await getTranslations({ locale, namespace: 'couture' });
 
   const isCouture = cat === 'couture';
 
