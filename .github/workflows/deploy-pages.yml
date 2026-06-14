@@ -35,6 +35,11 @@ jobs:
 
       - run: npm ci
 
+      # The Prisma client is generated (not committed) and is still
+      # type-checked during the build, so generate it. Works offline.
+      - name: Generate Prisma client
+        run: npx prisma generate
+
       # Static export can't include server-only code (API routes, auth,
       # admin, middleware) — drop it for this build only (CI checkout, the
       # repo itself is untouched).
