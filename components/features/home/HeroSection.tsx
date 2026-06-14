@@ -61,7 +61,7 @@ function BrandWordmark() {
       >
         KIDDIE CHIC
       </span>
-      <span className="mt-3 font-sans text-[clamp(9px,1.4vw,13px)] tracking-[0.5em] text-white/80">
+      <span className="mt-3 font-sans text-[clamp(9px,1.4vw,13px)] tracking-[0.5em] text-[#a07c5a]">
         SHOWROOM
       </span>
     </span>
