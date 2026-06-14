@@ -126,7 +126,7 @@ export default function HeroSection() {
 
       {/* Full-bleed video hero card on the golden page background */}
       <div
-        className="relative flex min-h-[calc(100dvh-5.5rem)] flex-col items-center justify-center overflow-hidden rounded-3xl shadow-card md:min-h-[calc(100dvh-7rem)] md:rounded-[2.5rem]"
+        className="relative flex min-h-[calc(100svh-5.5rem)] flex-col items-center justify-center overflow-hidden rounded-3xl shadow-card md:min-h-[calc(100svh-7rem)] md:rounded-[2.5rem]"
         style={{ background: '#FDF8F4' }}
       >
         {/* Background video */}

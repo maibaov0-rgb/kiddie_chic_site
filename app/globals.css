@@ -144,13 +144,16 @@
 
   html {
     @apply font-sans;
+    /* Reserve the scrollbar gutter so page width never shifts on scroll */
+    scrollbar-gutter: stable;
   }
 
   /* Page "floor" — clean white that everything floats on top of */
   body {
     @apply text-foreground;
     background: #ffffff;
-    min-height: 100dvh;
+    min-height: 100svh;
+    overflow-x: hidden;
   }
 }
 

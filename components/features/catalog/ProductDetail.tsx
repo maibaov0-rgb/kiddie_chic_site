@@ -66,14 +66,14 @@ export default function ProductDetail({ product }: { product: Product }) {
     <div className="grid gap-8 md:grid-cols-2 md:gap-12">
       {/* ── Gallery ───────────────────────────────────────── */}
       <div>
-        {/* Mobile: horizontal swipe */}
-        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Mobile: horizontal swipe — each image fills the width, centered */}
+        <div className="flex snap-x snap-mandatory overflow-x-auto pb-2 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {product.images.map((src, i) => (
             <div
               key={i}
-              className="relative aspect-[3/4] w-[82%] shrink-0 snap-center overflow-hidden rounded-3xl shadow-card"
+              className="relative aspect-[3/4] w-full shrink-0 snap-center overflow-hidden rounded-3xl shadow-card"
             >
-              <Image src={asset(src)} alt={`${name} ${i + 1}`} fill sizes="82vw" className="object-cover" priority={i === 0} />
+              <Image src={asset(src)} alt={`${name} ${i + 1}`} fill sizes="100vw" className="object-cover" priority={i === 0} />
             </div>
           ))}
         </div>
