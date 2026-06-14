@@ -4,6 +4,9 @@ import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { ArrowRight, MapPin, Clock } from 'lucide-react';
 
+const SHOWROOM_QUERY = 'вул. Саксаганського 63/28, Київ, 01033';
+const MAP_SRC = `https://maps.google.com/maps?q=${encodeURIComponent(SHOWROOM_QUERY)}&z=16&hl=uk&output=embed`;
+
 export default function AboutSection() {
   const t = useTranslations('home.about');
 
@@ -52,20 +55,21 @@ export default function AboutSection() {
             </div>
           </div>
 
-          {/* Visual side */}
+          {/* Visual side — showroom map + details */}
           <div className="flex flex-col gap-4">
-            {/* Main photo placeholder */}
-            <div
-              className="relative overflow-hidden rounded-3xl shadow-float aspect-[4/3]"
-              style={{ background: 'linear-gradient(150deg, oklch(0.89 0.045 10) 0%, oklch(0.84 0.060 18) 100%)' }}
-            >
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 opacity-20 select-none">
-                <span className="font-serif text-7xl font-light text-foreground/30">KC</span>
-                <span className="font-sans text-[9px] tracking-[0.4em] text-foreground/25">SHOWROOM</span>
-              </div>
+            {/* Google map */}
+            <div className="relative overflow-hidden rounded-3xl shadow-float aspect-[4/3]">
+              <iframe
+                title="Шоу-рум Kiddie Chic на мапі"
+                src={MAP_SRC}
+                className="h-full w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
               {/* Overlay label */}
-              <div className="absolute left-4 top-4 rounded-xl bg-white/70 px-3 py-1.5 backdrop-blur-sm shadow-card">
-                <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-gold">Шоурум</p>
+              <div className="pointer-events-none absolute left-4 top-4 rounded-xl bg-white/85 px-3 py-1.5 backdrop-blur-sm shadow-card">
+                <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-gold">Шоу-рум</p>
               </div>
             </div>
 
@@ -73,13 +77,17 @@ export default function AboutSection() {
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl bg-white/70 px-4 py-4 backdrop-blur-sm shadow-card">
                 <MapPin size={16} className="mb-2 text-gold" />
-                <p className="font-sans text-xs font-semibold text-foreground">Київ</p>
-                <p className="mt-0.5 font-sans text-[11px] text-foreground/50">вул. Хрещатик 22</p>
+                <p className="font-sans text-xs font-semibold text-foreground">Шоу-рум Київ</p>
+                <p className="mt-0.5 font-sans text-[11px] leading-relaxed text-foreground/50">
+                  вул. Саксаганського 63/28<br />Kyiv, 01033
+                </p>
               </div>
               <div className="rounded-2xl bg-white/70 px-4 py-4 backdrop-blur-sm shadow-card">
                 <Clock size={16} className="mb-2 text-gold" />
-                <p className="font-sans text-xs font-semibold text-foreground">Графік</p>
-                <p className="mt-0.5 font-sans text-[11px] text-foreground/50">Пн–Сб 10–19</p>
+                <p className="font-sans text-xs font-semibold text-foreground">Графік роботи</p>
+                <p className="mt-0.5 font-sans text-[11px] leading-relaxed text-foreground/50">
+                  Щодня<br />11:00 – 19:00
+                </p>
               </div>
             </div>
           </div>

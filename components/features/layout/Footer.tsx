@@ -106,8 +106,9 @@ export default function Footer() {
                 Telegram
               </a>
               <p className="font-sans text-sm leading-relaxed text-foreground/60">
-                Київ, вул. Хрещатик 22<br />
-                Пн–Сб 10:00–19:00
+                Шоу-рум Київ<br />
+                вул. Саксаганського 63/28, 01033<br />
+                Щодня 11:00–19:00
               </p>
             </div>
           </div>

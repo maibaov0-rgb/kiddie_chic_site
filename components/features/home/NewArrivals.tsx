@@ -2,13 +2,15 @@
 
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Heart, ArrowRight } from 'lucide-react';
+import { asset } from '@/lib/asset';
 
 const PLACEHOLDER_PRODUCTS = [
-  { id: '1', name: 'Сукня «Ніжна троянда»',    price: 1890, badge: 'Нове',  bg: 'linear-gradient(145deg, oklch(0.93 0.035 10), oklch(0.88 0.05 15))' },
-  { id: '2', name: 'Сукня «Золота осінь»',      price: 2490, badge: 'Хіт',   bg: 'linear-gradient(145deg, oklch(0.91 0.030 60), oklch(0.86 0.045 70))' },
-  { id: '3', name: 'Сукня «Молочна хмаринка»',  price: 1690, badge: null,    bg: 'linear-gradient(145deg, oklch(0.97 0.008 80), oklch(0.93 0.018 60))' },
-  { id: '4', name: 'Сукня «Пудровий вечір»',    price: 2190, badge: 'Нове',  bg: 'linear-gradient(145deg, oklch(0.90 0.040 10), oklch(0.85 0.055 20))' },
+  { id: '1', name: 'Сукня «Ніжна троянда»',    price: 1890, badge: 'Нове', image: '/images/hero/dress-5.jpg' },
+  { id: '2', name: 'Сукня «Золота осінь»',      price: 2490, badge: 'Хіт',  image: '/images/hero/dress-4.jpg' },
+  { id: '3', name: 'Сукня «Молочна хмаринка»',  price: 1690, badge: null,   image: '/images/hero/dress-2.jpg' },
+  { id: '4', name: 'Сукня «Пудровий вечір»',    price: 2190, badge: 'Нове', image: '/images/hero/dress-3.jpg' },
 ] as const;
 
 export default function NewArrivals() {
@@ -70,10 +72,15 @@ function ProductCard({
   return (
     <Link href="/catalog/dresses" className="group block">
       {/* Image area — floating card inside card */}
-      <div
-        className="relative overflow-hidden rounded-2xl aspect-[3/4] shadow-card transition-shadow duration-300 group-hover:shadow-float"
-        style={{ background: product.bg }}
-      >
+      <div className="relative overflow-hidden rounded-2xl aspect-[3/4] shadow-card transition-shadow duration-300 group-hover:shadow-float">
+        <Image
+          src={asset(product.image)}
+          alt={product.name}
+          fill
+          sizes="(min-width: 1024px) 25vw, 50vw"
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
+        />
+
         {/* Badge */}
         {product.badge && (
           <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-white/85 px-3 py-1 font-sans text-[9px] font-bold uppercase tracking-widest text-foreground/70 backdrop-blur-sm shadow-card">
@@ -89,11 +96,6 @@ function ProductCard({
         >
           <Heart size={13} />
         </button>
-
-        {/* Placeholder ornament */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-15 select-none">
-          <span className="font-serif text-8xl font-light text-foreground/30">✦</span>
-        </div>
 
         {/* Hover CTA */}
         <div className="absolute inset-x-3 bottom-3 translate-y-14 rounded-xl bg-foreground/85 py-2.5 text-center transition-transform duration-300 group-hover:translate-y-0 backdrop-blur-sm">
