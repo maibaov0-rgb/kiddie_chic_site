@@ -34,20 +34,23 @@ export default function Header() {
   const t = useTranslations('nav');
   const [menuOpen, setMenuOpen] = useState(false);
   const [visible, setVisible] = useState(true);
-  const lastY = useRef(0);
   const ticking = useRef(false);
 
   useEffect(() => {
     // rAF-throttled; only re-renders when visibility actually flips, so the
     // header doesn't repaint on every scroll frame (key for smooth iOS Safari).
+    // Header shows ONLY near the very top; once you scroll down it stays hidden.
+    // The 8–64px dead-band gives hysteresis so tiny finger jitter can't toggle it.
     const onScroll = () => {
       if (ticking.current) return;
       ticking.current = true;
       requestAnimationFrame(() => {
         const y = window.scrollY;
-        const next = y < 80 || y < lastY.current - 4;
-        setVisible((prev) => (prev === next ? prev : next));
-        lastY.current = y;
+        setVisible((prev) => {
+          if (y <= 8) return true;    // at the very top → reveal
+          if (y > 64) return false;   // scrolled down → hide
+          return prev;                // in-between → keep, no flicker
+        });
         ticking.current = false;
       });
     };
@@ -64,8 +67,8 @@ export default function Header() {
     <>
       {/* ── Floating pill nav ─────────────────────────────── */}
       <header
-        className={`fixed left-1/2 top-4 z-50 w-[calc(100%-1.5rem)] max-w-none -translate-x-1/2 transform-gpu transition-[transform,opacity] duration-300 ease-out will-change-transform md:w-[calc(100%-2rem)] ${
-          visible ? 'translate-y-0 opacity-100' : '-translate-y-6 opacity-0 pointer-events-none'
+        className={`fixed left-1/2 top-4 z-50 w-[calc(100%-1.5rem)] max-w-none -translate-x-1/2 transform-gpu transition-[transform,opacity] duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform md:w-[calc(100%-2rem)] ${
+          visible ? 'translate-y-0 opacity-100' : '-translate-y-[140%] opacity-0 pointer-events-none'
         }`}
       >
         <div className="bg-pink-soft flex items-center justify-between rounded-2xl px-5 py-3 shadow-nav md:rounded-full md:px-6 md:py-3.5">
