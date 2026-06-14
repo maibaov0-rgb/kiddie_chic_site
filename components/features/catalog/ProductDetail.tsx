@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Check, Minus, Plus, ShoppingBag, Clock, Scissors } from 'lucide-react';
 import { COLORS, FABRICS, SIZES, cover, type Product } from '@/lib/catalog';
+import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
 
 function colorName(id: string, en: boolean): string {
@@ -72,7 +73,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               key={i}
               className="relative aspect-[3/4] w-[82%] shrink-0 snap-center overflow-hidden rounded-3xl shadow-card"
             >
-              <Image src={src} alt={`${name} ${i + 1}`} fill sizes="82vw" className="object-cover" priority={i === 0} />
+              <Image src={asset(src)} alt={`${name} ${i + 1}`} fill sizes="82vw" className="object-cover" priority={i === 0} />
             </div>
           ))}
         </div>
@@ -81,7 +82,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         <div className="hidden md:block">
           <div className="relative aspect-[3/4] overflow-hidden rounded-[2rem] shadow-float">
             <Image
-              src={product.images[activeImg] ?? cover(product)}
+              src={asset(product.images[activeImg] ?? cover(product))}
               alt={name}
               fill
               sizes="50vw"
@@ -100,7 +101,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                     i === activeImg ? 'ring-2 ring-gold ring-offset-2' : 'opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <Image src={src} alt={`${name} ${i + 1}`} fill sizes="80px" className="object-cover" />
+                  <Image src={asset(src)} alt={`${name} ${i + 1}`} fill sizes="80px" className="object-cover" />
                 </button>
               ))}
             </div>

@@ -68,7 +68,7 @@ function ProductCard({
   addToCartLabel: string;
 }) {
   return (
-    <Link href={`/catalog/dresses/${product.id}`} className="group block">
+    <Link href="/catalog/dresses" className="group block">
       {/* Image area — floating card inside card */}
       <div
         className="relative overflow-hidden rounded-2xl aspect-[3/4] shadow-card transition-shadow duration-300 group-hover:shadow-float"

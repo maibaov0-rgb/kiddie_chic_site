@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Sparkles } from 'lucide-react';
 import { cover, type Product } from '@/lib/catalog';
+import { asset } from '@/lib/asset';
 import ConsultationModal from './ConsultationModal';
 
 export default function CoutureGallery({ products }: { products: Product[] }) {
@@ -30,7 +31,7 @@ export default function CoutureGallery({ products }: { products: Product[] }) {
                 style={{ aspectRatio: i % 3 === 1 ? '3 / 4' : '4 / 5' }}
               >
                 <Image
-                  src={cover(p)}
+                  src={asset(cover(p))}
                   alt={name}
                   fill
                   sizes="(min-width: 768px) 33vw, 50vw"

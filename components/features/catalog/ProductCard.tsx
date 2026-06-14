@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { Heart, Check } from 'lucide-react';
 import { COLORS, cover, minPrice, type Product } from '@/lib/catalog';
+import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -51,7 +52,7 @@ export default function ProductCard({ product }: { product: Product }) {
       {/* Image */}
       <div className="relative aspect-[3/4] overflow-hidden rounded-3xl shadow-card transition-shadow duration-300 group-hover:shadow-float">
         <Image
-          src={cover(product)}
+          src={asset(cover(product))}
           alt={name}
           fill
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
