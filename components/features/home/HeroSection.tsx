@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
@@ -10,6 +10,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 // prefix it so the hero video resolves under GitHub Pages' /repo base path.
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 const VIDEO_SRC = `${BASE_PATH}/videos/hero.mp4`;
+const POSTER_SRC = `${BASE_PATH}/images/hero/hero-poster.jpg`;
 
 /** Intro: doors closed → doors sliding open → final hero layout */
 type Phase = 'doors' | 'reveal' | 'final';
@@ -106,6 +107,7 @@ export default function HeroSection() {
   const t = useTranslations('home.hero');
   const reduceMotion = useReducedMotion();
   const [phase, setPhase] = useState<Phase>('doors');
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const revealTimer = setTimeout(() => setPhase('reveal'), reduceMotion ? 0 : 1500);
@@ -115,6 +117,27 @@ export default function HeroSection() {
       clearTimeout(finalTimer);
     };
   }, [reduceMotion]);
+
+  // iOS blocks autoplay in Low Power Mode and is flaky even otherwise. Force a
+  // muted play() on mount, and — as a fallback — start it on the very first user
+  // gesture anywhere on the page (a gesture is allowed to play even in Low Power
+  // Mode), so the dress video runs without the visitor tapping the play button.
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    const tryPlay = () => v.play().catch(() => {});
+    tryPlay();
+    const onFirstInteract = () => tryPlay();
+    window.addEventListener('touchstart', onFirstInteract, { once: true, passive: true });
+    window.addEventListener('pointerdown', onFirstInteract, { once: true });
+    window.addEventListener('scroll', onFirstInteract, { once: true, passive: true });
+    return () => {
+      window.removeEventListener('touchstart', onFirstInteract);
+      window.removeEventListener('pointerdown', onFirstInteract);
+      window.removeEventListener('scroll', onFirstInteract);
+    };
+  }, []);
 
   const revealed = phase !== 'doors';
 
@@ -131,15 +154,20 @@ export default function HeroSection() {
       >
         {/* Background video */}
         <motion.video
+          ref={videoRef}
           initial={{ scale: 1.08, opacity: 0 }}
           animate={revealed ? { scale: 1, opacity: 1 } : {}}
           transition={{ duration: 1.4, ease: EASE }}
           className="absolute inset-0 h-full w-full object-cover"
           src={VIDEO_SRC}
+          poster={POSTER_SRC}
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
+          controls={false}
+          disablePictureInPicture
           aria-label={t('dressAlt')}
         />
 
