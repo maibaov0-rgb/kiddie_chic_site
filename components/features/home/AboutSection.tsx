@@ -27,7 +27,7 @@ export default function AboutSection() {
 
           {/* Text side */}
           <div className="flex flex-col justify-center">
-            <span className="mb-4 inline-flex w-fit rounded-full bg-white/60 px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold backdrop-blur-sm shadow-card">
+            <span className="mb-4 inline-flex w-fit rounded-full bg-white/80 px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold shadow-card">
               Наш бренд
             </span>
             <h2 className="font-sans text-3xl font-semibold leading-snug tracking-tight text-foreground md:text-4xl">
@@ -48,7 +48,7 @@ export default function AboutSection() {
               </Link>
               <Link
                 href="/contacts"
-                className="inline-flex items-center rounded-full bg-white/60 px-6 py-3 font-sans text-sm font-medium text-foreground/70 backdrop-blur-sm shadow-card transition-all hover:bg-white hover:text-gold"
+                className="inline-flex items-center rounded-full bg-white/80 px-6 py-3 font-sans text-sm font-medium text-foreground/70 shadow-card transition-all hover:bg-white hover:text-gold"
               >
                 Шоурум
               </Link>
@@ -68,21 +68,21 @@ export default function AboutSection() {
                 allowFullScreen
               />
               {/* Overlay label */}
-              <div className="pointer-events-none absolute left-4 top-4 rounded-xl bg-white/85 px-3 py-1.5 backdrop-blur-sm shadow-card">
+              <div className="pointer-events-none absolute left-4 top-4 rounded-xl bg-white/90 px-3 py-1.5 shadow-card">
                 <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-gold">Шоу-рум</p>
               </div>
             </div>
 
             {/* Two info cards */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-2xl bg-white/70 px-4 py-4 backdrop-blur-sm shadow-card">
+              <div className="rounded-2xl bg-white/85 px-4 py-4 shadow-card">
                 <MapPin size={16} className="mb-2 text-gold" />
                 <p className="font-sans text-xs font-semibold text-foreground">Шоу-рум Київ</p>
                 <p className="mt-0.5 font-sans text-[11px] leading-relaxed text-foreground/50">
                   вул. Саксаганського 63/28<br />Kyiv, 01033
                 </p>
               </div>
-              <div className="rounded-2xl bg-white/70 px-4 py-4 backdrop-blur-sm shadow-card">
+              <div className="rounded-2xl bg-white/85 px-4 py-4 shadow-card">
                 <Clock size={16} className="mb-2 text-gold" />
                 <p className="font-sans text-xs font-semibold text-foreground">Графік роботи</p>
                 <p className="mt-0.5 font-sans text-[11px] leading-relaxed text-foreground/50">

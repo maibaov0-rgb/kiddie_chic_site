@@ -83,7 +83,7 @@ function ProductCard({
 
         {/* Badge */}
         {product.badge && (
-          <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-white/85 px-3 py-1 font-sans text-[9px] font-bold uppercase tracking-widest text-foreground/70 backdrop-blur-sm shadow-card">
+          <span className="absolute left-2.5 top-2.5 z-10 rounded-full bg-white/95 px-3 py-1 font-sans text-[9px] font-bold uppercase tracking-widest text-foreground/70 shadow-card">
             {product.badge}
           </span>
         )}
@@ -91,14 +91,14 @@ function ProductCard({
         {/* Wishlist */}
         <button
           aria-label="Вибране"
-          className="absolute right-2.5 top-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 text-foreground/40 backdrop-blur-sm shadow-card transition-all hover:scale-110 hover:bg-white hover:text-gold"
+          className="absolute right-2.5 top-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/92 text-foreground/40 shadow-card transition-all hover:scale-110 hover:bg-white hover:text-gold"
           onClick={(e) => e.preventDefault()}
         >
           <Heart size={13} />
         </button>
 
         {/* Hover CTA */}
-        <div className="absolute inset-x-3 bottom-3 translate-y-14 rounded-xl bg-foreground/85 py-2.5 text-center transition-transform duration-300 group-hover:translate-y-0 backdrop-blur-sm">
+        <div className="absolute inset-x-3 bottom-3 translate-y-14 rounded-xl bg-foreground/90 py-2.5 text-center transition-transform duration-300 group-hover:translate-y-0">
           <span className="font-sans text-[10px] font-bold uppercase tracking-wider text-white">
             {addToCartLabel}
           </span>

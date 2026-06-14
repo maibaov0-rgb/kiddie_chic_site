@@ -270,7 +270,7 @@ export default function ProductDetail({ product }: { product: Product }) {
       </div>
 
       {/* Sticky mobile buy bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-foreground/8 bg-white/90 px-4 py-3 backdrop-blur-xl md:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-foreground/8 bg-white/95 px-4 py-3 md:hidden">
         {price !== null && (
           <span className="shrink-0 font-sans text-lg font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</span>
         )}

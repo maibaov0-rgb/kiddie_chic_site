@@ -204,13 +204,13 @@ export default function HeroSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/75 text-foreground/55 shadow-card backdrop-blur-md transition-colors duration-300 hover:bg-white hover:text-gold"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-foreground/55 shadow-card transition-colors duration-300 hover:bg-white hover:text-gold"
               >
                 <Icon />
               </a>
             ))}
           </div>
-          <p className="rounded-full bg-white/75 px-4 py-2 font-sans text-xs font-medium tracking-wider text-foreground/55 shadow-card backdrop-blur-md">
+          <p className="rounded-full bg-white/90 px-4 py-2 font-sans text-xs font-medium tracking-wider text-foreground/55 shadow-card">
             Київ, Україна
           </p>
         </motion.div>

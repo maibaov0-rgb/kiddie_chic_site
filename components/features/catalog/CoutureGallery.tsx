@@ -39,7 +39,7 @@ export default function CoutureGallery({ products }: { products: Product[] }) {
                 />
                 {/* Consultation overlay on hover */}
                 <span className="absolute inset-0 flex items-end bg-gradient-to-t from-foreground/45 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <span className="m-3 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-4 py-2 font-sans text-xs font-semibold text-foreground/80 shadow-card backdrop-blur-sm">
+                  <span className="m-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-4 py-2 font-sans text-xs font-semibold text-foreground/80 shadow-card">
                     <Sparkles size={13} className="text-gold" />
                     {t('cta')}
                   </span>
