@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ShoppingBag, Menu, X, Search } from 'lucide-react';
@@ -39,10 +39,10 @@ export default function Header() {
 
   // Cart badge — hydration-safe count from persisted store
   const cartItems = useCartStore((s) => s.items);
-  const [cartHydrated, setCartHydrated] = useState(() => useCartStore.persist.hasHydrated());
-  useEffect(
-    () => useCartStore.persist.onFinishHydration(() => setCartHydrated(true)),
-    [],
+  const cartHydrated = useSyncExternalStore(
+    (cb) => useCartStore.persist.onFinishHydration(cb),
+    () => useCartStore.persist.hasHydrated(),
+    () => false,
   );
   const cartCount = cartHydrated ? cartItems.reduce((s, i) => s + i.qty, 0) : 0;
 

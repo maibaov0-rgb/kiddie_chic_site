@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
@@ -45,10 +45,10 @@ export default function CartView() {
   const addItem = useCartStore((s) => s.addItem);
 
   // Hydration guard — store reads localStorage on client only
-  const [hydrated, setHydrated] = useState(() => useCartStore.persist.hasHydrated());
-  useEffect(
-    () => useCartStore.persist.onFinishHydration(() => setHydrated(true)),
-    [],
+  const hydrated = useSyncExternalStore(
+    (cb) => useCartStore.persist.onFinishHydration(cb),
+    () => useCartStore.persist.hasHydrated(),
+    () => false,
   );
 
   // Undo toast
