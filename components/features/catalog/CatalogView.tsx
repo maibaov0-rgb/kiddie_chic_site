@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { SlidersHorizontal, X, Check } from 'lucide-react';
 import {
@@ -29,6 +29,15 @@ export default function CatalogView({ products }: { products: Product[] }) {
   const filtered = useMemo(() => filterProducts(products, filters), [products, filters]);
   const activeCount = filters.sizes.length + filters.colors.length + filters.fabrics.length;
 
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setDrawerOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [drawerOpen]);
+
   function resultsLabel(n: number): string {
     const mod10 = n % 10;
     const mod100 = n % 100;
@@ -47,14 +56,14 @@ export default function CatalogView({ products }: { products: Product[] }) {
       <aside className="hidden w-64 shrink-0 md:block">
         <div className="bg-pink-soft sticky top-24 rounded-3xl p-6 shadow-card">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="font-sans text-sm font-bold uppercase tracking-[0.15em] text-foreground/50">
+            <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-foreground/65">
               {t('filters.title')}
             </h2>
             {activeCount > 0 && (
               <button
                 type="button"
                 onClick={() => setFilters(EMPTY)}
-                className="font-sans text-xs font-medium text-gold transition-opacity hover:opacity-60"
+                className="inline-flex min-h-11 items-center px-1 text-xs font-medium text-gold transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:rounded"
               >
                 {t('filters.reset')}
               </button>
@@ -68,11 +77,11 @@ export default function CatalogView({ products }: { products: Product[] }) {
       <div className="min-w-0 flex-1">
         {/* Top bar: count + mobile filter trigger */}
         <div className="mb-5 flex items-center justify-between">
-          <p className="font-sans text-sm text-foreground/50">{resultsLabel(filtered.length)}</p>
+          <p className="text-sm text-foreground/65" aria-live="polite">{resultsLabel(filtered.length)}</p>
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
-            className="bg-pink-soft inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-sans text-sm font-medium text-foreground/70 shadow-card transition-all hover:text-gold md:hidden"
+            className="bg-pink-soft inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-foreground/75 shadow-card transition-all hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:hidden"
           >
             <SlidersHorizontal size={15} />
             {t('filters.open')}
@@ -86,11 +95,11 @@ export default function CatalogView({ products }: { products: Product[] }) {
 
         {filtered.length === 0 ? (
           <div className="rounded-3xl bg-white px-6 py-20 text-center shadow-card">
-            <p className="font-sans text-foreground/50">{t('empty')}</p>
+            <p className="text-foreground/70">{t('empty')}</p>
             <button
               type="button"
               onClick={() => setFilters(EMPTY)}
-              className="mt-4 font-sans text-sm font-semibold text-gold underline underline-offset-4"
+              className="mt-4 inline-flex min-h-11 items-center px-3 text-sm font-semibold text-gold underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:rounded-full"
             >
               {t('filters.reset')}
             </button>
@@ -112,17 +121,21 @@ export default function CatalogView({ products }: { products: Product[] }) {
         onClick={() => setDrawerOpen(false)}
       />
       <div
-        className={`bg-pink-soft fixed inset-x-0 bottom-0 z-50 max-h-[85dvh] overflow-y-auto rounded-t-3xl p-6 pb-8 shadow-float transition-transform duration-300 ease-in-out md:hidden ${
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('filters.title')}
+        className={`bg-pink-soft fixed inset-x-0 bottom-0 z-50 max-h-[85dvh] overflow-y-auto rounded-t-3xl p-6 shadow-float transition-transform duration-300 ease-in-out md:hidden ${
           drawerOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
+        style={{ paddingBottom: 'max(2rem, calc(env(safe-area-inset-bottom) + 1.5rem))' }}
       >
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="font-sans text-lg font-semibold text-foreground">{t('filters.title')}</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t('filters.title')}</h2>
           <button
             type="button"
             aria-label={tCommon('close')}
             onClick={() => setDrawerOpen(false)}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-powder-100 text-foreground/60"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-powder-100 text-foreground/70 transition-colors hover:bg-powder-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
           >
             <X size={18} />
           </button>
@@ -133,7 +146,7 @@ export default function CatalogView({ products }: { products: Product[] }) {
             <button
               type="button"
               onClick={() => setFilters(EMPTY)}
-              className="h-12 flex-1 rounded-full bg-powder-100 font-sans text-sm font-semibold text-foreground/70"
+              className="h-12 flex-1 rounded-full bg-powder-100 text-sm font-semibold text-foreground/80 transition-colors hover:bg-powder-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             >
               {t('filters.reset')}
             </button>
@@ -141,7 +154,7 @@ export default function CatalogView({ products }: { products: Product[] }) {
           <button
             type="button"
             onClick={() => setDrawerOpen(false)}
-            className="h-12 flex-[2] rounded-full bg-powder-200 font-sans text-sm font-semibold text-foreground/80 transition-colors hover:bg-powder-300 hover:text-foreground"
+            className="h-12 flex-[2] rounded-full bg-powder-200 text-sm font-semibold text-foreground/85 transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
           >
             {t('filters.apply')}
           </button>
@@ -166,7 +179,7 @@ function FilterControls({
     <div className="flex flex-col gap-6">
       {/* Size */}
       <div>
-        <h3 className="mb-2.5 font-sans text-xs font-bold uppercase tracking-wider text-foreground/40">
+        <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
           {t('size')}
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -177,10 +190,11 @@ function FilterControls({
                 key={size}
                 type="button"
                 onClick={() => setFilters((f) => ({ ...f, sizes: toggle(f.sizes, size) }))}
-                className={`rounded-full border px-3.5 py-1.5 font-sans text-xs font-medium transition-all ${
+                aria-pressed={on}
+                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
                   on
                     ? 'border-gold bg-gold/10 text-gold'
-                    : 'border-foreground/15 text-foreground/60 hover:border-gold/50'
+                    : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
                 }`}
               >
                 {size}
@@ -192,7 +206,7 @@ function FilterControls({
 
       {/* Color */}
       <div>
-        <h3 className="mb-2.5 font-sans text-xs font-bold uppercase tracking-wider text-foreground/40">
+        <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
           {t('color')}
         </h3>
         <div className="flex flex-wrap gap-2.5">
@@ -204,9 +218,10 @@ function FilterControls({
                 type="button"
                 title={locale === 'en' ? c.name_en : c.name_uk}
                 aria-label={locale === 'en' ? c.name_en : c.name_uk}
+                aria-pressed={on}
                 onClick={() => setFilters((f) => ({ ...f, colors: toggle(f.colors, c.id) }))}
-                className={`flex h-8 w-8 items-center justify-center rounded-full ring-1 transition-all ${
-                  on ? 'ring-2 ring-gold ring-offset-2' : 'ring-foreground/15 hover:ring-gold/50'
+                className={`flex h-11 w-11 items-center justify-center rounded-full ring-1 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
+                  on ? 'ring-2 ring-gold ring-offset-2' : 'ring-foreground/20 hover:ring-gold/50'
                 }`}
                 style={{ backgroundColor: c.hex }}
               >
@@ -224,7 +239,7 @@ function FilterControls({
 
       {/* Fabric */}
       <div>
-        <h3 className="mb-2.5 font-sans text-xs font-bold uppercase tracking-wider text-foreground/40">
+        <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
           {t('fabric')}
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -235,10 +250,11 @@ function FilterControls({
                 key={fab.id}
                 type="button"
                 onClick={() => setFilters((f) => ({ ...f, fabrics: toggle(f.fabrics, fab.id) }))}
-                className={`rounded-full border px-3.5 py-1.5 font-sans text-xs font-medium transition-all ${
+                aria-pressed={on}
+                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
                   on
                     ? 'border-gold bg-gold/10 text-gold'
-                    : 'border-foreground/15 text-foreground/60 hover:border-gold/50'
+                    : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
                 }`}
               >
                 {locale === 'en' ? fab.name_en : fab.name_uk}

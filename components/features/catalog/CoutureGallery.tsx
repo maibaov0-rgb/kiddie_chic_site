@@ -27,7 +27,8 @@ export default function CoutureGallery({ products }: { products: Product[] }) {
               <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="group relative block w-full overflow-hidden rounded-3xl shadow-card transition-shadow duration-300 hover:shadow-float"
+                aria-label={`${name} — ${t('cta')}`}
+                className="group relative block w-full overflow-hidden rounded-3xl shadow-card transition-shadow duration-300 hover:shadow-float focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
                 style={{ aspectRatio: i % 3 === 1 ? '3 / 4' : '4 / 5' }}
               >
                 <Image
@@ -55,7 +56,7 @@ export default function CoutureGallery({ products }: { products: Product[] }) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 rounded-full bg-powder-200 px-8 py-4 font-sans text-sm font-semibold text-foreground/80 shadow-card transition-all duration-300 hover:bg-powder-300 hover:text-foreground hover:shadow-float"
+          className="inline-flex min-h-12 items-center gap-2 rounded-full bg-powder-200 px-8 text-sm font-semibold text-foreground/85 shadow-card transition-all duration-300 hover:bg-powder-300 hover:text-foreground hover:shadow-float focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
         >
           <Sparkles size={16} />
           {t('cta')}

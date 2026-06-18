@@ -58,6 +58,33 @@ Next.js 15 (App Router, TS strict) · PostgreSQL + Prisma · Tailwind + shadcn/u
 - `ui-styling` — shadcn/ui + Tailwind компоненти
 - `design` — дизайн-токени, банери, іконки
 - `brand` — консистентність бренду
+- `frontend-design` — нестандартні візуальні рішення, антишаблонність
+
+## Використання скілів та плагінів (КРИТИЧНО)
+
+**Усе встановлене в цьому проекті — використовуй проактивно, не чекай команди `/`.**
+Якщо опис скіла матчить задачу — викликай його, ще до того як писати код.
+Список повторюватиметься у системних нагадуваннях кожної сесії, нижче — мапа тригерів.
+
+| Коли | Що викликати |
+|---|---|
+| Будь-яка UI-задача (нова сторінка, компонент, рев'ю верстки) | `ui-ux-pro-max` + `frontend-design` |
+| Перед стартом нової фічі, неоднозначні вимоги | `superpowers:brainstorming` |
+| Багатокрокова задача (типу `/checkout` з Mono) | `superpowers:writing-plans` → `superpowers:executing-plans` |
+| Реалізація фічі або фіксу | `superpowers:test-driven-development` (де доречно) |
+| Будь-який баг або несподівана поведінка | `superpowers:systematic-debugging` |
+| Перед тим як сказати "готово" / закомітити | `superpowers:verification-before-completion` + `verify` (запуск у браузері) |
+| 2+ незалежних задач паралельно | `superpowers:dispatching-parallel-agents` |
+| Робота над довгою фічею, ізоляція | `superpowers:using-git-worktrees` |
+| Завершення гілки (merge / PR / cleanup) | `superpowers:finishing-a-development-branch` |
+| Рев'ю PR або поточних змін | `/code-review` |
+| Перевірка безпеки (Mono webhook, секрети, env) | `/security-review` |
+| Запустити dev-сервер і подивитись фічу в браузері | `run` або `verify` |
+
+**Правила:**
+- `npm run lint && npm run typecheck` — недостатньо щоб закрити задачу. Для UI-фіч — обов'язково `verify` (реальний запуск).
+- Якщо в processed list є релевантний скіл — `lint+typecheck pass` без виклику скіла **не** означає що задача готова.
+- Не дублювати: якщо `ui-ux-pro-max` уже застосовано — `design`/`ui-styling` не потрібні поверх.
 
 ## SEO і доступність
 

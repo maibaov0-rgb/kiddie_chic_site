@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ShoppingBag, Menu, X, Search } from 'lucide-react';
+import { useCartStore } from '@/lib/stores/cart';
 
 const NAV_LINKS = [
   { key: 'catalog',  href: '/catalog' },
@@ -35,6 +36,15 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [visible, setVisible] = useState(true);
   const ticking = useRef(false);
+
+  // Cart badge — hydration-safe count from persisted store
+  const cartItems = useCartStore((s) => s.items);
+  const [cartHydrated, setCartHydrated] = useState(() => useCartStore.persist.hasHydrated());
+  useEffect(
+    () => useCartStore.persist.onFinishHydration(() => setCartHydrated(true)),
+    [],
+  );
+  const cartCount = cartHydrated ? cartItems.reduce((s, i) => s + i.qty, 0) : 0;
 
   useEffect(() => {
     // rAF-throttled; only re-renders when visibility actually flips, so the
@@ -92,21 +102,32 @@ export default function Header() {
           {/* Right icons */}
           <div className="flex items-center gap-1">
             <button
+              type="button"
               aria-label="Пошук"
-              className="hidden h-9 w-9 items-center justify-center rounded-full text-foreground/50 transition-colors hover:bg-powder-100 hover:text-foreground md:flex"
+              className="hidden h-11 w-11 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:flex"
             >
               <Search size={17} />
             </button>
             <Link
               href="/cart"
-              aria-label="Кошик"
-              className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/50 transition-colors hover:bg-powder-100 hover:text-foreground"
+              aria-label={cartCount > 0 ? `Кошик, ${cartCount} в кошику` : 'Кошик'}
+              className="relative flex h-11 w-11 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             >
               <ShoppingBag size={17} />
+              {cartCount > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute right-1 top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-gold px-1 text-[10px] font-bold leading-none text-white shadow-card"
+                >
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
+              )}
             </Link>
             <button
+              type="button"
               aria-label="Меню"
-              className="flex h-9 w-9 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-powder-100 md:hidden"
+              aria-expanded={menuOpen}
+              className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:hidden"
               onClick={() => setMenuOpen((v) => !v)}
             >
               <Menu size={20} />
@@ -132,8 +153,9 @@ export default function Header() {
         <div className="mb-6 flex items-center justify-between">
           <GoldLogo size="lg" />
           <button
+            type="button"
             aria-label="Закрити"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-powder-100 text-foreground/60"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-powder-100 text-foreground/65 transition-colors hover:bg-powder-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             onClick={() => setMenuOpen(false)}
           >
             <X size={18} />

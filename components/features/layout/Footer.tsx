@@ -32,7 +32,7 @@ export default function Footer() {
               </span>
               <span className="mt-0.5 font-sans text-[8px] tracking-[0.35em] text-powder-300">SHOWROOM</span>
             </Link>
-            <p className="mt-4 max-w-xs font-sans text-sm leading-relaxed text-foreground/50">
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-foreground/65">
               Преміум сукні для маленьких принцес. Ручна робота, найкращі тканини, доставка по Україні.
             </p>
 
@@ -66,7 +66,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-powder-100 text-foreground/50 shadow-card transition-all hover:bg-gold hover:text-white hover:shadow-float"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-powder-100 text-foreground/65 shadow-card transition-all hover:bg-gold hover:text-white hover:shadow-float focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
                 >
                   {icon}
                 </a>
@@ -76,7 +76,7 @@ export default function Footer() {
 
           {/* Navigation */}
           <div>
-            <h3 className="mb-5 font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/35">
+            <h3 className="mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/60">
               Навігація
             </h3>
             <ul className="flex flex-col gap-3">
@@ -84,7 +84,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="font-sans text-sm text-foreground/60 transition-colors hover:text-gold"
+                    className="text-sm text-foreground/70 transition-colors hover:text-gold focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
                   >
                     {label}
                   </Link>
@@ -95,17 +95,17 @@ export default function Footer() {
 
           {/* Contacts */}
           <div>
-            <h3 className="mb-5 font-sans text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/35">
+            <h3 className="mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/60">
               Контакти
             </h3>
             <div className="flex flex-col gap-3">
-              <a href="tel:+380991234567" className="font-sans text-sm text-foreground/60 transition-colors hover:text-gold">
+              <a href="tel:+380991234567" className="text-sm text-foreground/70 transition-colors hover:text-gold focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2">
                 +38 (099) 123-45-67
               </a>
-              <a href="https://t.me/kiddichic" target="_blank" rel="noopener noreferrer" className="font-sans text-sm text-foreground/60 transition-colors hover:text-gold">
+              <a href="https://t.me/kiddichic" target="_blank" rel="noopener noreferrer" className="text-sm text-foreground/70 transition-colors hover:text-gold focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2">
                 Telegram
               </a>
-              <p className="font-sans text-sm leading-relaxed text-foreground/60">
+              <p className="text-sm leading-relaxed text-foreground/65">
                 Шоу-рум Київ<br />
                 вул. Саксаганського 63/28, 01033<br />
                 Щодня 11:00–19:00
@@ -115,15 +115,15 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-foreground/8 pt-8 sm:flex-row">
-          <p className="font-sans text-xs text-foreground/30">
+        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-foreground/10 pt-8 sm:flex-row">
+          <p className="text-xs text-foreground/60">
             © {new Date().getFullYear()} Kiddie Chic. Усі права захищені.
           </p>
           <div className="flex gap-5">
-            <Link href="/legal/privacy" className="font-sans text-xs text-foreground/30 transition-colors hover:text-foreground/60">
+            <Link href="/legal/privacy" className="text-xs text-foreground/60 transition-colors hover:text-foreground/80 focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2">
               Конфіденційність
             </Link>
-            <Link href="/legal/offer" className="font-sans text-xs text-foreground/30 transition-colors hover:text-foreground/60">
+            <Link href="/legal/offer" className="text-xs text-foreground/60 transition-colors hover:text-foreground/80 focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2">
               Публічна оферта
             </Link>
           </div>

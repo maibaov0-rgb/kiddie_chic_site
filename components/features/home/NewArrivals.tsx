@@ -28,13 +28,13 @@ export default function NewArrivals() {
             <span className="mb-1.5 block font-sans text-[11px] font-semibold uppercase tracking-[0.25em] text-gold">
               Колекція
             </span>
-            <h2 className="font-sans text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+            <h2 className="font-serif text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
               {t('title')}
             </h2>
           </div>
           <Link
             href="/catalog/dresses"
-            className="group hidden items-center gap-2 rounded-full border border-foreground/15 px-5 py-2.5 font-sans text-sm font-medium text-foreground/55 transition-all hover:border-gold hover:text-gold md:flex"
+            className="group hidden min-h-11 items-center gap-2 rounded-full border border-foreground/20 px-5 text-sm font-medium text-foreground/70 transition-all hover:border-gold hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:inline-flex"
           >
             Всі товари
             <ArrowRight size={13} className="transition-transform duration-200 group-hover:translate-x-1" />
@@ -52,7 +52,7 @@ export default function NewArrivals() {
         <div className="mt-6 flex justify-center md:hidden">
           <Link
             href="/catalog/dresses"
-            className="inline-flex h-11 items-center gap-2 rounded-full border border-foreground/15 px-6 font-sans text-sm font-medium text-foreground/60 transition-all hover:border-gold hover:text-gold"
+            className="inline-flex h-11 items-center gap-2 rounded-full border border-foreground/20 px-6 text-sm font-medium text-foreground/70 transition-all hover:border-gold hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
           >
             Всі товари <ArrowRight size={13} />
           </Link>
@@ -90,11 +90,12 @@ function ProductCard({
 
         {/* Wishlist */}
         <button
-          aria-label="Вибране"
-          className="absolute right-2.5 top-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/92 text-foreground/40 shadow-card transition-all hover:scale-110 hover:bg-white hover:text-gold"
+          type="button"
+          aria-label="Додати у вибране"
+          className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/92 text-foreground/60 shadow-card transition-all hover:scale-110 hover:bg-white hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
           onClick={(e) => e.preventDefault()}
         >
-          <Heart size={13} />
+          <Heart size={14} />
         </button>
 
         {/* Hover CTA */}

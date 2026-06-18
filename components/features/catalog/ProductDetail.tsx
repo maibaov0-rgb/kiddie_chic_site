@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { Check, Minus, Plus, ShoppingBag, Clock, Scissors } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, Check, Minus, Plus, ShoppingBag, Clock, Scissors } from 'lucide-react';
 import { COLORS, FABRICS, SIZES, cover, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
@@ -40,7 +42,15 @@ export default function ProductDetail({ product }: { product: Product }) {
 
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
-  const [added, setAdded] = useState(false);
+  const [addedTick, setAddedTick] = useState(0);
+  const added = addedTick > 0;
+
+  // Auto-dismiss "added" toast 5s after last add; new add resets the timer.
+  useEffect(() => {
+    if (!addedTick) return;
+    const id = setTimeout(() => setAddedTick(0), 5000);
+    return () => clearTimeout(id);
+  }, [addedTick]);
 
   const variant = product.variants.find((v) => v.size === size && v.fabric === fabric) ?? null;
   const price = variant?.price ?? null;
@@ -58,8 +68,7 @@ export default function ProductDetail({ product }: { product: Product }) {
       qty,
       imageUrl: cover(product),
     });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1800);
+    setAddedTick((n) => n + 1);
   }
 
   return (
@@ -131,7 +140,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           </span>
         </div>
 
-        <h1 className="font-sans text-3xl font-semibold tracking-tight text-foreground md:text-4xl">{name}</h1>
+        <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground md:text-4xl">{name}</h1>
 
         {price !== null && (
           <p className="mt-3 font-sans text-2xl font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</p>
@@ -141,7 +150,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         {/* Size */}
         <div className="mt-7">
-          <h3 className="mb-2.5 font-sans text-xs font-bold uppercase tracking-wider text-foreground/40">
+          <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
             {t('size')}
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -150,8 +159,9 @@ export default function ProductDetail({ product }: { product: Product }) {
                 key={s}
                 type="button"
                 onClick={() => setSize(s)}
-                className={`min-w-12 rounded-full border px-4 py-2 font-sans text-sm font-medium transition-all ${
-                  s === size ? 'border-gold bg-gold/10 text-gold' : 'border-foreground/15 text-foreground/65 hover:border-gold/50'
+                aria-pressed={s === size}
+                className={`inline-flex min-h-11 min-w-12 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
+                  s === size ? 'border-gold bg-gold/10 text-gold' : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
                 }`}
               >
                 {s}
@@ -162,7 +172,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         {/* Fabric */}
         <div className="mt-6">
-          <h3 className="mb-2.5 font-sans text-xs font-bold uppercase tracking-wider text-foreground/40">
+          <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
             {t('fabric')}
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -171,8 +181,9 @@ export default function ProductDetail({ product }: { product: Product }) {
                 key={fid}
                 type="button"
                 onClick={() => setFabric(fid)}
-                className={`rounded-full border px-4 py-2 font-sans text-sm font-medium transition-all ${
-                  fid === fabric ? 'border-gold bg-gold/10 text-gold' : 'border-foreground/15 text-foreground/65 hover:border-gold/50'
+                aria-pressed={fid === fabric}
+                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
+                  fid === fabric ? 'border-gold bg-gold/10 text-gold' : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
                 }`}
               >
                 {fabricName(fid, en)}
@@ -184,7 +195,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {/* Color */}
         {product.colors.length > 0 && (
           <div className="mt-6">
-            <h3 className="mb-2.5 font-sans text-xs font-bold uppercase tracking-wider text-foreground/40">
+            <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
               {t('color')}: <span className="text-foreground/60">{colorName(color, en)}</span>
             </h3>
             <div className="flex flex-wrap gap-2.5">
@@ -196,15 +207,16 @@ export default function ProductDetail({ product }: { product: Product }) {
                   <button
                     key={cid}
                     type="button"
-                    aria-label={colorName(cid, en)}
+                    aria-label={colorName(cid, en) ?? cid}
+                    aria-pressed={on}
                     onClick={() => setColor(cid)}
-                    className={`flex h-9 w-9 items-center justify-center rounded-full ring-1 transition-all ${
-                      on ? 'ring-2 ring-gold ring-offset-2' : 'ring-foreground/15 hover:ring-gold/50'
+                    className={`flex h-11 w-11 items-center justify-center rounded-full ring-1 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
+                      on ? 'ring-2 ring-gold ring-offset-2' : 'ring-foreground/20 hover:ring-gold/50'
                     }`}
                     style={{ backgroundColor: c.hex }}
                   >
                     {on && (
-                      <Check size={15} className={cid === 'white' || cid === 'powder' ? 'text-foreground/70' : 'text-white'} />
+                      <Check size={16} className={cid === 'white' || cid === 'powder' ? 'text-foreground/70' : 'text-white'} />
                     )}
                   </button>
                 );
@@ -215,21 +227,27 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         {/* Quantity + add to cart */}
         <div className="mt-8 flex items-center gap-3">
-          <div className="flex h-12 items-center gap-1 rounded-full bg-white px-2 shadow-card">
+          <div className="flex h-12 items-center rounded-full bg-white shadow-card">
             <button
               type="button"
-              aria-label="−"
+              aria-label={t('decreaseQty')}
               onClick={() => setQty((q) => Math.max(1, q - 1))}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-powder-100"
+              className="flex h-12 w-12 items-center justify-center rounded-full text-foreground/75 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             >
               <Minus size={16} />
             </button>
-            <span className="w-7 text-center font-sans text-base font-semibold text-foreground">{qty}</span>
+            <span
+              className="min-w-7 px-1 text-center text-base font-semibold text-foreground"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {qty}
+            </span>
             <button
               type="button"
-              aria-label="+"
+              aria-label={t('increaseQty')}
               onClick={() => setQty((q) => q + 1)}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-powder-100"
+              className="flex h-12 w-12 items-center justify-center rounded-full text-foreground/75 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             >
               <Plus size={16} />
             </button>
@@ -270,15 +288,18 @@ export default function ProductDetail({ product }: { product: Product }) {
       </div>
 
       {/* Sticky mobile buy bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-foreground/8 bg-white/95 px-4 py-3 md:hidden">
+      <div
+        className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-foreground/10 bg-white px-4 pt-3 md:hidden"
+        style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
+      >
         {price !== null && (
-          <span className="shrink-0 font-sans text-lg font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</span>
+          <span className="shrink-0 text-lg font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</span>
         )}
         <button
           type="button"
           onClick={handleAdd}
           disabled={!product.inStock || !variant}
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 font-sans text-sm font-bold uppercase tracking-wider text-foreground/80 transition-colors hover:bg-powder-300 hover:text-foreground disabled:opacity-40"
+          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 text-sm font-bold uppercase tracking-wider text-foreground/85 transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:opacity-40"
         >
           {added ? <Check size={18} /> : <ShoppingBag size={16} />}
           {t('addToCart')}
@@ -286,7 +307,45 @@ export default function ProductDetail({ product }: { product: Product }) {
       </div>
 
       {/* Spacer so sticky bar doesn't cover content on mobile */}
-      <div className="h-16 md:hidden" aria-hidden="true" />
+      <div className="h-20 md:hidden" aria-hidden="true" />
+
+      {/* ── "Added to cart" toast with explicit next-step choices ───── */}
+      <AnimatePresence>
+        {added && (
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 24 }}
+            transition={{ duration: 0.25 }}
+            role="status"
+            aria-live="polite"
+            className="fixed inset-x-4 bottom-20 z-50 mx-auto flex max-w-md flex-col gap-3 rounded-3xl bg-foreground/95 px-5 py-4 text-white shadow-float md:inset-x-auto md:bottom-8 md:left-1/2 md:-translate-x-1/2"
+          >
+            <div className="flex items-center gap-2.5 text-sm">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold/25">
+                <Check size={15} className="text-gold-100" />
+              </span>
+              <span className="font-medium">{t('addedToCart')}</span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setAddedTick(0)}
+                className="flex-1 rounded-full bg-white/12 px-4 py-2.5 text-[12px] font-bold uppercase tracking-wider text-white/90 transition-colors hover:bg-white/20"
+              >
+                {t('continueShopping')}
+              </button>
+              <Link
+                href="/cart"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-powder-200 px-4 py-2.5 text-[12px] font-bold uppercase tracking-wider text-foreground/85 transition-colors hover:bg-powder-300 hover:text-foreground"
+              >
+                {t('goToCart')}
+                <ArrowRight size={13} />
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

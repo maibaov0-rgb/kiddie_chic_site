@@ -81,14 +81,15 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* Wishlist */}
         <button
           type="button"
-          aria-label={t('addToCart')}
+          aria-label={liked ? 'Видалити з вибраного' : 'Додати у вибране'}
+          aria-pressed={liked}
           onClick={(e) => {
             e.preventDefault();
             setLiked((v) => !v);
           }}
-          className="absolute right-2.5 top-2.5 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/92 text-foreground/40 shadow-card transition-all hover:scale-110 hover:bg-white hover:text-gold"
+          className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/92 text-foreground/60 shadow-card transition-all hover:scale-110 hover:bg-white hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
         >
-          <Heart size={14} className={liked ? 'fill-gold text-gold' : ''} />
+          <Heart size={15} className={liked ? 'fill-gold text-gold' : ''} />
         </button>
 
         {/* Buy CTA — slides up on hover (desktop), always reachable on tap */}
@@ -97,11 +98,11 @@ export default function ProductCard({ product }: { product: Product }) {
             <button
               type="button"
               onClick={handleAdd}
-              className="flex h-8 w-full items-center justify-center gap-1.5 rounded-full bg-powder-200 font-sans text-[11px] font-bold uppercase tracking-wide text-foreground/80 shadow-card transition-colors hover:bg-powder-300 hover:text-foreground"
+              className="flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-powder-200 text-[11px] font-bold uppercase tracking-wide text-foreground/85 shadow-card transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             >
               {added ? (
                 <>
-                  <Check size={14} /> {t('inStock')}
+                  <Check size={14} /> {t('addedToCart')}
                 </>
               ) : (
                 t('addToCart')

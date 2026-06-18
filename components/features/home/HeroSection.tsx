@@ -183,7 +183,7 @@ export default function HeroSection() {
         >
           <Link
             href="/catalog/dresses"
-            className="inline-flex h-14 items-center justify-center rounded-full bg-powder-200 px-10 font-sans text-base font-bold text-white shadow-float transition-all duration-300 ease-in-out hover:bg-powder-300"
+            className="inline-flex h-14 items-center justify-center rounded-full bg-powder-200 px-10 text-base font-bold text-white shadow-float transition-all duration-300 ease-in-out hover:bg-powder-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
           >
             {t('cta')}
           </Link>
@@ -204,13 +204,13 @@ export default function HeroSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-foreground/55 shadow-card transition-colors duration-300 hover:bg-white hover:text-gold"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-foreground/65 shadow-card transition-colors duration-300 hover:bg-white hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
                 <Icon />
               </a>
             ))}
           </div>
-          <p className="rounded-full bg-white/90 px-4 py-2 font-sans text-xs font-medium tracking-wider text-foreground/55 shadow-card">
+          <p className="rounded-full bg-white/90 px-4 py-2 text-xs font-medium tracking-wider text-foreground/70 shadow-card">
             Київ, Україна
           </p>
         </motion.div>

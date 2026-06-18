@@ -30,7 +30,7 @@ export default function AboutSection() {
             <span className="mb-4 inline-flex w-fit rounded-full bg-white/80 px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold shadow-card">
               Наш бренд
             </span>
-            <h2 className="font-sans text-3xl font-semibold leading-snug tracking-tight text-foreground md:text-4xl">
+            <h2 className="font-serif text-3xl font-semibold leading-snug tracking-tight text-foreground md:text-4xl">
               {t('title')}
             </h2>
             <p className="mt-5 font-sans text-base leading-relaxed text-foreground/60 md:text-[17px]">
@@ -41,14 +41,14 @@ export default function AboutSection() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/about"
-                className="group inline-flex items-center gap-2 rounded-full bg-foreground/90 px-6 py-3 font-sans text-sm font-semibold text-white transition-all hover:bg-gold hover:shadow-card"
+                className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-foreground/90 px-6 text-sm font-semibold text-white transition-all hover:bg-gold hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
                 Дізнатись більше
                 <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/contacts"
-                className="inline-flex items-center rounded-full bg-white/80 px-6 py-3 font-sans text-sm font-medium text-foreground/70 shadow-card transition-all hover:bg-white hover:text-gold"
+                className="inline-flex min-h-11 items-center rounded-full bg-white/80 px-6 text-sm font-medium text-foreground/75 shadow-card transition-all hover:bg-white hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
                 Шоурум
               </Link>
@@ -78,14 +78,14 @@ export default function AboutSection() {
               <div className="rounded-2xl bg-white/85 px-4 py-4 shadow-card">
                 <MapPin size={16} className="mb-2 text-gold" />
                 <p className="font-sans text-xs font-semibold text-foreground">Шоу-рум Київ</p>
-                <p className="mt-0.5 font-sans text-[11px] leading-relaxed text-foreground/50">
+                <p className="mt-0.5 text-[11px] leading-relaxed text-foreground/65">
                   вул. Саксаганського 63/28<br />Kyiv, 01033
                 </p>
               </div>
               <div className="rounded-2xl bg-white/85 px-4 py-4 shadow-card">
                 <Clock size={16} className="mb-2 text-gold" />
                 <p className="font-sans text-xs font-semibold text-foreground">Графік роботи</p>
-                <p className="mt-0.5 font-sans text-[11px] leading-relaxed text-foreground/50">
+                <p className="mt-0.5 text-[11px] leading-relaxed text-foreground/65">
                   Щодня<br />11:00 – 19:00
                 </p>
               </div>
