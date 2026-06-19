@@ -115,7 +115,7 @@ export default function ProductCard({ product }: { product: Product }) {
       {/* Info */}
       <div className="mt-3 px-0.5">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-sans text-sm font-medium leading-snug text-foreground md:text-[15px]">
+          <h3 className="font-serif text-base font-semibold leading-snug tracking-tight text-foreground md:text-lg">
             {name}
           </h3>
           {colorDots.length > 0 && (

@@ -87,7 +87,7 @@ export default function CartView() {
         </p>
         <Link
           href="/catalog"
-          className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-powder-200 px-7 font-sans text-sm font-bold uppercase tracking-wider text-foreground/80 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float"
+          className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-powder-200 px-7 font-sans text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float"
         >
           {t('emptyCta')}
           <ArrowRight size={16} />
@@ -283,7 +283,7 @@ export default function CartView() {
             </div>
             <Link
               href="/checkout"
-              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 font-sans text-sm font-bold uppercase tracking-wider text-foreground/85 transition-colors hover:bg-powder-300 hover:text-foreground"
+              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 font-sans text-base font-semibold text-foreground/85 transition-colors hover:bg-powder-300 hover:text-foreground"
             >
               {t('checkout')}
               <ArrowRight size={16} />
