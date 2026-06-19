@@ -146,7 +146,7 @@ export default function CartView() {
                     {/* Info */}
                     <div className="flex min-w-0 flex-1 flex-col">
                       <div className="flex items-start justify-between gap-2">
-                        <h3 className="truncate font-serif text-base font-semibold leading-tight text-foreground md:text-xl">
+                        <h3 className="truncate font-sans text-sm font-medium leading-tight text-foreground md:text-base">
                           {item.name}
                         </h3>
                         <button

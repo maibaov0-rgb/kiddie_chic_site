@@ -140,7 +140,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           </span>
         </div>
 
-        <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground md:text-4xl">{name}</h1>
+        <h1 className="font-sans text-2xl font-semibold leading-snug text-foreground md:text-3xl">{name}</h1>
 
         {price !== null && (
           <p className="mt-3 font-sans text-2xl font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</p>
