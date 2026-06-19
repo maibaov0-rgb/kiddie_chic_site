@@ -257,7 +257,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             type="button"
             onClick={handleAdd}
             disabled={!product.inStock || !variant}
-            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 px-6 font-sans text-sm font-bold uppercase tracking-wider text-foreground/80 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float disabled:pointer-events-none disabled:opacity-40"
+            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 px-6 font-sans text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float disabled:pointer-events-none disabled:opacity-40"
           >
             {added ? <Check size={18} /> : <ShoppingBag size={17} />}
             {t('addToCart')}
@@ -287,29 +287,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         </div>
       </div>
 
-      {/* Sticky mobile buy bar */}
-      <div
-        className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-foreground/10 bg-white px-4 pt-3 md:hidden"
-        style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
-      >
-        {price !== null && (
-          <span className="shrink-0 text-lg font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</span>
-        )}
-        <button
-          type="button"
-          onClick={handleAdd}
-          disabled={!product.inStock || !variant}
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 text-sm font-bold uppercase tracking-wider text-foreground/85 transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:opacity-40"
-        >
-          {added ? <Check size={18} /> : <ShoppingBag size={16} />}
-          {t('addToCart')}
-        </button>
-      </div>
-
-      {/* Spacer so sticky bar doesn't cover content on mobile */}
-      <div className="h-20 md:hidden" aria-hidden="true" />
-
-      {/* ── "Added to cart" toast with explicit next-step choices ───── */}
+{/* ── "Added to cart" toast with explicit next-step choices ───── */}
       <AnimatePresence>
         {added && (
           <motion.div

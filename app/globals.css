@@ -21,7 +21,7 @@
   --color-gold-200:     oklch(0.72 0.08 70);
   --color-gold-300:     oklch(0.62 0.1 70);
 
-  /* Body — Montserrat; headings — Playfair Display serif */
+  /* Body — Onest; headings — Playfair Display serif */
   --font-serif: var(--font-serif);
   --font-heading: var(--font-serif);
 

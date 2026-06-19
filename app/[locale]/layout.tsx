@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Montserrat, Playfair_Display } from "next/font/google";
+import { Onest, Playfair_Display } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 import "@/app/globals.css";
 
-// Body, navigation, buttons — Montserrat (client request)
-const sans = Montserrat({
+// Body, navigation, buttons — Onest (softer, more modern than Montserrat)
+const sans = Onest({
   variable: "--font-sans",
   subsets: ["latin", "cyrillic"],
   weight: ["300", "400", "500", "600", "700"],

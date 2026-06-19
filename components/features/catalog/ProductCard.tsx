@@ -98,7 +98,7 @@ export default function ProductCard({ product }: { product: Product }) {
             <button
               type="button"
               onClick={handleAdd}
-              className="flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-powder-200 text-[11px] font-bold uppercase tracking-wide text-foreground/85 shadow-card transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+              className="flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-powder-200 text-sm font-semibold text-foreground/85 shadow-card transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             >
               {added ? (
                 <>
