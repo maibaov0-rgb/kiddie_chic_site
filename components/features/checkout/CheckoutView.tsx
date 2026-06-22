@@ -10,6 +10,7 @@ import {
   RefreshCcw, Truck, User, Wallet,
 } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
+import { asset } from '@/lib/asset';
 import { TOP_UA_CITIES, fallbackBranches } from '@/lib/np-fallback';
 
 type PayMethod = 'card' | 'cod';
@@ -404,7 +405,7 @@ export default function CheckoutView() {
                 <li key={`${it.productId}-${it.variantId ?? 'x'}`} className="flex gap-3">
                   <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-powder-100">
                     {it.imageUrl && (
-                      <Image src={it.imageUrl} alt={it.name} fill sizes="64px" className="object-cover" />
+                      <Image src={asset(it.imageUrl)} alt={it.name} fill sizes="64px" className="object-cover" />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -439,7 +440,7 @@ export default function CheckoutView() {
             <button
               type="submit"
               disabled={submitting || form.payment === 'card'}
-              className="mt-5 hidden h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground/90 text-base font-semibold text-white shadow-card transition-all hover:bg-gold hover:shadow-float focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 lg:flex"
+              className="mt-5 hidden h-12 w-full items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 lg:flex"
             >
               {submitting ? <Loader2 size={18} className="animate-spin" /> : <Lock size={16} />}
               {submitting ? 'Обробка…' : 'Оформити замовлення'}
@@ -467,7 +468,7 @@ export default function CheckoutView() {
         <button
           type="submit"
           disabled={submitting || form.payment === 'card'}
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-foreground/90 text-base font-semibold text-white shadow-card transition-all hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {submitting ? <Loader2 size={18} className="animate-spin" /> : <Lock size={16} />}
           {submitting ? 'Обробка…' : 'Оформити'}

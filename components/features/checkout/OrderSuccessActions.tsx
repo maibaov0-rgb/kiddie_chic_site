@@ -12,7 +12,7 @@ export default function OrderSuccessActions() {
       <div className="mt-10 flex flex-wrap justify-center gap-3">
         <Link
           href="/catalog"
-          className="inline-flex h-12 items-center rounded-full bg-foreground/90 px-6 text-sm font-semibold text-white transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+          className="inline-flex h-12 items-center rounded-full bg-powder-200 px-6 text-sm font-semibold text-foreground/85 shadow-card transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
         >
           Продовжити покупки
         </Link>
