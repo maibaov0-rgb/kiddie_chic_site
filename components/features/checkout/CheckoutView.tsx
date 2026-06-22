@@ -203,7 +203,7 @@ export default function CheckoutView() {
     <form onSubmit={handleSubmit} className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12 lg:grid lg:grid-cols-[1fr_380px] lg:gap-10">
       {/* ─────────── LEFT: form ─────────── */}
       <div className="space-y-6 lg:space-y-8">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+        <h1 className="font-sans text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
           Оформлення замовлення
         </h1>
 
@@ -389,7 +389,7 @@ export default function CheckoutView() {
       <aside className="mt-8 lg:mt-0">
         <div className="sticky top-24 space-y-4">
           <div className="rounded-3xl bg-white p-6 shadow-card">
-            <h2 className="font-serif text-xl font-semibold text-foreground">Ваше замовлення</h2>
+            <h2 className="font-sans text-xl font-semibold text-foreground">Ваше замовлення</h2>
             <p className="mt-1 text-sm text-foreground/55">
               {itemCount === 1 ? '1 товар' : `${itemCount} товарів`}
             </p>

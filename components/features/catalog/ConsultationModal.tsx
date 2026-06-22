@@ -97,7 +97,7 @@ export default function ConsultationModal({
           </div>
         ) : (
           <>
-            <h2 id={titleId} className="font-serif text-xl font-semibold text-foreground md:text-2xl">{t('title')}</h2>
+            <h2 id={titleId} className="font-sans text-xl font-semibold text-foreground md:text-2xl">{t('title')}</h2>
             <p className="mt-2 text-sm leading-relaxed text-foreground/65">{t('subtitle')}</p>
 
             <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">

@@ -112,7 +112,7 @@ export default function ReviewModal({
           </div>
         ) : (
           <>
-            <h2 id={titleId} className="font-serif text-xl font-semibold text-foreground md:text-2xl">
+            <h2 id={titleId} className="font-sans text-xl font-semibold text-foreground md:text-2xl">
               Залишити відгук
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-foreground/60">

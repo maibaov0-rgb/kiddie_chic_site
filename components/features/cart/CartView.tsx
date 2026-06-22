@@ -79,7 +79,7 @@ export default function CartView() {
         <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-powder-100">
           <ShoppingBag size={36} className="text-powder-300" strokeWidth={1.5} />
         </div>
-        <h1 className="mt-7 font-serif text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+        <h1 className="mt-7 font-sans text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
           {t('empty')}
         </h1>
         <p className="mx-auto mt-3 max-w-md font-sans text-base leading-relaxed text-foreground/55">
@@ -102,7 +102,7 @@ export default function CartView() {
       {/* Heading */}
       <header className="mb-6 md:mb-10">
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
-          <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground md:text-5xl">
+          <h1 className="font-sans text-3xl font-semibold tracking-tight text-foreground md:text-5xl">
             {t('title')}
           </h1>
           {hydrated && totalCount > 0 && (
@@ -233,7 +233,7 @@ export default function CartView() {
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-3xl bg-white p-5 shadow-float md:p-7">
             <div className="flex items-baseline justify-between gap-3">
-              <span className="font-serif text-lg font-semibold text-foreground md:text-xl">{t('total')}</span>
+              <span className="font-sans text-lg font-semibold text-foreground md:text-xl">{t('total')}</span>
               <span className="text-2xl font-bold text-gold md:text-3xl">
                 {hydrated ? `${fmt(subtotal, locale)} ₴` : '—'}
               </span>

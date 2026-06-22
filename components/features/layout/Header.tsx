@@ -167,7 +167,7 @@ export default function Header() {
             <Link
               key={key}
               href={href}
-              className="rounded-2xl px-4 py-3 font-serif text-lg font-medium text-foreground/75 transition-colors hover:bg-powder-100 hover:text-gold"
+              className="rounded-2xl px-4 py-3 font-sans text-lg font-medium text-foreground/75 transition-colors hover:bg-powder-100 hover:text-gold"
               onClick={() => setMenuOpen(false)}
             >
               {t(key)}

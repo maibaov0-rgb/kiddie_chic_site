@@ -30,7 +30,7 @@ export default function ReviewsMarquee() {
         </span>
         <h2
           id="reviews-heading"
-          className="mt-4 font-serif text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
+          className="mt-4 font-sans text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
         >
           Відгуки наших клієнтів
         </h2>
@@ -68,7 +68,7 @@ export default function ReviewsMarquee() {
               <p className="mt-4 line-clamp-5 text-[15px] leading-relaxed text-foreground/75">
                 {r.comment}
               </p>
-              <p className="mt-5 font-serif text-base font-semibold text-foreground">
+              <p className="mt-5 font-sans text-base font-semibold text-foreground">
                 {r.name}
               </p>
             </article>

@@ -15,7 +15,7 @@ export default function Page() {
       <span className="flex h-20 w-20 items-center justify-center rounded-full bg-gold/15 text-gold">
         <CheckCircle2 size={42} />
       </span>
-      <h1 className="mt-6 font-serif text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+      <h1 className="mt-6 font-sans text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
         Дякуємо за замовлення!
       </h1>
       <p className="mt-3 max-w-md text-base leading-relaxed text-foreground/60">

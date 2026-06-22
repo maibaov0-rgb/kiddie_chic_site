@@ -30,7 +30,7 @@ export default function AboutSection() {
             <span className="mb-4 inline-flex w-fit rounded-full bg-white/80 px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold shadow-card">
               Наш бренд
             </span>
-            <h2 className="font-serif text-3xl font-semibold leading-snug tracking-tight text-foreground md:text-4xl">
+            <h2 className="font-sans text-3xl font-semibold leading-snug tracking-tight text-foreground md:text-4xl">
               {t('title')}
             </h2>
             <p className="mt-5 font-sans text-base leading-relaxed text-foreground/60 md:text-[17px]">
