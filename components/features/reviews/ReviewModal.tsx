@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
-import { Star, X, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Star, X } from 'lucide-react';
 import { useReviewsStore } from '@/lib/stores/reviews';
 
 export default function ReviewModal({
@@ -11,12 +12,12 @@ export default function ReviewModal({
   open: boolean;
   onClose: () => void;
 }) {
+  const router = useRouter();
   const addReview = useReviewsStore((s) => s.addReview);
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState(5);
   const [hover, setHover] = useState(0);
-  const [sent, setSent] = useState(false);
   const titleId = useId();
   const nameId = useId();
   const commentId = useId();
@@ -48,7 +49,6 @@ export default function ReviewModal({
   useEffect(() => {
     if (open) return;
     const t = setTimeout(() => {
-      setSent(false);
       setName('');
       setComment('');
       setRating(5);
@@ -59,12 +59,14 @@ export default function ReviewModal({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !comment.trim() || rating < 1) return;
-    addReview({ name: name.trim(), comment: comment.trim(), rating });
-    setSent(true);
+    const n = name.trim();
+    const c = comment.trim();
+    if (n && c) {
+      addReview({ name: n, comment: c, rating });
+    }
+    onClose();
+    router.push('/');
   }
-
-  const valid = name.trim().length >= 2 && comment.trim().length >= 5 && rating >= 1;
 
   return (
     <>
@@ -93,31 +95,12 @@ export default function ReviewModal({
           <X size={18} />
         </button>
 
-        {sent ? (
-          <div className="flex flex-col items-center py-6 text-center" role="status" aria-live="polite">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gold/15 text-gold">
-              <Check size={26} />
-            </div>
-            <p className="text-base font-medium text-foreground">Дякуємо за відгук!</p>
-            <p className="mt-1 text-sm text-foreground/55">
-              Ваші слова надихають нас працювати ще краще
-            </p>
-            <button
-              type="button"
-              onClick={onClose}
-              className="mt-6 inline-flex h-11 items-center rounded-full bg-foreground/90 px-6 text-sm font-semibold text-white transition-colors hover:bg-gold"
-            >
-              Закрити
-            </button>
-          </div>
-        ) : (
-          <>
-            <h2 id={titleId} className="font-sans text-xl font-semibold text-foreground md:text-2xl">
-              Залишити відгук
-            </h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-foreground/60">
-              Поділіться враженнями — це допоможе іншим мамам зробити вибір
-            </p>
+        <h2 id={titleId} className="font-sans text-xl font-semibold text-foreground md:text-2xl">
+          Залишити відгук
+        </h2>
+        <p className="mt-1.5 text-sm leading-relaxed text-foreground/60">
+          Поділіться враженнями — це допоможе іншим мамам зробити вибір
+        </p>
 
             <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
               {/* Rating */}
@@ -183,14 +166,11 @@ export default function ReviewModal({
 
               <button
                 type="submit"
-                disabled={!valid}
-                className="mt-2 h-12 rounded-full bg-foreground/90 text-sm font-semibold text-white transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-2 h-12 rounded-full bg-gold text-sm font-semibold text-white shadow-card transition-all hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
                 Надіслати відгук
               </button>
             </form>
-          </>
-        )}
       </div>
     </>
   );
