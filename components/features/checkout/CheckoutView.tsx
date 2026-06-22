@@ -18,7 +18,6 @@ interface Form {
   firstName: string;
   lastName: string;
   phone: string;
-  email: string;
   city: { ref: string; name: string; area: string } | null;
   branch: { ref: string; number: string; description: string } | null;
   payment: PayMethod;
@@ -29,7 +28,6 @@ const EMPTY_FORM: Form = {
   firstName: '',
   lastName: '',
   phone: '+380',
-  email: '',
   city: null,
   branch: null,
   payment: 'cod',
@@ -38,9 +36,6 @@ const EMPTY_FORM: Form = {
 
 function isValidPhone(p: string) {
   return /^\+380\d{9}$/.test(p.replace(/\s/g, ''));
-}
-function isValidEmail(e: string) {
-  return e === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 }
 
 export default function CheckoutView() {
@@ -162,7 +157,6 @@ export default function CheckoutView() {
   const errors = {
     firstName: !form.firstName.trim() ? 'Введіть імʼя' : null,
     phone: !isValidPhone(form.phone) ? 'Формат: +380XXXXXXXXX' : null,
-    email: !isValidEmail(form.email) ? 'Некоректний email' : null,
     city: !form.city ? 'Оберіть місто' : null,
     branch: !form.branch ? 'Оберіть відділення' : null,
     agree: !form.agree ? 'Підтвердіть згоду' : null,
@@ -174,7 +168,7 @@ export default function CheckoutView() {
     e.preventDefault();
     // Touch all so errors show
     setTouched({
-      firstName: true, lastName: true, phone: true, email: true,
+      firstName: true, lastName: true, phone: true,
       city: true, branch: true, agree: true,
     });
     if (!formValid) {
@@ -214,7 +208,7 @@ export default function CheckoutView() {
         </h1>
 
         {/* SECTION 1: Contacts */}
-        <Section icon={<User size={18} />} step={1} title="Контактні дані">
+        <Section icon={<User size={18} />} title="Контактна інформація">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field
               label="Імʼя"
@@ -245,21 +239,11 @@ export default function CheckoutView() {
               error={touched.phone ? errors.phone : null}
               hint="Формат: +380XXXXXXXXX"
             />
-            <Field
-              label="Email"
-              value={form.email}
-              onChange={(v) => setField('email', v)}
-              onBlur={() => blur('email')}
-              type="email"
-              autoComplete="email"
-              error={touched.email ? errors.email : null}
-              hint="Надішлемо номер для відстеження"
-            />
           </div>
         </Section>
 
         {/* SECTION 2: Delivery (Nova Poshta) */}
-        <Section icon={<Truck size={18} />} step={2} title="Доставка — Нова Пошта">
+        <Section icon={<Truck size={18} />} title="Доставка — Нова Пошта">
           {/* City autocomplete */}
           <div ref={cityBoxRef} className="relative">
             <label className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wider text-foreground/65">
@@ -349,7 +333,7 @@ export default function CheckoutView() {
         </Section>
 
         {/* SECTION 3: Payment */}
-        <Section icon={<Wallet size={18} />} step={3} title="Оплата">
+        <Section icon={<Wallet size={18} />} title="Спосіб оплати">
           <div className="grid gap-3 sm:grid-cols-2">
             <PayCard
               selected={form.payment === 'card'}
@@ -494,18 +478,17 @@ export default function CheckoutView() {
 // ─────────────── Reusable bits ───────────────
 
 function Section({
-  icon, step, title, children,
-}: { icon: React.ReactNode; step: number; title: string; children: React.ReactNode }) {
+  icon, title, children,
+}: { icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
     <section className="rounded-3xl bg-white p-6 shadow-card md:p-8">
       <header className="mb-5 flex items-center gap-3">
         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-powder-100 text-gold">
           {icon}
         </span>
-        <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground/45">
-          Крок {step}
-        </span>
-        <h2 className="ml-auto text-lg font-semibold text-foreground md:text-xl">{title}</h2>
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground/55">
+          {title}
+        </h2>
       </header>
       {children}
     </section>
