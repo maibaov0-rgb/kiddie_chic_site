@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import HeroSection from '@/components/features/home/HeroSection';
-import NewArrivals from '@/components/features/home/NewArrivals';
+import ReviewsMarquee from '@/components/features/reviews/ReviewsMarquee';
 import AboutSection from '@/components/features/home/AboutSection';
 
 type Params = { locale: string };
@@ -22,7 +22,7 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
   return (
     <>
       <HeroSection />
-      <NewArrivals />
+      <ReviewsMarquee />
       <AboutSection />
     </>
   );

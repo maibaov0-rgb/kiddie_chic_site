@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Suspense } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import OrderRef from '@/components/features/checkout/OrderRef';
+import OrderSuccessActions from '@/components/features/checkout/OrderSuccessActions';
 
 export const metadata: Metadata = {
   title: 'Дякуємо за замовлення',
@@ -27,20 +27,7 @@ export default function Page() {
         <OrderRef />
       </Suspense>
 
-      <div className="mt-10 flex flex-wrap justify-center gap-3">
-        <Link
-          href="/catalog"
-          className="inline-flex h-12 items-center rounded-full bg-foreground/90 px-6 text-sm font-semibold text-white transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-        >
-          Продовжити покупки
-        </Link>
-        <Link
-          href="/"
-          className="inline-flex h-12 items-center rounded-full bg-white px-6 text-sm font-medium text-foreground/70 shadow-card transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-        >
-          На головну
-        </Link>
-      </div>
+      <OrderSuccessActions />
     </div>
   );
 }

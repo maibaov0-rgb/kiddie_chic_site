@@ -164,6 +164,19 @@
   to   { transform: translateX(-50%); }
 }
 
+/* Reviews marquee — same translate-X(-50%) pattern, separate name so we can
+   tune duration per surface independently from the hero belt. */
+@keyframes reviews-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: reviews-marquee linear infinite;
+}
+.group:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
 /* Floating card shadow utilities */
 @layer utilities {
   /* Gentle light-golden gradient — available as an accent if needed */

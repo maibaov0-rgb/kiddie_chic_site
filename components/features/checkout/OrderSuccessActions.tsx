@@ -1,0 +1,37 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { MessageSquarePlus } from 'lucide-react';
+import ReviewModal from '@/components/features/reviews/ReviewModal';
+
+export default function OrderSuccessActions() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <div className="mt-10 flex flex-wrap justify-center gap-3">
+        <Link
+          href="/catalog"
+          className="inline-flex h-12 items-center rounded-full bg-foreground/90 px-6 text-sm font-semibold text-white transition-colors hover:bg-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+        >
+          Продовжити покупки
+        </Link>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex h-12 items-center gap-2 rounded-full bg-powder-200 px-6 text-sm font-semibold text-foreground/85 shadow-card transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+        >
+          <MessageSquarePlus size={16} />
+          Залишити відгук
+        </button>
+        <Link
+          href="/"
+          className="inline-flex h-12 items-center rounded-full bg-white px-6 text-sm font-medium text-foreground/70 shadow-card transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+        >
+          На головну
+        </Link>
+      </div>
+      <ReviewModal open={open} onClose={() => setOpen(false)} />
+    </>
+  );
+}
