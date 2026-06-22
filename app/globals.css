@@ -164,17 +164,20 @@
   to   { transform: translateX(-50%); }
 }
 
-/* Reviews marquee — same translate-X(-50%) pattern, separate name so we can
-   tune duration per surface independently from the hero belt. */
+/* Reviews marquee — content moves left-to-right (revealing items from the
+   left edge). Starts shifted by -50% so the duplicated track loops seamlessly. */
 @keyframes reviews-marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
 }
 .animate-marquee {
   animation: reviews-marquee linear infinite;
 }
 .group:hover .animate-marquee {
   animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
 }
 
 /* Floating card shadow utilities */

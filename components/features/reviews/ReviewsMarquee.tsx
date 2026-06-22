@@ -26,17 +26,14 @@ export default function ReviewsMarquee() {
       <div className="mb-10 px-4 text-center md:mb-14">
         <span className="inline-flex items-center gap-2 rounded-full bg-powder-100 px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">
           <Star size={12} className="fill-gold" />
-          Відгуки клієнток
+          Відгуки
         </span>
         <h2
           id="reviews-heading"
           className="mt-4 font-serif text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
         >
-          Що кажуть наші мами
+          Відгуки наших клієнтів
         </h2>
-        <p className="mx-auto mt-3 max-w-xl text-base text-foreground/55">
-          Справжні враження тих, хто вже отримав сукню від Kiddie Chic
-        </p>
       </div>
 
       <div className="group relative">
@@ -45,7 +42,7 @@ export default function ReviewsMarquee() {
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent md:w-32" />
 
         <div
-          className="flex w-max gap-4 will-change-transform motion-safe:animate-marquee md:gap-6"
+          className="animate-marquee flex w-max gap-4 will-change-transform md:gap-6"
           style={{ animationDuration: `${Math.max(30, list.length * 8)}s` }}
         >
           {loop.map((r, idx) => (
