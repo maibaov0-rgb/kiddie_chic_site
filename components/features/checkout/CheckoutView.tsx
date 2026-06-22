@@ -2,9 +2,9 @@
 
 import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import {
   Check, ChevronDown, CreditCard, Loader2, Lock, MapPin, Package,
   RefreshCcw, Truck, User, Wallet,
@@ -42,6 +42,7 @@ function isValidPhone(p: string) {
 export default function CheckoutView() {
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations('checkoutPage');
 
   // ───────── cart (hydration-safe) ─────────
   const items = useCartStore((s) => s.items);
@@ -158,11 +159,11 @@ export default function CheckoutView() {
 
   // ───────── validation ─────────
   const errors = {
-    firstName: !form.firstName.trim() ? 'Введіть імʼя' : null,
-    phone: !isValidPhone(form.phone) ? 'Формат: +380XXXXXXXXX' : null,
-    city: !form.city ? 'Оберіть місто' : null,
-    branch: !form.branch ? 'Оберіть відділення' : null,
-    agree: !form.agree ? 'Підтвердіть згоду' : null,
+    firstName: !form.firstName.trim() ? t('errFirstName') : null,
+    phone: !isValidPhone(form.phone) ? t('errPhone') : null,
+    city: !form.city ? t('errCity') : null,
+    branch: !form.branch ? t('errBranch') : null,
+    agree: !form.agree ? t('errAgree') : null,
   };
   const formValid = Object.values(errors).every((e) => e === null);
 
@@ -210,14 +211,14 @@ export default function CheckoutView() {
       {/* ─────────── LEFT: form ─────────── */}
       <div className="space-y-6 lg:space-y-8">
         <h1 className="font-sans text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
-          Оформлення замовлення
+          {t('title')}
         </h1>
 
         {/* SECTION 1: Contacts */}
-        <Section icon={<User size={18} />} title="Контактна інформація">
+        <Section icon={<User size={18} />} title={t('sectionContact')}>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field
-              label="Імʼя"
+              label={t('firstName')}
               required
               value={form.firstName}
               onChange={(v) => setField('firstName', v)}
@@ -226,7 +227,7 @@ export default function CheckoutView() {
               error={touched.firstName ? errors.firstName : null}
             />
             <Field
-              label="Прізвище"
+              label={t('lastName')}
               value={form.lastName}
               onChange={(v) => setField('lastName', v)}
               onBlur={() => blur('lastName')}
@@ -234,7 +235,7 @@ export default function CheckoutView() {
               error={null}
             />
             <Field
-              label="Телефон"
+              label={t('phone')}
               required
               value={form.phone}
               onChange={(v) => setField('phone', v.startsWith('+') ? v : `+${v}`)}
@@ -243,23 +244,23 @@ export default function CheckoutView() {
               inputMode="tel"
               autoComplete="tel"
               error={touched.phone ? errors.phone : null}
-              hint="Формат: +380XXXXXXXXX"
+              hint={t('phoneHint')}
             />
           </div>
         </Section>
 
         {/* SECTION 2: Delivery (Nova Poshta) */}
-        <Section icon={<Truck size={18} />} title="Доставка — Нова Пошта">
+        <Section icon={<Truck size={18} />} title={t('sectionDelivery')}>
           {/* City autocomplete */}
           <div ref={cityBoxRef} className="relative">
             <label className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wider text-foreground/65">
-              Місто <span className="text-gold">*</span>
+              {t('city')} <span className="text-gold">*</span>
             </label>
             <div className="relative">
               <MapPin size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
               <input
                 type="text"
-                value={form.city ? `${form.city.name}, ${form.city.area} обл.` : cityQuery}
+                value={form.city ? `${form.city.name}, ${form.city.area} ${t('cityRegionSuffix')}` : cityQuery}
                 onChange={(e) => {
                   if (form.city) setField('city', null);
                   setCityQuery(e.target.value);
@@ -267,7 +268,7 @@ export default function CheckoutView() {
                 }}
                 onFocus={() => setCityOpen(true)}
                 onBlur={() => blur('city')}
-                placeholder="Почніть вводити місто…"
+                placeholder={t('cityPlaceholder')}
                 autoComplete="address-level2"
                 data-invalid={touched.city && !!errors.city}
                 className="h-12 w-full rounded-2xl border border-foreground/20 bg-white pl-11 pr-10 text-base text-foreground outline-none transition-colors placeholder:text-foreground/45 focus:border-gold focus:ring-2 focus:ring-gold/30 aria-[invalid=true]:border-red-300"
@@ -292,7 +293,7 @@ export default function CheckoutView() {
                     className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-powder-100 focus-visible:bg-powder-100 focus-visible:outline-none"
                   >
                     <span className="font-medium text-foreground">{c.name}</span>
-                    <span className="text-[12px] text-foreground/55">{c.area} обл.</span>
+                    <span className="text-[12px] text-foreground/55">{c.area} {t('cityRegionSuffix')}</span>
                   </button>
                 ))}
               </div>
@@ -305,7 +306,7 @@ export default function CheckoutView() {
           {/* Branch select */}
           <div className="mt-4">
             <label className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wider text-foreground/65">
-              Відділення <span className="text-gold">*</span>
+              {t('branch')} <span className="text-gold">*</span>
             </label>
             <div className="relative">
               <Package size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
@@ -322,11 +323,11 @@ export default function CheckoutView() {
                 className="h-12 w-full appearance-none rounded-2xl border border-foreground/20 bg-white pl-11 pr-10 text-base text-foreground outline-none transition-colors focus:border-gold focus:ring-2 focus:ring-gold/30 disabled:cursor-not-allowed disabled:bg-foreground/5 disabled:text-foreground/40 aria-[invalid=true]:border-red-300"
               >
                 <option value="">
-                  {!form.city ? 'Спочатку оберіть місто' : branchLoading ? 'Завантаження…' : 'Оберіть відділення'}
+                  {!form.city ? t('branchPickCityFirst') : branchLoading ? t('branchLoading') : t('branchPick')}
                 </option>
                 {branches.map((b) => (
                   <option key={b.ref} value={b.ref}>
-                    №{b.number} — {b.description}
+                    {t('branchOptionPrefix')}{b.number} — {b.description}
                   </option>
                 ))}
               </select>
@@ -339,22 +340,22 @@ export default function CheckoutView() {
         </Section>
 
         {/* SECTION 3: Payment */}
-        <Section icon={<Wallet size={18} />} title="Спосіб оплати">
+        <Section icon={<Wallet size={18} />} title={t('sectionPayment')}>
           <div className="grid gap-3 sm:grid-cols-2">
             <PayCard
               selected={form.payment === 'card'}
               disabled
               icon={<CreditCard size={20} />}
-              title="Оплатити карткою"
-              subtitle="Visa / Mastercard / Apple Pay"
-              badge="Скоро"
+              title={t('payCardTitle')}
+              subtitle={t('payCardSubtitle')}
+              badge={t('payCardBadge')}
               onClick={() => undefined}
             />
             <PayCard
               selected={form.payment === 'cod'}
               icon={<Package size={20} />}
-              title="Післяплата"
-              subtitle="Оплата при отриманні у відділенні Нової Пошти"
+              title={t('payCodTitle')}
+              subtitle={t('payCodSubtitle')}
               onClick={() => setField('payment', 'cod')}
             />
           </div>
@@ -374,13 +375,13 @@ export default function CheckoutView() {
               className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-foreground/30 text-gold accent-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             />
             <span>
-              Я погоджуюся з{' '}
+              {t('agreePrefix')}{' '}
               <Link href="/legal/offer" className="text-gold underline underline-offset-2 hover:no-underline">
-                умовами продажу
+                {t('agreeOffer')}
               </Link>{' '}
-              та{' '}
+              {t('agreeAnd')}{' '}
               <Link href="/legal/privacy" className="text-gold underline underline-offset-2 hover:no-underline">
-                політикою конфіденційності
+                {t('agreePrivacy')}
               </Link>
               .
             </span>
@@ -395,9 +396,9 @@ export default function CheckoutView() {
       <aside className="mt-8 lg:mt-0">
         <div className="sticky top-24 space-y-4">
           <div className="rounded-3xl bg-white p-6 shadow-card">
-            <h2 className="font-sans text-xl font-semibold text-foreground">Ваше замовлення</h2>
+            <h2 className="font-sans text-xl font-semibold text-foreground">{t('yourOrder')}</h2>
             <p className="mt-1 text-sm text-foreground/55">
-              {itemCount === 1 ? '1 товар' : `${itemCount} товарів`}
+              {t('items', { count: itemCount })}
             </p>
 
             <ul className="mt-5 space-y-3">
@@ -424,16 +425,16 @@ export default function CheckoutView() {
 
             <div className="mt-5 space-y-2 border-t border-foreground/10 pt-5 text-sm">
               <div className="flex items-center justify-between text-foreground/65">
-                <span>Сума</span>
-                <span>{subtotal.toLocaleString('uk-UA')} ₴</span>
+                <span>{t('rowSubtotal')}</span>
+                <span>{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</span>
               </div>
               <div className="flex items-center justify-between text-foreground/65">
-                <span>Доставка</span>
-                <span className="text-[13px]">за тарифом НП</span>
+                <span>{t('rowDelivery')}</span>
+                <span className="text-[13px]">{t('deliveryByNp')}</span>
               </div>
               <div className="mt-3 flex items-center justify-between border-t border-foreground/10 pt-3 text-base font-semibold text-foreground">
-                <span>Разом</span>
-                <span className="text-gold">{subtotal.toLocaleString('uk-UA')} ₴</span>
+                <span>{t('rowTotal')}</span>
+                <span className="text-gold">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</span>
               </div>
             </div>
 
@@ -443,15 +444,15 @@ export default function CheckoutView() {
               className="mt-5 hidden h-12 w-full items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 lg:flex"
             >
               {submitting ? <Loader2 size={18} className="animate-spin" /> : <Lock size={16} />}
-              {submitting ? 'Обробка…' : 'Оформити замовлення'}
+              {submitting ? t('submitting') : t('submit')}
             </button>
           </div>
 
           {/* Trust strip */}
           <div className="hidden gap-2 rounded-2xl bg-white/70 px-4 py-3 text-[12px] text-foreground/60 lg:flex lg:flex-col">
-            <span className="inline-flex items-center gap-2"><Lock size={13} className="text-gold" /> Захищена оплата SSL</span>
-            <span className="inline-flex items-center gap-2"><Truck size={13} className="text-gold" /> Доставка 1–3 дні по Україні</span>
-            <span className="inline-flex items-center gap-2"><RefreshCcw size={13} className="text-gold" /> Обмін / повернення 14 днів</span>
+            <span className="inline-flex items-center gap-2"><Lock size={13} className="text-gold" /> {t('trustSsl')}</span>
+            <span className="inline-flex items-center gap-2"><Truck size={13} className="text-gold" /> {t('trustShipping')}</span>
+            <span className="inline-flex items-center gap-2"><RefreshCcw size={13} className="text-gold" /> {t('trustReturn')}</span>
           </div>
         </div>
       </aside>
@@ -462,8 +463,8 @@ export default function CheckoutView() {
         style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
       >
         <div className="min-w-0">
-          <p className="text-[11px] uppercase tracking-wider text-foreground/55">Разом</p>
-          <p className="truncate text-lg font-bold text-gold">{subtotal.toLocaleString('uk-UA')} ₴</p>
+          <p className="text-[11px] uppercase tracking-wider text-foreground/55">{t('rowTotal')}</p>
+          <p className="truncate text-lg font-bold text-gold">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</p>
         </div>
         <button
           type="submit"
@@ -471,7 +472,7 @@ export default function CheckoutView() {
           className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {submitting ? <Loader2 size={18} className="animate-spin" /> : <Lock size={16} />}
-          {submitting ? 'Обробка…' : 'Оформити'}
+          {submitting ? t('submitting') : t('submitShort')}
         </button>
       </div>
 

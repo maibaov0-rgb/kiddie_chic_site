@@ -1,10 +1,13 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
+import { useTranslations } from 'next-intl';
 import { Star, Quote } from 'lucide-react';
 import { useReviewsStore } from '@/lib/stores/reviews';
 
 export default function ReviewsMarquee() {
+  const t = useTranslations('reviewsMarquee');
+
   // Hydration-safe — store is persisted in localStorage
   const reviews = useReviewsStore((s) => s.reviews);
   const hydrated = useSyncExternalStore(
@@ -13,12 +16,9 @@ export default function ReviewsMarquee() {
     () => false,
   );
 
-  // While not hydrated, render the seed reviews (initial state) — they're
-  // already the default, so the SSR/CSR markup matches and there's no flash.
   const list = hydrated ? reviews : reviews;
   if (list.length === 0) return null;
 
-  // Duplicate the list for a seamless infinite loop
   const loop = [...list, ...list];
 
   return (
@@ -26,18 +26,17 @@ export default function ReviewsMarquee() {
       <div className="mb-10 px-4 text-center md:mb-14">
         <span className="inline-flex items-center gap-2 rounded-full bg-powder-100 px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">
           <Star size={12} className="fill-gold" />
-          Відгуки
+          {t('badge')}
         </span>
         <h2
           id="reviews-heading"
           className="mt-4 font-sans text-3xl font-semibold tracking-tight text-foreground md:text-4xl"
         >
-          Відгуки наших клієнтів
+          {t('title')}
         </h2>
       </div>
 
       <div className="group relative">
-        {/* Edge fades */}
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent md:w-32" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent md:w-32" />
 
@@ -55,7 +54,7 @@ export default function ReviewsMarquee() {
                 className="absolute right-5 top-5 text-gold/30"
                 aria-hidden="true"
               />
-              <div className="flex gap-1" aria-label={`${r.rating} з 5`}>
+              <div className="flex gap-1" aria-label={t('ratingAria', { n: r.rating })}>
                 {[1, 2, 3, 4, 5].map((n) => (
                   <Star
                     key={n}

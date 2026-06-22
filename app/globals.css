@@ -152,6 +152,7 @@
   body {
     @apply text-foreground;
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 500; /* Montserrat Medium — client preference */
     background: #ffffff;
     min-height: 100svh;
     overflow-x: hidden;

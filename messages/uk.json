@@ -10,6 +10,7 @@
     "edit": "Редагувати",
     "add": "Додати",
     "search": "Пошук",
+    "menu": "Меню",
     "currency": "₴"
   },
   "nav": {
@@ -35,8 +36,19 @@
       "title": "Нові надходження"
     },
     "about": {
+      "badge": "Наш бренд",
       "title": "Про Kiddie Chic",
-      "body": "Ми створюємо вишукані сукні для маленьких принцес з любов'ю до деталей і найкращих тканин. Кожна сукня — це маленький витвір мистецтва, який зробить вашу доньку особливою у будь-який день."
+      "body": "Ми створюємо вишукані сукні для маленьких принцес з любов'ю до деталей і найкращих тканин. Кожна сукня — це маленький витвір мистецтва, який зробить вашу доньку особливою у будь-який день.",
+      "learnMore": "Дізнатись більше",
+      "showroom": "Шоурум",
+      "mapTitle": "Шоу-рум Kiddie Chic на мапі",
+      "mapPin": "Шоу-рум",
+      "showroomCity": "Шоу-рум Київ",
+      "showroomAddress": "вул. Саксаганського 63/28",
+      "showroomCityLine": "Kyiv, 01033",
+      "hoursTitle": "Графік роботи",
+      "hoursLine1": "Щодня",
+      "hoursLine2": "11:00 – 19:00"
     }
   },
   "product": {
@@ -97,10 +109,73 @@
     "pay": "Оплатити",
     "processing": "Обробляємо..."
   },
+  "checkoutPage": {
+    "title": "Оформлення замовлення",
+    "headerBack": "До кошика",
+    "headerSecure": "Захищене зʼєднання",
+    "sectionContact": "Контактна інформація",
+    "sectionDelivery": "Доставка — Нова Пошта",
+    "sectionPayment": "Спосіб оплати",
+    "firstName": "Імʼя",
+    "lastName": "Прізвище",
+    "phone": "Телефон",
+    "phoneHint": "Формат: +380XXXXXXXXX",
+    "city": "Місто",
+    "cityPlaceholder": "Почніть вводити місто…",
+    "cityRegionSuffix": "обл.",
+    "branch": "Відділення",
+    "branchPickCityFirst": "Спочатку оберіть місто",
+    "branchLoading": "Завантаження…",
+    "branchPick": "Оберіть відділення",
+    "branchOptionPrefix": "№",
+    "payCardTitle": "Оплатити карткою",
+    "payCardSubtitle": "Visa / Mastercard / Apple Pay",
+    "payCardBadge": "Скоро",
+    "payCodTitle": "Післяплата",
+    "payCodSubtitle": "Оплата при отриманні у відділенні Нової Пошти",
+    "agreePrefix": "Я погоджуюся з",
+    "agreeOffer": "умовами продажу",
+    "agreeAnd": "та",
+    "agreePrivacy": "політикою конфіденційності",
+    "yourOrder": "Ваше замовлення",
+    "items": "{count, plural, one {# товар} few {# товари} other {# товарів}}",
+    "rowSubtotal": "Сума",
+    "rowDelivery": "Доставка",
+    "deliveryByNp": "за тарифом НП",
+    "rowTotal": "Разом",
+    "submit": "Оформити замовлення",
+    "submitShort": "Оформити",
+    "submitting": "Обробка…",
+    "trustSsl": "Захищена оплата SSL",
+    "trustShipping": "Доставка 1–3 дні по Україні",
+    "trustReturn": "Обмін / повернення 14 днів",
+    "errFirstName": "Введіть імʼя",
+    "errPhone": "Формат: +380XXXXXXXXX",
+    "errCity": "Оберіть місто",
+    "errBranch": "Оберіть відділення",
+    "errAgree": "Підтвердіть згоду"
+  },
   "orderSuccess": {
     "title": "Дякуємо за замовлення!",
-    "message": "Ми отримали ваше замовлення і зв'яжемось з вами найближчим часом.",
-    "orderNumber": "Номер замовлення"
+    "message": "Ми отримали ваше замовлення та звʼяжемося з вами найближчим часом для підтвердження деталей.",
+    "orderNumber": "Номер замовлення",
+    "continueShopping": "Продовжити покупки",
+    "leaveReview": "Залишити відгук"
+  },
+  "reviewModal": {
+    "title": "Залишити відгук",
+    "subtitle": "Поділіться враженнями — це допоможе іншим мамам зробити вибір",
+    "rating": "Оцінка сайту",
+    "ratingAria": "{n} з 5",
+    "name": "Імʼя",
+    "comment": "Коментар",
+    "commentPlaceholder": "Що сподобалось у нашій сукні чи сервісі?",
+    "submit": "Надіслати відгук"
+  },
+  "reviewsMarquee": {
+    "badge": "Відгуки",
+    "title": "Відгуки наших клієнтів",
+    "ratingAria": "{n} з 5"
   },
   "about": {
     "title": "Про нас",
@@ -124,6 +199,23 @@
     "delivery": "Доставка",
     "payment": "Оплата",
     "returns": "Повернення"
+  },
+  "footer": {
+    "tagline": "Преміум сукні для маленьких принцес. Ручна робота, найкращі тканини, доставка по Україні.",
+    "navTitle": "Навігація",
+    "contactsTitle": "Контакти",
+    "linkDresses": "Сукні",
+    "linkCouture": "Кутюрні сукні",
+    "linkAccessories": "Прикраси",
+    "linkAbout": "Про нас",
+    "linkTerms": "Умови замовлення",
+    "linkContacts": "Контакти",
+    "city": "Шоу-рум Київ",
+    "address": "вул. Саксаганського 63/28, 01033",
+    "hours": "Щодня 11:00–19:00",
+    "rights": "Усі права захищені.",
+    "privacy": "Конфіденційність",
+    "offer": "Публічна оферта"
   },
   "callbackButton": {
     "label": "Замовити дзвінок",

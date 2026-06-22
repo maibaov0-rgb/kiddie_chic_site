@@ -1,14 +1,15 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 import { ArrowRight, MapPin, Clock } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 
 const SHOWROOM_QUERY = 'вул. Саксаганського 63/28, Київ, 01033';
-const MAP_SRC = `https://maps.google.com/maps?q=${encodeURIComponent(SHOWROOM_QUERY)}&z=16&hl=uk&output=embed`;
 
 export default function AboutSection() {
   const t = useTranslations('home.about');
+  const locale = useLocale();
+  const MAP_SRC = `https://maps.google.com/maps?q=${encodeURIComponent(SHOWROOM_QUERY)}&z=16&hl=${locale === 'en' ? 'en' : 'uk'}&output=embed`;
 
   return (
     <section className="px-3 py-2 md:px-4">
@@ -28,7 +29,7 @@ export default function AboutSection() {
           {/* Text side */}
           <div className="flex flex-col justify-center">
             <span className="mb-4 inline-flex w-fit rounded-full bg-white/80 px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold shadow-card">
-              Наш бренд
+              {t('badge')}
             </span>
             <h2 className="font-sans text-3xl font-semibold leading-snug tracking-tight text-foreground md:text-4xl">
               {t('title')}
@@ -43,14 +44,14 @@ export default function AboutSection() {
                 href="/about"
                 className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-foreground/90 px-6 text-sm font-semibold text-white transition-all hover:bg-gold hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
-                Дізнатись більше
+                {t('learnMore')}
                 <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/contacts"
                 className="inline-flex min-h-11 items-center rounded-full bg-white/80 px-6 text-sm font-medium text-foreground/75 shadow-card transition-all hover:bg-white hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
-                Шоурум
+                {t('showroom')}
               </Link>
             </div>
           </div>
@@ -60,7 +61,7 @@ export default function AboutSection() {
             {/* Google map */}
             <div className="relative overflow-hidden rounded-3xl shadow-float aspect-[4/3]">
               <iframe
-                title="Шоу-рум Kiddie Chic на мапі"
+                title={t('mapTitle')}
                 src={MAP_SRC}
                 className="h-full w-full border-0"
                 loading="lazy"
@@ -69,7 +70,7 @@ export default function AboutSection() {
               />
               {/* Overlay label */}
               <div className="pointer-events-none absolute left-4 top-4 rounded-xl bg-white/90 px-3 py-1.5 shadow-card">
-                <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-gold">Шоу-рум</p>
+                <p className="font-sans text-[10px] font-bold uppercase tracking-wider text-gold">{t('mapPin')}</p>
               </div>
             </div>
 
@@ -77,16 +78,16 @@ export default function AboutSection() {
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl bg-white/85 px-4 py-4 shadow-card">
                 <MapPin size={16} className="mb-2 text-gold" />
-                <p className="font-sans text-xs font-semibold text-foreground">Шоу-рум Київ</p>
+                <p className="font-sans text-xs font-semibold text-foreground">{t('showroomCity')}</p>
                 <p className="mt-0.5 text-[11px] leading-relaxed text-foreground/65">
-                  вул. Саксаганського 63/28<br />Kyiv, 01033
+                  {t('showroomAddress')}<br />{t('showroomCityLine')}
                 </p>
               </div>
               <div className="rounded-2xl bg-white/85 px-4 py-4 shadow-card">
                 <Clock size={16} className="mb-2 text-gold" />
-                <p className="font-sans text-xs font-semibold text-foreground">Графік роботи</p>
+                <p className="font-sans text-xs font-semibold text-foreground">{t('hoursTitle')}</p>
                 <p className="mt-0.5 text-[11px] leading-relaxed text-foreground/65">
-                  Щодня<br />11:00 – 19:00
+                  {t('hoursLine1')}<br />{t('hoursLine2')}
                 </p>
               </div>
             </div>

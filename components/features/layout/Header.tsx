@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ShoppingBag, Menu, X, Search } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 import { useCartStore } from '@/lib/stores/cart';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const NAV_LINKS = [
   { key: 'catalog',  href: '/catalog' },
@@ -33,6 +34,8 @@ const GoldLogo = ({ size = 'md' }: { size?: 'md' | 'lg' }) => (
 
 export default function Header() {
   const t = useTranslations('nav');
+  const tCommon = useTranslations('common');
+  const tCart = useTranslations('cart');
   const [menuOpen, setMenuOpen] = useState(false);
   const [visible, setVisible] = useState(true);
   const ticking = useRef(false);
@@ -101,16 +104,19 @@ export default function Header() {
 
           {/* Right icons */}
           <div className="flex items-center gap-1">
+            <div className="mr-1 hidden md:block">
+              <LanguageSwitcher />
+            </div>
             <button
               type="button"
-              aria-label="Пошук"
+              aria-label={tCommon('search')}
               className="hidden h-11 w-11 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:flex"
             >
               <Search size={17} />
             </button>
             <Link
               href="/cart"
-              aria-label={cartCount > 0 ? `Кошик, ${cartCount} в кошику` : 'Кошик'}
+              aria-label={cartCount > 0 ? `${tCart('title')}, ${cartCount}` : tCart('title')}
               className="relative flex h-11 w-11 items-center justify-center rounded-full text-foreground/60 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             >
               <ShoppingBag size={17} />
@@ -125,7 +131,7 @@ export default function Header() {
             </Link>
             <button
               type="button"
-              aria-label="Меню"
+              aria-label={tCommon('menu')}
               aria-expanded={menuOpen}
               className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:hidden"
               onClick={() => setMenuOpen((v) => !v)}
@@ -154,7 +160,7 @@ export default function Header() {
           <GoldLogo size="lg" />
           <button
             type="button"
-            aria-label="Закрити"
+            aria-label={tCommon('close')}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-powder-100 text-foreground/65 transition-colors hover:bg-powder-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             onClick={() => setMenuOpen(false)}
           >
@@ -175,15 +181,18 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="mt-6 border-t border-foreground/8 pt-4">
+        <div className="mt-6 flex flex-col gap-3 border-t border-foreground/8 pt-4">
           <Link
             href="/cart"
             className="flex items-center gap-3 rounded-2xl px-4 py-3 font-sans text-sm text-foreground/50 transition-colors hover:bg-powder-100 hover:text-gold"
             onClick={() => setMenuOpen(false)}
           >
             <ShoppingBag size={16} />
-            Кошик
+            {tCart('title')}
           </Link>
+          <div className="px-4">
+            <LanguageSwitcher />
+          </div>
         </div>
       </div>
     </>

@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import { Star, X } from 'lucide-react';
 import { useReviewsStore } from '@/lib/stores/reviews';
 
@@ -13,6 +14,8 @@ export default function ReviewModal({
   onClose: () => void;
 }) {
   const router = useRouter();
+  const t = useTranslations('reviewModal');
+  const tCommon = useTranslations('common');
   const addReview = useReviewsStore((s) => s.addReview);
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
@@ -88,7 +91,7 @@ export default function ReviewModal({
       >
         <button
           type="button"
-          aria-label="Закрити"
+          aria-label={tCommon('close')}
           onClick={onClose}
           className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-powder-100 text-foreground/70 transition-colors hover:bg-powder-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
         >
@@ -96,17 +99,17 @@ export default function ReviewModal({
         </button>
 
         <h2 id={titleId} className="font-sans text-xl font-semibold text-foreground md:text-2xl">
-          Залишити відгук
+          {t('title')}
         </h2>
         <p className="mt-1.5 text-sm leading-relaxed text-foreground/60">
-          Поділіться враженнями — це допоможе іншим мамам зробити вибір
+          {t('subtitle')}
         </p>
 
             <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
               {/* Rating */}
               <div className="flex flex-col gap-2">
                 <span className="text-[12px] font-semibold uppercase tracking-wider text-foreground/65">
-                  Оцінка сайту <span className="text-gold">*</span>
+                  {t('rating')} <span className="text-gold">*</span>
                 </span>
                 <div className="flex gap-1.5" onMouseLeave={() => setHover(0)}>
                   {[1, 2, 3, 4, 5].map((n) => {
@@ -117,7 +120,7 @@ export default function ReviewModal({
                         type="button"
                         onClick={() => setRating(n)}
                         onMouseEnter={() => setHover(n)}
-                        aria-label={`${n} з 5`}
+                        aria-label={t('ratingAria', { n })}
                         aria-pressed={rating === n}
                         className="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-powder-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
                       >
@@ -134,7 +137,7 @@ export default function ReviewModal({
               {/* Name */}
               <div className="flex flex-col gap-1.5">
                 <label htmlFor={nameId} className="text-[12px] font-semibold uppercase tracking-wider text-foreground/65">
-                  Імʼя <span className="text-gold">*</span>
+                  {t('name')} <span className="text-gold">*</span>
                 </label>
                 <input
                   id={nameId}
@@ -151,7 +154,7 @@ export default function ReviewModal({
               {/* Comment */}
               <div className="flex flex-col gap-1.5">
                 <label htmlFor={commentId} className="text-[12px] font-semibold uppercase tracking-wider text-foreground/65">
-                  Коментар <span className="text-gold">*</span>
+                  {t('comment')} <span className="text-gold">*</span>
                 </label>
                 <textarea
                   id={commentId}
@@ -159,7 +162,7 @@ export default function ReviewModal({
                   rows={4}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  placeholder="Що сподобалось у нашій сукні чи сервісі?"
+                  placeholder={t('commentPlaceholder')}
                   className="resize-none rounded-2xl border border-foreground/20 bg-milk px-4 py-3 text-base text-foreground outline-none transition-colors placeholder:text-foreground/45 focus:border-gold focus:ring-2 focus:ring-gold/30"
                 />
               </div>
@@ -168,7 +171,7 @@ export default function ReviewModal({
                 type="submit"
                 className="mt-2 h-12 rounded-full bg-gold text-sm font-semibold text-white shadow-card transition-all hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
-                Надіслати відгук
+                {t('submit')}
               </button>
             </form>
       </div>

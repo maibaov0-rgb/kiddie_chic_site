@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { MessageSquarePlus } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 import ReviewModal from '@/components/features/reviews/ReviewModal';
 
 export default function OrderSuccessActions() {
   const [open, setOpen] = useState(false);
+  const t = useTranslations('orderSuccess');
   return (
     <>
       <div className="mt-10 flex flex-wrap justify-center gap-3">
@@ -14,7 +16,7 @@ export default function OrderSuccessActions() {
           href="/catalog"
           className="inline-flex h-12 items-center rounded-full bg-powder-200 px-6 text-sm font-semibold text-foreground/85 shadow-card transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
         >
-          Продовжити покупки
+          {t('continueShopping')}
         </Link>
         <button
           type="button"
@@ -22,7 +24,7 @@ export default function OrderSuccessActions() {
           className="inline-flex h-12 items-center gap-2 rounded-full bg-gold px-6 text-sm font-semibold text-white shadow-card transition-colors hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
         >
           <MessageSquarePlus size={16} />
-          Залишити відгук
+          {t('leaveReview')}
         </button>
       </div>
       <ReviewModal open={open} onClose={() => setOpen(false)} />

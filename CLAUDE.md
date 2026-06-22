@@ -33,7 +33,7 @@ Next.js 15 (App Router, TS strict) · PostgreSQL + Prisma · Tailwind + shadcn/u
 
 - Палітра: молочний (#FDF8F4), пудрово-рожевий (#F4C6C6), бежевий (#EDE0D4), білий, золоті акценти (#C9A96E)
 - Стиль: преміум, мінімалізм, багато повітря, м'які анімації
-- **НЕ використовуй банальні шрифти** (Inter, Roboto, Open Sans, Poppins). Тільки витончені пари: serif для заголовків (Cormorant Garamond / Fraunces / Italiana) + чистий sans-serif (Manrope / Geist)
+- **Шрифти** (за побажанням замовника): sans — **Montserrat**, body default Medium (500), доступні ваги 400/500/600/700; serif для заголовків/логотипу — **Playfair Display**. Не міняй цю пару без узгодження.
 - **Чекай референси/скріншоти від користувача перед стартом UI**
 
 ### UI — Округлість і м'якість (КРИТИЧНО)

@@ -1,26 +1,27 @@
 {
   "common": {
-    "loading": "",
-    "error": "",
-    "back": "",
-    "close": "",
-    "save": "",
-    "cancel": "",
-    "delete": "",
-    "edit": "",
-    "add": "",
-    "search": "",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Back",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "menu": "Menu",
     "currency": "₴"
   },
   "nav": {
-    "home": "",
-    "about": "",
-    "catalog": "",
-    "dresses": "",
-    "couture": "",
-    "accessories": "",
-    "terms": "",
-    "contacts": ""
+    "home": "Home",
+    "about": "About",
+    "catalog": "Catalog",
+    "dresses": "Dresses",
+    "couture": "Couture",
+    "accessories": "Accessories",
+    "terms": "Terms",
+    "contacts": "Contacts"
   },
   "home": {
     "hero": {
@@ -32,27 +33,38 @@
       "dressAlt": "Festive children's dress from the Kiddie Chic collection"
     },
     "featured": {
-      "title": ""
+      "title": "New arrivals"
     },
     "about": {
-      "title": "",
-      "body": ""
+      "badge": "Our brand",
+      "title": "About Kiddie Chic",
+      "body": "We craft exquisite dresses for little princesses with attention to detail and the finest fabrics. Every dress is a small work of art that will make your daughter feel special on any day.",
+      "learnMore": "Learn more",
+      "showroom": "Showroom",
+      "mapTitle": "Kiddie Chic showroom on the map",
+      "mapPin": "Showroom",
+      "showroomCity": "Showroom Kyiv",
+      "showroomAddress": "63/28 Saksahanskoho St.",
+      "showroomCityLine": "Kyiv, 01033",
+      "hoursTitle": "Working hours",
+      "hoursLine1": "Daily",
+      "hoursLine2": "11:00 – 19:00"
     }
   },
   "product": {
-    "addToCart": "",
-    "askDelivery": "",
-    "customOrder": "",
-    "size": "",
-    "fabric": "",
-    "color": "",
-    "accessories": "",
-    "inStock": "",
-    "outOfStock": "",
-    "isNew": "",
-    "isBestseller": "",
-    "getConsultation": "",
-    "price": "",
+    "addToCart": "Buy",
+    "askDelivery": "Ask about delivery",
+    "customOrder": "Custom-made",
+    "size": "Size",
+    "fabric": "Fabric",
+    "color": "Color",
+    "accessories": "Accessories",
+    "inStock": "In stock",
+    "outOfStock": "Out of stock",
+    "isNew": "New",
+    "isBestseller": "Bestseller",
+    "getConsultation": "Get a consultation",
+    "price": "Price",
     "addedToCart": "Added to cart",
     "continueShopping": "Continue shopping",
     "goToCart": "Go to cart",
@@ -61,90 +73,170 @@
   },
   "cart": {
     "title": "Cart",
-    "subtitle": "Review your selection before checkout",
+    "subtitle": "Review your selected dresses before checkout",
     "items": "{count, plural, one {# item} other {# items}}",
     "empty": "Your cart is empty",
-    "emptyDesc": "Step into our catalogue — many tender pieces are waiting for you",
-    "emptyCta": "Browse catalogue",
+    "emptyDesc": "Take a look at the catalog — there's plenty of beautiful pieces waiting for you",
+    "emptyCta": "To catalog",
     "continueShopping": "Continue shopping",
     "summary": "Summary",
-    "subtotal": "Items subtotal",
+    "subtotal": "Subtotal",
     "delivery": "Delivery",
-    "deliveryHint": "Calculated at the next step",
+    "deliveryHint": "Calculated on the next step",
     "total": "Total",
-    "checkout": "Proceed to checkout",
+    "checkout": "Checkout",
     "remove": "Remove",
     "removed": "Item removed",
     "undo": "Undo",
     "qty": "Quantity",
     "size": "Size",
     "fabric": "Fabric",
-    "color": "Colour",
+    "color": "Color",
     "trustPay": "Secure payment",
-    "trustShip": "Nova Poshta shipping",
+    "trustShip": "Nova Poshta delivery",
     "trustReturn": "14-day returns",
     "decreaseQty": "Decrease quantity",
     "increaseQty": "Increase quantity"
   },
   "checkout": {
-    "title": "",
-    "name": "",
-    "phone": "",
-    "email": "",
-    "city": "",
-    "branch": "",
-    "note": "",
-    "pay": "",
-    "processing": ""
+    "title": "Checkout",
+    "name": "Name",
+    "phone": "Phone",
+    "email": "Email",
+    "city": "City",
+    "branch": "Nova Poshta branch",
+    "note": "Note",
+    "pay": "Pay",
+    "processing": "Processing..."
+  },
+  "checkoutPage": {
+    "title": "Checkout",
+    "headerBack": "Back to cart",
+    "headerSecure": "Secure connection",
+    "sectionContact": "Contact information",
+    "sectionDelivery": "Delivery — Nova Poshta",
+    "sectionPayment": "Payment method",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Phone",
+    "phoneHint": "Format: +380XXXXXXXXX",
+    "city": "City",
+    "cityPlaceholder": "Start typing a city…",
+    "cityRegionSuffix": "region",
+    "branch": "Branch",
+    "branchPickCityFirst": "Choose a city first",
+    "branchLoading": "Loading…",
+    "branchPick": "Choose a branch",
+    "branchOptionPrefix": "No.",
+    "payCardTitle": "Pay by card",
+    "payCardSubtitle": "Visa / Mastercard / Apple Pay",
+    "payCardBadge": "Soon",
+    "payCodTitle": "Cash on delivery",
+    "payCodSubtitle": "Pay when collecting at a Nova Poshta branch",
+    "agreePrefix": "I agree to the",
+    "agreeOffer": "terms of sale",
+    "agreeAnd": "and the",
+    "agreePrivacy": "privacy policy",
+    "yourOrder": "Your order",
+    "items": "{count, plural, one {# item} other {# items}}",
+    "rowSubtotal": "Subtotal",
+    "rowDelivery": "Delivery",
+    "deliveryByNp": "Nova Poshta rate",
+    "rowTotal": "Total",
+    "submit": "Place order",
+    "submitShort": "Order",
+    "submitting": "Processing…",
+    "trustSsl": "Secure SSL payment",
+    "trustShipping": "1–3 day delivery across Ukraine",
+    "trustReturn": "14-day exchange / return",
+    "errFirstName": "Enter your name",
+    "errPhone": "Format: +380XXXXXXXXX",
+    "errCity": "Choose a city",
+    "errBranch": "Choose a branch",
+    "errAgree": "Please confirm your agreement"
   },
   "orderSuccess": {
-    "title": "",
-    "message": "",
-    "orderNumber": ""
+    "title": "Thank you for your order!",
+    "message": "We've received your order and will contact you shortly to confirm the details.",
+    "orderNumber": "Order number",
+    "continueShopping": "Continue shopping",
+    "leaveReview": "Leave a review"
+  },
+  "reviewModal": {
+    "title": "Leave a review",
+    "subtitle": "Share your impression — it will help other moms make a choice",
+    "rating": "Site rating",
+    "ratingAria": "{n} out of 5",
+    "name": "Name",
+    "comment": "Comment",
+    "commentPlaceholder": "What did you love about our dress or service?",
+    "submit": "Submit review"
+  },
+  "reviewsMarquee": {
+    "badge": "Reviews",
+    "title": "What our customers say",
+    "ratingAria": "{n} out of 5"
   },
   "about": {
-    "title": "",
-    "story": "",
-    "showroom": "",
-    "reviews": ""
+    "title": "About us",
+    "story": "Our story",
+    "showroom": "Showroom",
+    "reviews": "Reviews"
   },
   "contacts": {
-    "title": "",
-    "phone": "",
-    "address": "",
+    "title": "Contacts",
+    "phone": "Phone",
+    "address": "Address",
     "form": {
-      "name": "",
-      "phone": "",
-      "message": "",
-      "submit": ""
+      "name": "Name",
+      "phone": "Phone",
+      "message": "Message",
+      "submit": "Send"
     }
   },
   "terms": {
-    "title": "",
-    "delivery": "",
-    "payment": "",
-    "returns": ""
+    "title": "Order terms",
+    "delivery": "Delivery",
+    "payment": "Payment",
+    "returns": "Returns"
+  },
+  "footer": {
+    "tagline": "Premium dresses for little princesses. Handmade, finest fabrics, delivery across Ukraine.",
+    "navTitle": "Navigation",
+    "contactsTitle": "Contacts",
+    "linkDresses": "Dresses",
+    "linkCouture": "Couture dresses",
+    "linkAccessories": "Accessories",
+    "linkAbout": "About",
+    "linkTerms": "Order terms",
+    "linkContacts": "Contacts",
+    "city": "Showroom Kyiv",
+    "address": "63/28 Saksahanskoho St., 01033",
+    "hours": "Daily 11:00–19:00",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy",
+    "offer": "Public offer"
   },
   "callbackButton": {
-    "label": "",
+    "label": "Request a callback",
     "modal": {
-      "title": "",
-      "name": "",
-      "phone": "",
-      "submit": ""
+      "title": "Send a request",
+      "name": "Your name",
+      "phone": "Phone number",
+      "submit": "Send"
     }
   },
   "cookies": {
-    "message": "",
-    "accept": "",
-    "necessary": ""
+    "message": "We use cookies to improve the experience on our site.",
+    "accept": "Accept all",
+    "necessary": "Necessary only"
   },
   "catalog": {
     "title": "Catalog",
     "dresses": "Dresses",
     "couture": "Couture dresses",
-    "dressesDesc": "Ready-made models available to order online",
-    "coutureDesc": "Exclusive handcrafted dresses made to individual order",
+    "dressesDesc": "Ready-to-wear models available to order online",
+    "coutureDesc": "Exclusive handcrafted dresses made to order",
     "empty": "No products match the selected filters",
     "resultsOne": "{count} model",
     "resultsFew": "{count} models",
@@ -157,77 +249,77 @@
       "color": "Color",
       "fabric": "Fabric",
       "reset": "Reset",
-      "apply": "Show"
+      "apply": "Apply"
     }
   },
   "couture": {
     "title": "Couture dresses",
-    "subtitle": "Exclusive handcrafted models tailored to individual measurements",
+    "subtitle": "Exclusive handcrafted models tailored to your specifications",
     "cta": "Get a consultation",
     "modal": {
       "title": "Get a consultation",
-      "subtitle": "Leave your number — we'll get in touch, answer your questions and help pick a model to your taste.",
+      "subtitle": "Leave your number — we'll get in touch, answer your questions and help you pick the perfect dress.",
       "name": "Your name",
       "phone": "Phone number",
       "submit": "Send request",
-      "success": "Thank you! We'll get in touch with you shortly."
+      "success": "Thank you! We'll contact you shortly."
     }
   },
   "admin": {
     "nav": {
-      "products": "",
-      "orders": "",
-      "reviews": "",
-      "pages": "",
-      "settings": "",
-      "categories": ""
+      "products": "Products",
+      "orders": "Orders",
+      "reviews": "Reviews",
+      "pages": "Pages",
+      "settings": "Settings",
+      "categories": "Categories"
     },
     "products": {
-      "title": "",
-      "new": "",
-      "edit": "",
-      "delete": ""
+      "title": "Products",
+      "new": "New product",
+      "edit": "Edit",
+      "delete": "Delete"
     },
     "orders": {
-      "title": "",
+      "title": "Orders",
       "status": {
-        "new": "",
-        "paid": "",
-        "processing": "",
-        "shipped": "",
-        "done": "",
-        "cancelled": ""
+        "new": "New",
+        "paid": "Paid",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "done": "Done",
+        "cancelled": "Cancelled"
       }
     },
     "reviews": {
-      "title": "",
-      "visible": "",
-      "hidden": ""
+      "title": "Reviews",
+      "visible": "Published",
+      "hidden": "Hidden"
     },
     "settings": {
-      "title": ""
+      "title": "Settings"
     }
   },
   "metadata": {
     "home": {
-      "title": "",
-      "description": ""
+      "title": "Kiddie Chic — premium children's dresses",
+      "description": "A collection of exquisite handcrafted children's dresses. Delivery across Ukraine."
     },
     "about": {
-      "title": "",
-      "description": ""
+      "title": "About",
+      "description": "Learn more about the Kiddie Chic brand and our showroom."
     },
     "catalog": {
-      "title": "",
-      "description": ""
+      "title": "Dress catalog",
+      "description": "Premium dresses for girls — new arrivals, bestsellers, couture."
     },
     "contacts": {
-      "title": "",
-      "description": ""
+      "title": "Contacts",
+      "description": "Get in touch with Kiddie Chic — phone, address, contact form."
     },
     "terms": {
-      "title": "",
-      "description": ""
+      "title": "Order terms",
+      "description": "Delivery, payment and returns at Kiddie Chic."
     }
   }
 }
