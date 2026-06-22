@@ -54,15 +54,17 @@ export default function CheckoutView() {
   const subtotal = useMemo(() => items.reduce((s, i) => s + i.price * i.qty, 0), [items]);
   const itemCount = useMemo(() => items.reduce((s, i) => s + i.qty, 0), [items]);
 
-  // Empty cart → catalog (only after hydration)
-  useEffect(() => {
-    if (hydrated && items.length === 0) router.replace('/catalog');
-  }, [hydrated, items.length, router]);
-
   // ───────── form state ─────────
   const [form, setForm] = useState<Form>(EMPTY_FORM);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  // Empty cart → catalog (only after hydration AND only if we didn't just
+  // submit — otherwise clearCart() would race the success-page redirect)
+  useEffect(() => {
+    if (!submitted && hydrated && items.length === 0) router.replace('/catalog');
+  }, [submitted, hydrated, items.length, router]);
 
   const setField = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => ({ ...f, [k]: v }));
   const blur = (k: string) => setTouched((t) => ({ ...t, [k]: true }));
@@ -180,12 +182,15 @@ export default function CheckoutView() {
     if (form.payment === 'card') return; // disabled, shouldn't happen
 
     setSubmitting(true);
+    setSubmitted(true); // freezes empty-cart guard before clearCart fires
     const orderRef = `KC-${Date.now().toString(36).toUpperCase().slice(-6)}`;
     // TODO: real Order creation + Mono invoice. For now: log + redirect.
     console.info('[checkout] order payload', { orderRef, form, items, subtotal });
     await new Promise((r) => setTimeout(r, 600));
-    clearCart();
     router.push(`/order-success?ref=${orderRef}`);
+    // Clear the cart only after navigation kicks off, so the user's basket
+    // is empty when they come back to /catalog later.
+    clearCart();
   }
 
   // Don't flash empty content during hydration

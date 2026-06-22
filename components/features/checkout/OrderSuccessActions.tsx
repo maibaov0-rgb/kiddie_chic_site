@@ -24,12 +24,6 @@ export default function OrderSuccessActions() {
           <MessageSquarePlus size={16} />
           Залишити відгук
         </button>
-        <Link
-          href="/"
-          className="inline-flex h-12 items-center rounded-full bg-white px-6 text-sm font-medium text-foreground/70 shadow-card transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-        >
-          На головну
-        </Link>
       </div>
       <ReviewModal open={open} onClose={() => setOpen(false)} />
     </>
