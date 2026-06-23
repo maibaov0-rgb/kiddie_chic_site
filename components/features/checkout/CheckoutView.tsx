@@ -126,10 +126,33 @@ export default function CheckoutView() {
   // ───────── branches ─────────
   const [remoteBranches, setRemoteBranches] = useState<{ ref: string; number: string; description: string }[] | null>(null);
   const [branchLoading, setBranchLoading] = useState(false);
+  const [branchQuery, setBranchQuery] = useState('');
+  const [branchOpen, setBranchOpen] = useState(false);
+  const branchBoxRef = useRef<HTMLDivElement>(null);
+
   const branches = useMemo(() => {
     if (!form.city) return [];
     return remoteBranches ?? [];
   }, [form.city, remoteBranches]);
+
+  const filteredBranches = useMemo(() => {
+    if (!branchQuery.trim()) return branches.slice(0, 60);
+    const q = branchQuery.toLowerCase();
+    return branches.filter(
+      (b) => b.number.includes(q) || b.description.toLowerCase().includes(q),
+    ).slice(0, 60);
+  }, [branches, branchQuery]);
+
+  // Click-outside branch dropdown (declared after branchBoxRef/setBranchOpen)
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (branchBoxRef.current && !branchBoxRef.current.contains(e.target as Node)) {
+        setBranchOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, []);
 
   useEffect(() => {
     if (!form.city) return;
@@ -266,7 +289,14 @@ export default function CheckoutView() {
                   setCityQuery(e.target.value);
                   setCityOpen(true);
                 }}
-                onFocus={() => setCityOpen(true)}
+                onFocus={() => {
+                  if (form.city) {
+                    setField('city', null);
+                    setCityQuery('');
+                    setRemoteCities(null);
+                  }
+                  setCityOpen(true);
+                }}
                 onBlur={() => blur('city')}
                 placeholder={t('cityPlaceholder')}
                 autoComplete="address-level2"
@@ -287,6 +317,8 @@ export default function CheckoutView() {
                     onClick={() => {
                       setField('city', c);
                       setField('branch', null);
+                      setBranchQuery('');
+                      setRemoteBranches(null);
                       setCityOpen(false);
                       setCityQuery('');
                     }}
@@ -303,36 +335,67 @@ export default function CheckoutView() {
             )}
           </div>
 
-          {/* Branch select */}
-          <div className="mt-4">
+          {/* Branch searchable dropdown */}
+          <div ref={branchBoxRef} className="relative mt-4">
             <label className="mb-1.5 block text-[12px] font-semibold uppercase tracking-wider text-foreground/65">
               {t('branch')} <span className="text-gold">*</span>
             </label>
             <div className="relative">
               <Package size={16} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-foreground/40" />
-              <select
-                value={form.branch?.ref ?? ''}
+              <input
+                type="text"
+                inputMode="search"
+                value={form.branch ? `№${form.branch.number} — ${form.branch.description}` : branchQuery}
                 onChange={(e) => {
-                  const b = branches.find((x) => x.ref === e.target.value);
-                  setField('branch', b ?? null);
+                  if (form.branch) setField('branch', null);
+                  setBranchQuery(e.target.value);
+                  setBranchOpen(true);
+                }}
+                onFocus={() => {
+                  if (form.branch) {
+                    setField('branch', null);
+                    setBranchQuery('');
+                  }
+                  setBranchOpen(true);
                 }}
                 onBlur={() => blur('branch')}
                 disabled={!form.city || branchLoading}
+                placeholder={
+                  !form.city
+                    ? t('branchPickCityFirst')
+                    : branchLoading
+                      ? t('branchLoading')
+                      : t('branchPick')
+                }
                 data-invalid={touched.branch && !!errors.branch}
                 aria-invalid={touched.branch && !!errors.branch}
-                className="h-12 w-full appearance-none rounded-2xl border border-foreground/20 bg-white pl-11 pr-10 text-base text-foreground outline-none transition-colors focus:border-gold focus:ring-2 focus:ring-gold/30 disabled:cursor-not-allowed disabled:bg-foreground/5 disabled:text-foreground/40 aria-[invalid=true]:border-red-300"
-              >
-                <option value="">
-                  {!form.city ? t('branchPickCityFirst') : branchLoading ? t('branchLoading') : t('branchPick')}
-                </option>
-                {branches.map((b) => (
-                  <option key={b.ref} value={b.ref}>
-                    {t('branchOptionPrefix')}{b.number} — {b.description}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40" />
+                className="h-12 w-full rounded-2xl border border-foreground/20 bg-white pl-11 pr-10 text-base text-foreground outline-none transition-colors placeholder:text-foreground/45 focus:border-gold focus:ring-2 focus:ring-gold/30 disabled:cursor-not-allowed disabled:bg-foreground/5 disabled:text-foreground/40 aria-[invalid=true]:border-red-300"
+              />
+              {branchLoading
+                ? <Loader2 size={16} className="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-foreground/40" />
+                : <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-foreground/40" />
+              }
             </div>
+            {branchOpen && !form.branch && filteredBranches.length > 0 && (
+              <div className="absolute z-10 mt-1.5 max-h-64 w-full overflow-y-auto rounded-2xl border border-foreground/10 bg-white shadow-float">
+                {filteredBranches.map((b) => (
+                  <button
+                    key={b.ref}
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setField('branch', b);
+                      setBranchOpen(false);
+                      setBranchQuery('');
+                    }}
+                    className="flex w-full flex-col px-4 py-3 text-left transition-colors hover:bg-powder-100 focus-visible:bg-powder-100 focus-visible:outline-none"
+                  >
+                    <span className="text-sm font-semibold text-foreground">№{b.number}</span>
+                    <span className="mt-0.5 text-xs leading-snug text-foreground/55">{b.description}</span>
+                  </button>
+                ))}
+              </div>
+            )}
             {touched.branch && errors.branch && (
               <p className="mt-1.5 text-xs text-red-500">{errors.branch}</p>
             )}
