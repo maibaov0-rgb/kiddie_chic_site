@@ -13,7 +13,17 @@ export type ActionResult =
 
 async function requireAdmin() {
   const session = await auth();
-  if (!session?.user) throw new Error("UNAUTHORIZED");
+  const role = (session?.user as { role?: string } | undefined)?.role;
+  if (!session?.user || role !== "ADMIN") throw new Error("UNAUTHORIZED");
+}
+
+function isPrismaErrorWithCode(error: unknown, code: string): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code?: unknown }).code === code
+  );
 }
 
 export async function listProductsAction() {
@@ -46,51 +56,10 @@ export async function createProductAction(
     async (s) => (await prisma.product.count({ where: { slug: s } })) > 0,
   );
 
-  const created = await prisma.product.create({
-    data: {
-      slug,
-      category: data.category,
-      name_uk: data.name_uk,
-      name_en: data.name_en,
-      description_uk: data.description_uk,
-      description_en: data.description_en,
-      images: data.images,
-      colors: data.colors,
-      inStock: data.inStock,
-      isNew: data.isNew,
-      isBestseller: data.isBestseller,
-      isHidden: data.isHidden,
-      variants: {
-        create: data.variants.map((v) => ({
-          size: v.size,
-          fabric: v.fabric,
-          price: v.price,
-          images: [],
-        })),
-      },
-    },
-  });
-
-  revalidatePath("/admin/products");
-  return { ok: true, id: created.id };
-}
-
-export async function updateProductAction(
-  id: string,
-  input: ProductInput,
-): Promise<ActionResult> {
-  await requireAdmin();
-  const parsed = productSchema.safeParse(input);
-  if (!parsed.success) {
-    return { ok: false, error: "Перевірте заповнення полів" };
-  }
-  const data = parsed.data;
-
-  await prisma.$transaction([
-    prisma.productVariant.deleteMany({ where: { productId: id } }),
-    prisma.product.update({
-      where: { id },
+  try {
+    const created = await prisma.product.create({
       data: {
+        slug,
         category: data.category,
         name_uk: data.name_uk,
         name_en: data.name_en,
@@ -111,8 +80,57 @@ export async function updateProductAction(
           })),
         },
       },
-    }),
-  ]);
+    });
+
+    revalidatePath("/admin/products");
+    return { ok: true, id: created.id };
+  } catch {
+    return { ok: false, error: "Не вдалося зберегти товар. Спробуйте ще раз." };
+  }
+}
+
+export async function updateProductAction(
+  id: string,
+  input: ProductInput,
+): Promise<ActionResult> {
+  await requireAdmin();
+  const parsed = productSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: "Перевірте заповнення полів" };
+  }
+  const data = parsed.data;
+
+  try {
+    await prisma.$transaction([
+      prisma.productVariant.deleteMany({ where: { productId: id } }),
+      prisma.product.update({
+        where: { id },
+        data: {
+          category: data.category,
+          name_uk: data.name_uk,
+          name_en: data.name_en,
+          description_uk: data.description_uk,
+          description_en: data.description_en,
+          images: data.images,
+          colors: data.colors,
+          inStock: data.inStock,
+          isNew: data.isNew,
+          isBestseller: data.isBestseller,
+          isHidden: data.isHidden,
+          variants: {
+            create: data.variants.map((v) => ({
+              size: v.size,
+              fabric: v.fabric,
+              price: v.price,
+              images: [],
+            })),
+          },
+        },
+      }),
+    ]);
+  } catch {
+    return { ok: false, error: "Не вдалося зберегти зміни. Спробуйте ще раз." };
+  }
 
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${id}/edit`);
@@ -135,7 +153,17 @@ export async function deleteProductAction(id: string): Promise<ActionResult> {
     }),
   );
 
-  await prisma.product.delete({ where: { id } }); // variants cascade
+  try {
+    await prisma.product.delete({ where: { id } }); // variants cascade
+  } catch (error) {
+    if (isPrismaErrorWithCode(error, "P2003")) {
+      return {
+        ok: false,
+        error: "Неможливо видалити товар: є пов'язані замовлення.",
+      };
+    }
+    return { ok: false, error: "Не вдалося видалити товар. Спробуйте ще раз." };
+  }
   revalidatePath("/admin/products");
   return { ok: true };
 }
