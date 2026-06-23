@@ -2,16 +2,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { categoryFromSlug, getProductsByCategory } from '@/lib/catalog';
+import { categoryFromSlug } from '@/lib/catalog';
+import { getProductsByCategory } from '@/lib/products';
 import CatalogView from '@/components/features/catalog/CatalogView';
 import CoutureGallery from '@/components/features/catalog/CoutureGallery';
 
-type Params = { locale: string; category: string };
+export const dynamic = 'force-dynamic';
 
-// Static export: only Dresses and Couture sub-menus are live
-export function generateStaticParams() {
-  return [{ category: 'dresses' }, { category: 'couture' }];
-}
+type Params = { locale: string; category: string };
 
 export async function generateMetadata({
   params,
@@ -40,7 +38,7 @@ export default async function CatalogCategoryPage({
   // Only Dresses and Couture are live for now
   if (cat !== 'dress' && cat !== 'couture') notFound();
 
-  const products = getProductsByCategory(cat);
+  const products = await getProductsByCategory(cat);
   const t = await getTranslations({ locale, namespace: 'catalog' });
   const tCouture = await getTranslations({ locale, namespace: 'couture' });
 
