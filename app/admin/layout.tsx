@@ -1,3 +1,4 @@
+import "@/app/globals.css";
 import Link from "next/link";
 import { Montserrat } from "next/font/google";
 import { auth } from "@/auth";

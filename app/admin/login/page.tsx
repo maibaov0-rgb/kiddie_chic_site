@@ -18,14 +18,14 @@ export default function LoginPage() {
 
         <div className="space-y-2">
           <label htmlFor="email" className="text-base font-medium text-[#3d2f28]">
-            Email
+            Логін
           </label>
           <input
             id="email"
             name="email"
-            type="email"
+            type="text"
             required
-            autoComplete="email"
+            autoComplete="username"
             className="w-full rounded-2xl border border-[#EDE0D4] px-4 py-3 text-base outline-none transition-all duration-300 ease-in-out focus:border-[#C9A96E]"
           />
         </div>
