@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useCartStore } from '@/lib/stores/cart';
 import { asset } from '@/lib/asset';
-import { TOP_UA_CITIES, fallbackBranches } from '@/lib/np-fallback';
+import { TOP_UA_CITIES } from '@/lib/np-fallback';
 
 type PayMethod = 'card' | 'cod';
 
@@ -158,7 +158,6 @@ export default function CheckoutView() {
     if (!form.city) return;
     const ctrl = new AbortController();
     const cityRef = form.city.ref;
-    const cityName = form.city.name;
     (async () => {
       setBranchLoading(true);
       try {
@@ -167,12 +166,10 @@ export default function CheckoutView() {
           const j = await res.json();
           if (Array.isArray(j.branches) && j.branches.length > 0) {
             setRemoteBranches(j.branches);
-            return;
           }
         }
-        setRemoteBranches(fallbackBranches(cityName));
       } catch {
-        setRemoteBranches(fallbackBranches(cityName));
+        // branch fetch failed — leave list empty so user sees the error state
       } finally {
         setBranchLoading(false);
       }
