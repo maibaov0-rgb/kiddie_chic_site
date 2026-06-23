@@ -136,11 +136,11 @@ export default function CheckoutView() {
   }, [form.city, remoteBranches]);
 
   const filteredBranches = useMemo(() => {
-    if (!branchQuery.trim()) return branches.slice(0, 60);
+    if (!branchQuery.trim()) return branches.slice(0, 80);
     const q = branchQuery.toLowerCase();
     return branches.filter(
       (b) => b.number.includes(q) || b.description.toLowerCase().includes(q),
-    ).slice(0, 60);
+    );
   }, [branches, branchQuery]);
 
   // Click-outside branch dropdown (declared after branchBoxRef/setBranchOpen)
@@ -378,6 +378,11 @@ export default function CheckoutView() {
             </div>
             {branchOpen && !form.branch && filteredBranches.length > 0 && (
               <div className="absolute z-10 mt-1.5 max-h-64 w-full overflow-y-auto rounded-2xl border border-foreground/10 bg-white shadow-float">
+                {!branchQuery.trim() && branches.length > 80 && (
+                  <p className="px-4 py-2.5 text-[11px] text-foreground/45">
+                    Показано перші 80 з {branches.length} — введіть номер для пошуку
+                  </p>
+                )}
                 {filteredBranches.map((b) => (
                   <button
                     key={b.ref}
