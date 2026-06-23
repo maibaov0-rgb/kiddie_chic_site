@@ -9,10 +9,15 @@ const intl = createIntlMiddleware(routing);
 
 export default async function proxy(req: NextRequest) {
   if (req.nextUrl.pathname.startsWith("/admin")) {
-    const session = await auth();
-    if (!session?.user) {
-      const loginUrl = new URL("/admin/login", req.url);
-      return NextResponse.redirect(loginUrl);
+    const isLoginPage =
+      req.nextUrl.pathname === "/admin/login" ||
+      req.nextUrl.pathname.startsWith("/admin/login/");
+    if (!isLoginPage) {
+      const session = await auth();
+      if (!session?.user) {
+        const loginUrl = new URL("/admin/login", req.url);
+        return NextResponse.redirect(loginUrl);
+      }
     }
     return NextResponse.next();
   }
