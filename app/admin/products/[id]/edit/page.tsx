@@ -13,7 +13,7 @@ export default async function EditProductPage({
   if (!product) notFound();
 
   const defaultValues: ProductInput = {
-    category: product.category,
+    category: product.category as "dress" | "couture",
     name_uk: product.name_uk,
     name_en: product.name_en,
     description_uk: product.description_uk,
@@ -23,7 +23,6 @@ export default async function EditProductPage({
     inStock: product.inStock,
     isNew: product.isNew,
     isBestseller: product.isBestseller,
-    isHidden: product.isHidden,
     variants: product.variants.map((v) => ({
       size: v.size,
       fabric: v.fabric,

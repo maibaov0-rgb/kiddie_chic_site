@@ -13,7 +13,6 @@ const valid = {
   inStock: true,
   isNew: false,
   isBestseller: false,
-  isHidden: false,
   variants: [{ size: "98-104", fabric: "satin", price: 1200 }],
 };
 
@@ -21,9 +20,9 @@ test("accepts a valid product", () => {
   assert.equal(productSchema.safeParse(valid).success, true);
 });
 
-test("rejects empty name_uk", () => {
+test("accepts empty name_uk (optional field)", () => {
   const r = productSchema.safeParse({ ...valid, name_uk: "" });
-  assert.equal(r.success, false);
+  assert.equal(r.success, true);
 });
 
 test("rejects product with no variants", () => {

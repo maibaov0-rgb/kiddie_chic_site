@@ -70,7 +70,7 @@ export async function createProductAction(
         inStock: data.inStock,
         isNew: data.isNew,
         isBestseller: data.isBestseller,
-        isHidden: data.isHidden,
+        isHidden: false,
         variants: {
           create: data.variants.map((v) => ({
             size: v.size,
@@ -126,7 +126,6 @@ export async function updateProductAction(
           inStock: data.inStock,
           isNew: data.isNew,
           isBestseller: data.isBestseller,
-          isHidden: data.isHidden,
           variants: {
             create: data.variants.map((v) => ({
               size: v.size,

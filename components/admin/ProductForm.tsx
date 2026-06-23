@@ -66,7 +66,6 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
           <select {...register("category")} className={inputCls}>
             <option value="dress">Сукні</option>
             <option value="couture">Кутюр</option>
-            <option value="accessory">Аксесуари</option>
           </select>
         </div>
 
@@ -158,7 +157,6 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
               ["inStock", "В наявності"],
               ["isNew", "Новинка"],
               ["isBestseller", "Хіт"],
-              ["isHidden", "Прихований"],
             ] as const
           ).map(([name, label]) => (
             <label key={name} className="flex items-center gap-2 text-base">
@@ -175,7 +173,7 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
           <button
             type="button"
             onClick={() =>
-              variants.append({ size: DEFAULT_SIZE, fabric: DEFAULT_FABRIC_ID, price: 0 })
+              variants.append({ size: DEFAULT_SIZE, fabric: DEFAULT_FABRIC_ID, price: undefined as unknown as number })
             }
             className="rounded-full bg-[#FDF8F4] px-4 py-2 text-sm font-medium transition-all duration-300 ease-in-out hover:bg-[#EDE0D4]"
           >
