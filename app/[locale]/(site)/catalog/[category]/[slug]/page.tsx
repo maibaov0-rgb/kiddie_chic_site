@@ -3,15 +3,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { ChevronRight } from 'lucide-react';
-import { getProductBySlug, getProductsByCategory, cover } from '@/lib/catalog';
+import { cover } from '@/lib/catalog';
+import { getProductBySlug } from '@/lib/products';
 import ProductDetail from '@/components/features/catalog/ProductDetail';
 
-type Params = { locale: string; category: string; slug: string };
+export const dynamic = 'force-dynamic';
 
-// Static export: pre-render a detail page for every dress
-export function generateStaticParams() {
-  return getProductsByCategory('dress').map((p) => ({ category: 'dresses', slug: p.slug }));
-}
+type Params = { locale: string; category: string; slug: string };
 
 export async function generateMetadata({
   params,
@@ -19,7 +17,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) return {};
   const en = locale === 'en';
   return {
@@ -32,7 +30,7 @@ export async function generateMetadata({
 export default async function ProductPage({ params }: { params: Promise<Params> }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
 
   // Couture has no purchasable detail page — only the gallery + consultation
   if (!product || product.category !== 'dress') notFound();

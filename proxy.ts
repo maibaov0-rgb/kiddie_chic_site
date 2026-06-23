@@ -1,9 +1,31 @@
-import createMiddleware from "next-intl/middleware";
+import { NextResponse, type NextRequest } from "next/server";
+import NextAuth from "next-auth";
+import { authConfig } from "@/auth.config";
+import createIntlMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 
-export default createMiddleware(routing);
+const { auth } = NextAuth(authConfig);
+const intl = createIntlMiddleware(routing);
+
+export default async function proxy(req: NextRequest) {
+  if (req.nextUrl.pathname.startsWith("/admin")) {
+    const session = await auth();
+    if (!session?.user) {
+      const loginUrl = new URL("/admin/login", req.url);
+      return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next();
+  }
+
+  return intl(req);
+}
 
 export const config = {
-  // Match all public paths; exclude API, Next.js internals, admin, static files
-  matcher: ["/((?!api|_next|_vercel|admin|.*\\..*).*)", "/"],
+  matcher: [
+    // Admin routes — handled by auth check above
+    "/admin/:path*",
+    // Public routes — handled by next-intl (excludes api, _next, admin, static files)
+    "/((?!api|_next|_vercel|admin|.*\\..*).*)",
+    "/",
+  ],
 };
