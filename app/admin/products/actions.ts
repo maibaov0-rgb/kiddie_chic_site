@@ -84,7 +84,14 @@ export async function createProductAction(
 
     revalidatePath("/admin/products");
     return { ok: true, id: created.id };
-  } catch {
+  } catch (error) {
+    // Concurrent creates of the same name can race the slug @unique constraint.
+    if (isPrismaErrorWithCode(error, "P2002")) {
+      return {
+        ok: false,
+        error: "Товар із такою назвою вже існує. Змініть назву та спробуйте ще раз.",
+      };
+    }
     return { ok: false, error: "Не вдалося зберегти товар. Спробуйте ще раз." };
   }
 }
@@ -100,6 +107,9 @@ export async function updateProductAction(
   }
   const data = parsed.data;
 
+  // Slug is intentionally NOT recomputed on rename — it keeps product URLs
+  // stable once created. Variants are replaced wholesale; OrderItem snapshots
+  // its own copy, so order history is unaffected.
   try {
     await prisma.$transaction([
       prisma.productVariant.deleteMany({ where: { productId: id } }),
