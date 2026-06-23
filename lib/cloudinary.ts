@@ -24,3 +24,30 @@ export async function uploadImage(
 export async function deleteImage(publicId: string): Promise<void> {
   await cloudinary.uploader.destroy(publicId);
 }
+
+export function getUploadSignature(folder: string = "kiddie-chic") {
+  const timestamp = Math.round(Date.now() / 1000);
+  const apiSecret = process.env.CLOUDINARY_API_SECRET ?? "";
+  const signature = cloudinary.utils.api_sign_request(
+    { timestamp, folder },
+    apiSecret,
+  );
+  return {
+    timestamp,
+    signature,
+    apiKey: process.env.CLOUDINARY_API_KEY ?? "",
+    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "",
+    folder,
+  };
+}
+
+export function publicIdFromUrl(url: string): string | null {
+  const marker = "/upload/";
+  const idx = url.indexOf(marker);
+  if (!url.includes("res.cloudinary.com") || idx === -1) return null;
+  let rest = url.slice(idx + marker.length);
+  // drop leading version segment vNNN/ if present
+  rest = rest.replace(/^v\d+\//, "");
+  // drop file extension
+  return rest.replace(/\.[a-z0-9]+$/i, "");
+}
