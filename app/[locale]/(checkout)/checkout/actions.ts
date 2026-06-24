@@ -75,13 +75,16 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
       if (!productIdSet.has(i.productId)) {
         throw new Error(`Product ${i.productId} not found`);
       }
-      if (i.variantId !== null && !variantPriceMap.has(i.variantId)) {
+      if (i.variantId === null) {
+        throw new Error(`Item "${i.name}" has no variant`);
+      }
+      const price = variantPriceMap.get(i.variantId);
+      if (price === undefined) {
         throw new Error(`Variant ${i.variantId} not found`);
       }
       if (!Number.isInteger(i.qty) || i.qty < 1 || i.qty > 99) {
         throw new Error(`Invalid qty ${i.qty}`);
       }
-      const price = i.variantId !== null ? (variantPriceMap.get(i.variantId) ?? 0) : 0;
       return { ...i, price };
     });
   } catch {
@@ -90,6 +93,7 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
 
   const totalAmount = resolvedItems.reduce((s, i) => s + i.price * i.qty, 0);
   const ref = generateRef();
+  const customerName = `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim();
 
   // ── Persist ──────────────────────────────────────────────────────────────────
   let order: { id: string; ref: string };
@@ -97,7 +101,7 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
     order = await prisma.order.create({
       data: {
         ref,
-        customerName: `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim(),
+        customerName,
         phone: payload.phone.replace(/\s/g, ''),
         email: '',
         city: payload.city,
@@ -127,7 +131,6 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
 
   // ── Notify (fire-and-forget for COD) ────────────────────────────────────────
   if (payload.paymentMethod === 'cod') {
-    const customerName = `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim();
     void sendNewOrderNotification({
       ref: order.ref,
       customerName,
