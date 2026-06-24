@@ -4,18 +4,14 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { Heart, Check } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { COLORS, cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
-import { useCartStore } from '@/lib/stores/cart';
 
 export default function ProductCard({ product }: { product: Product }) {
   const locale = useLocale();
   const t = useTranslations('product');
   const tc = useTranslations('catalog');
-  const addItem = useCartStore((s) => s.addItem);
-
-  const [added, setAdded] = useState(false);
   const [liked, setLiked] = useState(false);
 
   const name = locale === 'en' ? product.name_en : product.name_uk;
@@ -26,26 +22,6 @@ export default function ProductCard({ product }: { product: Product }) {
   const colorDots = product.colors
     .map((id) => COLORS.find((c) => c.id === id))
     .filter((c): c is (typeof COLORS)[number] => Boolean(c));
-
-  function handleAdd(e: React.MouseEvent) {
-    e.preventDefault();
-    if (!product.inStock) return;
-    const cheapest = [...product.variants].sort((a, b) => a.price - b.price)[0];
-    if (!cheapest) return;
-    addItem({
-      productId: product.id,
-      variantId: cheapest.id,
-      name,
-      size: cheapest.size,
-      fabric: cheapest.fabric,
-      color: product.colors[0] ?? null,
-      price: cheapest.price,
-      qty: 1,
-      imageUrl: product.images[0] ?? null,
-    });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1600);
-  }
 
   return (
     <Link href={`/catalog/dresses/${product.slug}`} className="group block">
@@ -92,24 +68,7 @@ export default function ProductCard({ product }: { product: Product }) {
           <Heart size={15} className={liked ? 'fill-gold text-gold' : ''} />
         </button>
 
-        {/* Buy CTA — slides up on hover (desktop), always reachable on tap */}
-        {product.inStock && (
-          <div className="absolute inset-x-2.5 bottom-2.5 translate-y-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 max-md:translate-y-0 max-md:opacity-100">
-            <button
-              type="button"
-              onClick={handleAdd}
-              className="flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-powder-200 text-sm font-semibold text-foreground/85 shadow-card transition-colors hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-            >
-              {added ? (
-                <>
-                  <Check size={14} /> {t('addedToCart')}
-                </>
-              ) : (
-                t('addToCart')
-              )}
-            </button>
-          </div>
-        )}
+
       </div>
 
       {/* Info */}

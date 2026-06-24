@@ -52,7 +52,7 @@
     }
   },
   "product": {
-    "addToCart": "Buy",
+    "addToCart": "Add to cart",
     "askDelivery": "Ask about delivery",
     "customOrder": "Custom-made",
     "size": "Size",

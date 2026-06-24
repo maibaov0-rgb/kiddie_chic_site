@@ -52,7 +52,7 @@
     }
   },
   "product": {
-    "addToCart": "Купити",
+    "addToCart": "Додати в кошик",
     "askDelivery": "Уточнити терміни",
     "customOrder": "Пошив по параметрах",
     "size": "Розмір",
