@@ -4,7 +4,6 @@ import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } fro
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
 import {
   Check, ChevronDown, CreditCard, Loader2, Lock, MapPin, Package,
   RefreshCcw, Truck, User, Wallet,
@@ -22,7 +21,6 @@ interface Form {
   city: { ref: string; name: string; area: string } | null;
   branch: { ref: string; number: string; description: string } | null;
   payment: PayMethod;
-  agree: boolean;
 }
 
 const EMPTY_FORM: Form = {
@@ -32,7 +30,6 @@ const EMPTY_FORM: Form = {
   city: null,
   branch: null,
   payment: 'cod',
-  agree: false,
 };
 
 function isValidPhone(p: string) {
@@ -183,7 +180,6 @@ export default function CheckoutView() {
     phone: !isValidPhone(form.phone) ? t('errPhone') : null,
     city: !form.city ? t('errCity') : null,
     branch: !form.branch ? t('errBranch') : null,
-    agree: !form.agree ? t('errAgree') : null,
   };
   const formValid = Object.values(errors).every((e) => e === null);
 
@@ -193,7 +189,7 @@ export default function CheckoutView() {
     // Touch all so errors show
     setTouched({
       firstName: true, lastName: true, phone: true,
-      city: true, branch: true, agree: true,
+      city: true, branch: true,
     });
     if (!formValid) {
       // Scroll to first error
@@ -426,35 +422,6 @@ export default function CheckoutView() {
           </div>
         </Section>
 
-        {/* Agreement + submit (mobile-friendly, desktop has summary CTA too) */}
-        <div className="space-y-4">
-          <label className="flex items-start gap-3 text-sm text-foreground/70">
-            <input
-              type="checkbox"
-              checked={form.agree}
-              onChange={(e) => {
-                setField('agree', e.target.checked);
-                blur('agree');
-              }}
-              data-invalid={touched.agree && !!errors.agree}
-              className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-foreground/30 text-gold accent-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-            />
-            <span>
-              {t('agreePrefix')}{' '}
-              <Link href="/legal/offer" className="text-gold underline underline-offset-2 hover:no-underline">
-                {t('agreeOffer')}
-              </Link>{' '}
-              {t('agreeAnd')}{' '}
-              <Link href="/legal/privacy" className="text-gold underline underline-offset-2 hover:no-underline">
-                {t('agreePrivacy')}
-              </Link>
-              .
-            </span>
-          </label>
-          {touched.agree && errors.agree && (
-            <p className="-mt-2 text-xs text-red-500">{errors.agree}</p>
-          )}
-        </div>
       </div>
 
       {/* ─────────── RIGHT: sticky summary ─────────── */}
