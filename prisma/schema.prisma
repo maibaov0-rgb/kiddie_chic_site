@@ -79,6 +79,11 @@ enum OrderStatus {
   cancelled
 }
 
+enum PaymentMethod {
+  cod
+  card
+}
+
 // ─── Domain models ─────────────────────────────────────────────────────────────
 
 model Product {
@@ -124,18 +129,20 @@ model ProductVariant {
 }
 
 model Order {
-  id           String      @id @default(cuid())
-  status       OrderStatus @default(new)
+  id           String        @id @default(cuid())
+  ref          String        @unique
+  status       OrderStatus   @default(new)
+  paymentMethod PaymentMethod @default(cod)
 
   customerName String
   phone        String
   email        String
   city         String
   novaPoshta   String
-  note         String?     @db.Text
+  note         String?       @db.Text
 
   items       OrderItem[]
-  totalAmount Decimal     @db.Decimal(10, 2)
+  totalAmount Decimal       @db.Decimal(10, 2)
 
   monoInvoiceId String?
   monoPaidAt    DateTime?
@@ -145,6 +152,7 @@ model Order {
 
   @@index([status])
   @@index([createdAt])
+  @@index([ref])
 }
 
 model OrderItem {
