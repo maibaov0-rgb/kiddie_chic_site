@@ -1,5 +1,13 @@
 # CLAUDE.md
 
+## Продакшн сервер (КРИТИЧНО)
+
+- VPS: `5.189.167.89` — на сервері крутиться **кілька сайтів**
+- При деплої працювати **тільки з контейнерами `kiddie_chic_*`** (`kiddie_chic_web`, `kiddie_chic_db`)
+- **Ніколи не робити** `docker compose down` без `-f docker-compose.prod.yml` — це може зупинити інші сайти
+- Безпечний деплой: `docker compose -f docker-compose.prod.yml build web && docker compose -f docker-compose.prod.yml up -d web`
+- Міграції: запускаються автоматично при старті контейнера (`prisma migrate deploy`)
+
 ## Команди
 
 - `npm run dev` — dev server
