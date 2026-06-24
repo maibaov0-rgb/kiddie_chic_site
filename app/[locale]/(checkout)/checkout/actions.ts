@@ -8,8 +8,8 @@ export interface PlaceOrderPayload {
   firstName: string;
   lastName: string;
   phone: string;
-  city: string;         // city name, e.g. "Київ"
-  novaPoshta: string;   // branch description, e.g. "№5 — вул. Хрещатик, 1"
+  city: string;
+  novaPoshta: string;
   note: string;
   paymentMethod: 'cod' | 'card';
   items: CartItem[];
@@ -28,17 +28,70 @@ function generateRef(): string {
 }
 
 export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrderResult> {
-  // ── Validate ────────────────────────────────────────────────────────────────
+  // ── Validate input ───────────────────────────────────────────────────────────
   if (!payload.firstName.trim()) return { error: "Вкажіть ім'я" };
   if (!isValidPhone(payload.phone)) return { error: 'Невірний номер телефону' };
   if (!payload.city.trim()) return { error: 'Вкажіть місто' };
   if (!payload.novaPoshta.trim()) return { error: 'Вкажіть відділення' };
   if (!payload.items.length) return { error: 'Кошик порожній' };
 
-  const totalAmount = payload.items.reduce((s, i) => s + i.price * i.qty, 0);
+  // ── Fetch authoritative prices from DB (never trust client prices) ───────────
+  const variantIds = payload.items
+    .map((i) => i.variantId)
+    .filter((id): id is string => id !== null);
+  const productIds = payload.items.map((i) => i.productId);
+
+  let variants: { id: string; price: { toNumber: () => number } | number }[];
+  let products: { id: string }[];
+  try {
+    [variants, products] = await Promise.all([
+      variantIds.length > 0
+        ? prisma.productVariant.findMany({
+            where: { id: { in: variantIds } },
+            select: { id: true, price: true },
+          })
+        : Promise.resolve([]),
+      prisma.product.findMany({
+        where: { id: { in: productIds } },
+        select: { id: true },
+      }),
+    ]);
+  } catch (err) {
+    console.error('[placeOrder] DB lookup error', err);
+    return { error: 'Помилка збереження замовлення. Спробуйте ще раз.' };
+  }
+
+  const variantPriceMap = new Map(
+    variants.map((v) => [
+      v.id,
+      typeof v.price === 'number' ? v.price : v.price.toNumber(),
+    ]),
+  );
+  const productIdSet = new Set(products.map((p) => p.id));
+
+  let resolvedItems: (CartItem & { price: number })[];
+  try {
+    resolvedItems = payload.items.map((i) => {
+      if (!productIdSet.has(i.productId)) {
+        throw new Error(`Product ${i.productId} not found`);
+      }
+      if (i.variantId !== null && !variantPriceMap.has(i.variantId)) {
+        throw new Error(`Variant ${i.variantId} not found`);
+      }
+      if (!Number.isInteger(i.qty) || i.qty < 1 || i.qty > 99) {
+        throw new Error(`Invalid qty ${i.qty}`);
+      }
+      const price = i.variantId !== null ? (variantPriceMap.get(i.variantId) ?? 0) : 0;
+      return { ...i, price };
+    });
+  } catch {
+    return { error: 'Товар не знайдено або недоступний' };
+  }
+
+  const totalAmount = resolvedItems.reduce((s, i) => s + i.price * i.qty, 0);
   const ref = generateRef();
 
-  // ── Persist ─────────────────────────────────────────────────────────────────
+  // ── Persist ──────────────────────────────────────────────────────────────────
   let order: { id: string; ref: string };
   try {
     order = await prisma.order.create({
@@ -46,14 +99,14 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
         ref,
         customerName: `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim(),
         phone: payload.phone.replace(/\s/g, ''),
-        email: '',           // not collected at checkout yet — leave empty
+        email: '',
         city: payload.city,
         novaPoshta: payload.novaPoshta,
         note: payload.note.trim() || null,
         paymentMethod: payload.paymentMethod,
         totalAmount,
         items: {
-          create: payload.items.map((i) => ({
+          create: resolvedItems.map((i) => ({
             productId: i.productId,
             variantId: i.variantId ?? undefined,
             name: i.name,
@@ -74,9 +127,10 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
 
   // ── Notify (fire-and-forget for COD) ────────────────────────────────────────
   if (payload.paymentMethod === 'cod') {
+    const customerName = `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim();
     void sendNewOrderNotification({
       ref: order.ref,
-      customerName: `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim(),
+      customerName,
       phone: payload.phone.replace(/\s/g, ''),
       city: payload.city,
       novaPoshta: payload.novaPoshta,
@@ -84,7 +138,7 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
       totalAmount,
       paymentMethod: 'cod',
       monoPaidAt: null,
-      items: payload.items.map((i) => ({
+      items: resolvedItems.map((i) => ({
         name: i.name,
         size: i.size,
         color: i.color,
