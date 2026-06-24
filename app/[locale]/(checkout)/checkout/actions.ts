@@ -24,7 +24,9 @@ function isValidPhone(p: string): boolean {
 }
 
 function generateRef(): string {
-  return `KC-${Date.now().toString(36).toUpperCase().slice(-6)}`;
+  const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
+  const random = Math.random().toString(36).toUpperCase().slice(2, 5);
+  return `KC-${timestamp}${random}`;
 }
 
 export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrderResult> {

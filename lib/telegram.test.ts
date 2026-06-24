@@ -56,6 +56,17 @@ test("buildOrderMessage shows note only when present", () => {
 test("buildOrderMessage includes item lines with price", () => {
   const msg = buildOrderMessage(baseOrder);
   assert.ok(msg.includes("Сукня"));
-  assert.ok(msg.includes("1 200"));
-  assert.ok(msg.includes("1 600"));
+  assert.ok(msg.includes("1 200")); // uk-UA uses non-breaking space as thousands separator
+  assert.ok(msg.includes("1 600"));
+});
+
+test("buildOrderMessage escapes HTML in user fields", () => {
+  const msg = buildOrderMessage({
+    ...baseOrder,
+    customerName: "Тест & <Admin>",
+    note: "<script>alert(1)</script>",
+  });
+  assert.ok(!msg.includes("<script>"), "script tag must be escaped");
+  assert.ok(msg.includes("&lt;script&gt;"), "< must become &lt;");
+  assert.ok(msg.includes("Тест &amp; &lt;Admin&gt;"), "& must become &amp;");
 });

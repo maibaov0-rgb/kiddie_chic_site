@@ -42,6 +42,13 @@ function getOrderChatId(): string {
   return id;
 }
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 export function buildOrderMessage(order: OrderForNotification): string {
   const fmt = (n: number) =>
     n.toLocaleString("uk-UA", {
@@ -51,8 +58,8 @@ export function buildOrderMessage(order: OrderForNotification): string {
 
   const itemLines = order.items
     .map((i) => {
-      const attrs = [i.size, i.color].filter(Boolean).join(", ");
-      const label = attrs ? `${i.name} (${attrs})` : i.name;
+      const attrs = [i.size && escapeHtml(i.size), i.color && escapeHtml(i.color)].filter(Boolean).join(", ");
+      const label = attrs ? `${escapeHtml(i.name)} (${attrs})` : escapeHtml(i.name);
       return `• ${label} × ${i.qty} — ${fmt(i.price * i.qty)} ₴`;
     })
     .join("\n");
@@ -62,14 +69,14 @@ export function buildOrderMessage(order: OrderForNotification): string {
       ? "💳 <b>Оплата:</b> Постоплата (при отриманні)"
       : "💳 <b>Оплата:</b> Онлайн — ✅ Оплачено";
 
-  const noteLine = order.note ? `\n📝 <i>Примітка: ${order.note}</i>` : "";
+  const noteLine = order.note ? `\n📝 <i>Примітка: ${escapeHtml(order.note)}</i>` : "";
 
   return [
     `🛍 <b>Нове замовлення #${order.ref}</b>`,
     "",
     `👤 <b>Замовник</b>`,
-    `Ім'я: ${order.customerName}`,
-    `Телефон: ${order.phone}`,
+    `Ім'я: ${escapeHtml(order.customerName)}`,
+    `Телефон: ${escapeHtml(order.phone)}`,
     "",
     `📦 <b>Товари</b>`,
     itemLines,
@@ -77,7 +84,7 @@ export function buildOrderMessage(order: OrderForNotification): string {
     `💰 <b>Сума: ${fmt(order.totalAmount)} ₴</b>`,
     "",
     `🚚 <b>Доставка</b>`,
-    `${order.city}, Нова Пошта ${order.novaPoshta}`,
+    `${escapeHtml(order.city)}, Нова Пошта ${escapeHtml(order.novaPoshta)}`,
     "",
     paymentLine,
     noteLine,
