@@ -11,6 +11,7 @@ import {
 import { useCartStore } from '@/lib/stores/cart';
 import { asset } from '@/lib/asset';
 import { TOP_UA_CITIES } from '@/lib/np-fallback';
+import { placeOrder } from '@/app/[locale]/(checkout)/checkout/actions';
 
 type PayMethod = 'card' | 'cod';
 
@@ -58,6 +59,7 @@ export default function CheckoutView() {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   // Empty cart → catalog (only after hydration AND only if we didn't just
   // submit — otherwise clearCart() would race the success-page redirect)
@@ -186,28 +188,36 @@ export default function CheckoutView() {
   // ───────── submit ─────────
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // Touch all so errors show
-    setTouched({
-      firstName: true, lastName: true, phone: true,
-      city: true, branch: true,
-    });
+    setTouched({ firstName: true, lastName: true, phone: true, city: true, branch: true });
     if (!formValid) {
-      // Scroll to first error
       const first = document.querySelector('[data-invalid="true"]');
       first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    if (form.payment === 'card') return; // disabled, shouldn't happen
+    if (form.payment === 'card') return;
 
     setSubmitting(true);
-    setSubmitted(true); // freezes empty-cart guard before clearCart fires
-    const orderRef = `KC-${Date.now().toString(36).toUpperCase().slice(-6)}`;
-    // TODO: real Order creation + Mono invoice. For now: log + redirect.
-    console.info('[checkout] order payload', { orderRef, form, items, subtotal });
-    await new Promise((r) => setTimeout(r, 600));
-    router.push(`/order-success?ref=${orderRef}`);
-    // Clear the cart only after navigation kicks off, so the user's basket
-    // is empty when they come back to /catalog later.
+    setSubmitted(true);
+
+    const result = await placeOrder({
+      firstName: form.firstName,
+      lastName: form.lastName,
+      phone: form.phone,
+      city: form.city?.name ?? '',
+      novaPoshta: form.branch ? `№${form.branch.number} — ${form.branch.description}` : '',
+      note: '',
+      paymentMethod: form.payment,
+      items,
+    });
+
+    if ('error' in result) {
+      setSubmitting(false);
+      setSubmitted(false);
+      setServerError(result.error);
+      return;
+    }
+
+    router.push(`/${locale}/order-success?ref=${result.ref}`);
     clearCart();
   }
 
@@ -507,6 +517,14 @@ export default function CheckoutView() {
           {submitting ? t('submitting') : t('submitShort')}
         </button>
       </div>
+
+      {serverError && (
+        <div className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+          <div className="rounded-2xl bg-red-50 border border-red-200 px-5 py-3 text-sm text-red-700 shadow-float">
+            {serverError}
+          </div>
+        </div>
+      )}
 
       {/* Spacer for mobile sticky bar */}
       <div className="h-24 lg:hidden" aria-hidden="true" />
