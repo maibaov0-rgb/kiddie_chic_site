@@ -17,6 +17,84 @@ function getChatId(): string {
   return chatId;
 }
 
+export interface OrderForNotification {
+  ref: string;
+  customerName: string;
+  phone: string;
+  city: string;
+  novaPoshta: string;
+  note: string | null;
+  totalAmount: number;
+  paymentMethod: "cod" | "card";
+  monoPaidAt: Date | null;
+  items: Array<{
+    name: string;
+    size: string | null;
+    color: string | null;
+    price: number;
+    qty: number;
+  }>;
+}
+
+function getOrderChatId(): string {
+  const id = process.env.TELEGRAM_ORDER_CHAT_ID;
+  if (!id) throw new Error("TELEGRAM_ORDER_CHAT_ID is not set");
+  return id;
+}
+
+export function buildOrderMessage(order: OrderForNotification): string {
+  const fmt = (n: number) =>
+    n.toLocaleString("uk-UA", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+
+  const itemLines = order.items
+    .map((i) => {
+      const attrs = [i.size, i.color].filter(Boolean).join(", ");
+      const label = attrs ? `${i.name} (${attrs})` : i.name;
+      return `• ${label} × ${i.qty} — ${fmt(i.price * i.qty)} ₴`;
+    })
+    .join("\n");
+
+  const paymentLine =
+    order.paymentMethod === "cod"
+      ? "💳 <b>Оплата:</b> Постоплата (при отриманні)"
+      : "💳 <b>Оплата:</b> Онлайн — ✅ Оплачено";
+
+  const noteLine = order.note ? `\n📝 <i>Примітка: ${order.note}</i>` : "";
+
+  return [
+    `🛍 <b>Нове замовлення #${order.ref}</b>`,
+    "",
+    `👤 <b>Замовник</b>`,
+    `Ім'я: ${order.customerName}`,
+    `Телефон: ${order.phone}`,
+    "",
+    `📦 <b>Товари</b>`,
+    itemLines,
+    "",
+    `💰 <b>Сума: ${fmt(order.totalAmount)} ₴</b>`,
+    "",
+    `🚚 <b>Доставка</b>`,
+    `${order.city}, Нова Пошта ${order.novaPoshta}`,
+    "",
+    paymentLine,
+    noteLine,
+  ]
+    .join("\n")
+    .trim();
+}
+
+export async function sendNewOrderNotification(
+  order: OrderForNotification
+): Promise<void> {
+  const text = buildOrderMessage(order);
+  await getBot().api.sendMessage(getOrderChatId(), text, {
+    parse_mode: "HTML",
+  });
+}
+
 export async function sendOrderNotification(message: string): Promise<void> {
   await getBot().api.sendMessage(getChatId(), message, { parse_mode: "HTML" });
 }
