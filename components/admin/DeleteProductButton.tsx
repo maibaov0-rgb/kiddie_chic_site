@@ -11,8 +11,16 @@ export function DeleteProductButton({ id, name }: { id: string; name: string }) 
   function handleDelete() {
     if (!confirm(`Видалити товар «${name}»?`)) return;
     start(async () => {
-      await deleteProductAction(id);
-      router.refresh();
+      try {
+        const result = await deleteProductAction(id);
+        if (!result.ok) {
+          alert(result.error);
+          return;
+        }
+        router.refresh();
+      } catch {
+        alert("Не вдалося видалити товар. Спробуйте ще раз.");
+      }
     });
   }
 
