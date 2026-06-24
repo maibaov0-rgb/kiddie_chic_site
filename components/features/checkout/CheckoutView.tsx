@@ -196,6 +196,7 @@ export default function CheckoutView() {
     }
     if (form.payment === 'card') return;
 
+    setServerError(null);
     setSubmitting(true);
     setSubmitted(true);
 
