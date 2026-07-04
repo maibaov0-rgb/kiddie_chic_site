@@ -15,7 +15,7 @@ const EMPTY: ProductInput = {
   inStock: true,
   isNew: false,
   isBestseller: false,
-  variants: [{ size: "86-92", fabric: "satin", price: undefined as unknown as number }],
+  variants: [{ size: "86-92", price: undefined as unknown as number }],
 };
 
 export function NewProductForm() {

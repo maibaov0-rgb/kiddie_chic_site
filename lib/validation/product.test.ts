@@ -13,7 +13,7 @@ const valid = {
   inStock: true,
   isNew: false,
   isBestseller: false,
-  variants: [{ size: "98-104", fabric: "satin", price: 1200 }],
+  variants: [{ size: "98-104", price: 1200 }],
 };
 
 test("accepts a valid product", () => {
@@ -33,7 +33,7 @@ test("rejects product with no variants", () => {
 test("rejects non-positive price", () => {
   const r = productSchema.safeParse({
     ...valid,
-    variants: [{ size: "98-104", fabric: "satin", price: 0 }],
+    variants: [{ size: "98-104", price: 0 }],
   });
   assert.equal(r.success, false);
 });

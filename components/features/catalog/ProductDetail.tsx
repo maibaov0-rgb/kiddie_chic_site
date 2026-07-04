@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Check, Minus, Plus, ShoppingBag, Clock, Scissors } from 'lucide-react';
-import { COLORS, FABRICS, SIZES, cover, type Product } from '@/lib/catalog';
+import { COLORS, SIZES, cover, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
 
@@ -14,11 +14,6 @@ function colorName(id: string, en: boolean): string {
   const c = COLORS.find((x) => x.id === id);
   return c ? (en ? c.name_en : c.name_uk) : id;
 }
-function fabricName(id: string, en: boolean): string {
-  const f = FABRICS.find((x) => x.id === id);
-  return f ? (en ? f.name_en : f.name_uk) : id;
-}
-
 export default function ProductDetail({ product }: { product: Product }) {
   const locale = useLocale();
   const en = locale === 'en';
@@ -31,11 +26,6 @@ export default function ProductDetail({ product }: { product: Product }) {
   // Selection — kept valid via "effective" fallbacks instead of effects
   const sizes = SIZES.filter((s) => product.variants.some((v) => v.size === s));
   const [size, setSize] = useState(sizes[0] ?? '');
-  const fabricsForSize = FABRICS.map((f) => f.id).filter((fid) =>
-    product.variants.some((v) => v.size === size && v.fabric === fid),
-  );
-  const [fabricRaw, setFabric] = useState(fabricsForSize[0] ?? '');
-  const fabric = fabricsForSize.includes(fabricRaw) ? fabricRaw : (fabricsForSize[0] ?? '');
 
   const [colorRaw, setColor] = useState(product.colors[0] ?? '');
   const color = product.colors.includes(colorRaw) ? colorRaw : (product.colors[0] ?? '');
@@ -52,7 +42,7 @@ export default function ProductDetail({ product }: { product: Product }) {
     return () => clearTimeout(id);
   }, [addedTick]);
 
-  const variant = product.variants.find((v) => v.size === size && v.fabric === fabric) ?? null;
+  const variant = product.variants.find((v) => v.size === size) ?? null;
   const price = variant?.price ?? null;
 
   function handleAdd() {
@@ -62,7 +52,6 @@ export default function ProductDetail({ product }: { product: Product }) {
       variantId: variant.id,
       name,
       size: variant.size,
-      fabric: variant.fabric,
       color: color || null,
       price: variant.price,
       qty,
@@ -165,28 +154,6 @@ export default function ProductDetail({ product }: { product: Product }) {
                 }`}
               >
                 {s}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Fabric */}
-        <div className="mt-6">
-          <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
-            {t('fabric')}
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {fabricsForSize.map((fid) => (
-              <button
-                key={fid}
-                type="button"
-                onClick={() => setFabric(fid)}
-                aria-pressed={fid === fabric}
-                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-                  fid === fabric ? 'border-gold bg-gold/10 text-gold' : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
-                }`}
-              >
-                {fabricName(fid, en)}
               </button>
             ))}
           </div>

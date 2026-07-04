@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { productSchema, type ProductInput } from "@/lib/validation/product";
 import { ImageUploader } from "@/components/admin/ImageUploader";
-import { SIZES, FABRICS, COLORS } from "@/lib/catalog";
+import { SIZES, COLORS } from "@/lib/catalog";
 import type { ActionResult } from "@/app/admin/products/actions";
 
 interface Props {
@@ -22,7 +22,6 @@ const labelCls = "text-base font-medium text-[#3d2f28]";
 
 // Safe fallbacks for noUncheckedIndexedAccess
 const DEFAULT_SIZE: string = SIZES[0] ?? "86-92";
-const DEFAULT_FABRIC_ID: string = FABRICS[0]?.id ?? "satin";
 
 export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
   const router = useRouter();
@@ -169,11 +168,11 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
 
       <section className="space-y-4 rounded-3xl bg-white p-6 shadow-soft">
         <div className="flex items-center justify-between">
-          <label className={labelCls}>Варіанти (розмір / тканина / ціна)</label>
+          <label className={labelCls}>Варіанти (розмір / ціна)</label>
           <button
             type="button"
             onClick={() =>
-              variants.append({ size: DEFAULT_SIZE, fabric: DEFAULT_FABRIC_ID, price: undefined as unknown as number })
+              variants.append({ size: DEFAULT_SIZE, price: undefined as unknown as number })
             }
             className="rounded-full bg-[#FDF8F4] px-4 py-2 text-sm font-medium transition-all duration-300 ease-in-out hover:bg-[#EDE0D4]"
           >
@@ -187,18 +186,11 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
 
         <div className="space-y-3">
           {variants.fields.map((f, i) => (
-            <div key={f.id} className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_1fr_auto]">
+            <div key={f.id} className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto]">
               <select {...register(`variants.${i}.size`)} className={inputCls}>
                 {SIZES.map((s) => (
                   <option key={s} value={s}>
                     {s}
-                  </option>
-                ))}
-              </select>
-              <select {...register(`variants.${i}.fabric`)} className={inputCls}>
-                {FABRICS.map((fab) => (
-                  <option key={fab.id} value={fab.id}>
-                    {fab.name_uk}
                   </option>
                 ))}
               </select>

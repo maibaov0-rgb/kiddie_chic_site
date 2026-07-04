@@ -8,7 +8,6 @@ export interface CartItem {
   variantId: string | null;
   name: string;
   size: string | null;
-  fabric: string | null;
   color: string | null;
   price: number;
   qty: number;

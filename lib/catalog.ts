@@ -25,12 +25,6 @@ export interface ColorOption {
   hex: string;
 }
 
-export interface FabricOption {
-  id: string;
-  name_uk: string;
-  name_en: string;
-}
-
 export const SIZES = ['86-92', '98-104', '110-116', '122-128', '134-140'] as const;
 
 export const COLORS: ColorOption[] = [
@@ -41,19 +35,11 @@ export const COLORS: ColorOption[] = [
   { id: 'gold', name_uk: 'Золотий', name_en: 'Gold', hex: '#C9A96E' },
 ];
 
-export const FABRICS: FabricOption[] = [
-  { id: 'satin', name_uk: 'Атлас', name_en: 'Satin' },
-  { id: 'fatin', name_uk: 'Фатин', name_en: 'Tulle' },
-  { id: 'lace', name_uk: 'Мереживо', name_en: 'Lace' },
-  { id: 'organza', name_uk: 'Органза', name_en: 'Organza' },
-];
-
 // ─── Product shape (mirrors Prisma) ───────────────────────────────────────────
 
 export interface ProductVariant {
   id: string;
   size: string;
-  fabric: string; // FabricOption.id
   price: number;
 }
 
@@ -87,14 +73,12 @@ export function minPrice(product: Product): number | null {
 export interface Filters {
   sizes: string[];
   colors: string[];
-  fabrics: string[];
 }
 
 export function filterProducts(products: Product[], f: Filters): Product[] {
   return products.filter((p) => {
     const sizeOk = f.sizes.length === 0 || p.variants.some((v) => f.sizes.includes(v.size));
-    const fabricOk = f.fabrics.length === 0 || p.variants.some((v) => f.fabrics.includes(v.fabric));
     const colorOk = f.colors.length === 0 || p.colors.some((c) => f.colors.includes(c));
-    return sizeOk && fabricOk && colorOk;
+    return sizeOk && colorOk;
   });
 }

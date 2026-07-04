@@ -7,13 +7,11 @@ import type { Product, ProductVariant, ProductCategory } from '@/lib/catalog';
 function mapVariant(v: {
   id: string;
   size: string;
-  fabric: string;
   price: { toNumber(): number } | number | string;
 }): ProductVariant {
   return {
     id: v.id,
     size: v.size,
-    fabric: v.fabric,
     price: typeof v.price === 'object' && 'toNumber' in v.price
       ? v.price.toNumber()
       : Number(v.price),

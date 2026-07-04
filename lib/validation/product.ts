@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const variantSchema = z.object({
   size: z.string().min(1, "Оберіть розмір"),
-  fabric: z.string().min(1, "Оберіть тканину"),
   price: z.coerce.number().positive("Ціна обов'язкова і має бути більшою за 0"),
 });
 

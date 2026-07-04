@@ -74,7 +74,6 @@ export async function createProductAction(
         variants: {
           create: data.variants.map((v) => ({
             size: v.size,
-            fabric: v.fabric,
             price: v.price,
             images: [],
           })),
@@ -129,7 +128,6 @@ export async function updateProductAction(
           variants: {
             create: data.variants.map((v) => ({
               size: v.size,
-              fabric: v.fabric,
               price: v.price,
               images: [],
             })),

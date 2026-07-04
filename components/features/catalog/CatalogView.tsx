@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import { SlidersHorizontal, X, Check } from 'lucide-react';
 import {
   COLORS,
-  FABRICS,
   SIZES,
   filterProducts,
   type Filters,
@@ -13,7 +12,7 @@ import {
 } from '@/lib/catalog';
 import ProductCard from './ProductCard';
 
-const EMPTY: Filters = { sizes: [], colors: [], fabrics: [] };
+const EMPTY: Filters = { sizes: [], colors: [] };
 
 function toggle(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
@@ -27,7 +26,7 @@ export default function CatalogView({ products }: { products: Product[] }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const filtered = useMemo(() => filterProducts(products, filters), [products, filters]);
-  const activeCount = filters.sizes.length + filters.colors.length + filters.fabrics.length;
+  const activeCount = filters.sizes.length + filters.colors.length;
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -237,32 +236,6 @@ function FilterControls({
         </div>
       </div>
 
-      {/* Fabric */}
-      <div>
-        <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
-          {t('fabric')}
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {FABRICS.map((fab) => {
-            const on = filters.fabrics.includes(fab.id);
-            return (
-              <button
-                key={fab.id}
-                type="button"
-                onClick={() => setFilters((f) => ({ ...f, fabrics: toggle(f.fabrics, fab.id) }))}
-                aria-pressed={on}
-                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-                  on
-                    ? 'border-gold bg-gold/10 text-gold'
-                    : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
-                }`}
-              >
-                {locale === 'en' ? fab.name_en : fab.name_uk}
-              </button>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }

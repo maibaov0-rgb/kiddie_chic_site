@@ -117,7 +117,6 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
             variantId: i.variantId ?? undefined,
             name: i.name,
             size: i.size ?? undefined,
-            fabric: i.fabric ?? undefined,
             color: i.color ?? undefined,
             price: i.price,
             qty: i.qty,

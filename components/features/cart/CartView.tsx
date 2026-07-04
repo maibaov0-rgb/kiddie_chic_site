@@ -15,7 +15,7 @@ import {
   Undo2,
   X,
 } from 'lucide-react';
-import { COLORS, FABRICS } from '@/lib/catalog';
+import { COLORS } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore, type CartItem } from '@/lib/stores/cart';
 
@@ -24,12 +24,6 @@ function colorName(id: string | null, en: boolean): string | null {
   const c = COLORS.find((x) => x.id === id);
   return c ? (en ? c.name_en : c.name_uk) : id;
 }
-function fabricName(id: string | null, en: boolean): string | null {
-  if (!id) return null;
-  const f = FABRICS.find((x) => x.id === id);
-  return f ? (en ? f.name_en : f.name_uk) : id;
-}
-
 function fmt(amount: number, locale: string): string {
   return amount.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA');
 }
@@ -165,12 +159,6 @@ export default function CartView() {
                           <div>
                             <dt className="inline text-foreground/55">{t('size')}: </dt>
                             <dd className="inline text-foreground/80">{item.size}</dd>
-                          </div>
-                        )}
-                        {item.fabric && (
-                          <div>
-                            <dt className="inline text-foreground/55">{t('fabric')}: </dt>
-                            <dd className="inline text-foreground/80">{fabricName(item.fabric, en)}</dd>
                           </div>
                         )}
                         {item.color && (

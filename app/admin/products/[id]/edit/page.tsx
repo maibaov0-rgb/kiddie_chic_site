@@ -25,7 +25,6 @@ export default async function EditProductPage({
     isBestseller: product.isBestseller,
     variants: product.variants.map((v) => ({
       size: v.size,
-      fabric: v.fabric,
       price: Number(v.price),
     })),
   };

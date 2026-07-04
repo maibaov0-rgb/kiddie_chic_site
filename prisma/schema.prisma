@@ -118,7 +118,6 @@ model ProductVariant {
   id        String  @id @default(cuid())
   productId String
   size      String
-  fabric    String
   price     Decimal @db.Decimal(10, 2)
   images    String[]
 
