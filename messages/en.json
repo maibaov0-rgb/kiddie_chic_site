@@ -178,10 +178,26 @@
     "ratingAria": "{n} out of 5"
   },
   "about": {
-    "title": "About us",
-    "story": "Our story",
-    "showroom": "Showroom",
-    "reviews": "Reviews"
+    "title": "About Us",
+    "heroTitle": "Clothing for Little Princesses",
+    "heroSubtitle": "We create collections where every girl feels truly special",
+    "storyTitle": "Our Story",
+    "storyP1": "Kiddie Chic is a Kyiv-based children's clothing brand for girls. We believe every little girl deserves clothing that highlights her individuality and brings joy every day.",
+    "storyP2": "Every piece in our collection is carefully selected: soft fabrics that won't irritate skin, thoughtful details, and colors that won't fade after washing. We combine style with comfort — because an active child shouldn't sacrifice one for the other.",
+    "storyP3": "We continuously update our range, following the latest children's fashion trends in Europe, and offer pieces that stay relevant season after season.",
+    "valuesTitle": "Our Values",
+    "value1Title": "Quality",
+    "value1Text": "Only trusted materials — cotton, linen, knitwear — safe and gentle on children's skin.",
+    "value2Title": "Style",
+    "value2Text": "Modern cuts and color solutions inspired by the best children's brands in Europe.",
+    "value3Title": "Care",
+    "value3Text": "We are always in touch and will help you find the perfect look for your daughter.",
+    "showroomTitle": "Our Showroom",
+    "showroomText": "Visit our showroom in Kyiv, where you can see and try on all collections in person.",
+    "showroomAddress": "63/28 Saksahanskoho St., Kyiv",
+    "showroomHours": "Mon–Fri: 10:00–19:00, Sat–Sun: 11:00–18:00",
+    "ctaTitle": "Discover the Collection",
+    "ctaButton": "Browse Catalog"
   },
   "contacts": {
     "title": "Contacts",
