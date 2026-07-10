@@ -1,13 +1,10 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
-const FOOTER_LINKS = [
-  { key: 'linkDresses',     href: '/catalog/dresses' },
-  { key: 'linkCouture',     href: '/catalog/couture' },
-  { key: 'linkAccessories', href: '/catalog/accessories' },
-  { key: 'linkAbout',       href: '/about' },
-  { key: 'linkTerms',       href: '/terms' },
-  { key: 'linkContacts',    href: '/contacts' },
+const LEGAL_LINKS = [
+  { key: 'linkTerms', href: '/terms' },
+  { key: 'privacy',   href: '/legal/privacy' },
+  { key: 'offer',     href: '/legal/offer' },
 ] as const;
 
 export default function Footer() {
@@ -15,7 +12,7 @@ export default function Footer() {
   return (
     <footer className="px-3 pt-2 pb-4 md:px-4 md:pb-5">
       <div className="rounded-3xl bg-white px-5 py-10 shadow-card md:rounded-[2.5rem] md:px-10 md:py-12">
-        <div className="grid gap-10 md:grid-cols-3">
+        <div className="grid gap-10 md:grid-cols-2">
 
           {/* Brand */}
           <div>
@@ -35,26 +32,6 @@ export default function Footer() {
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-foreground/65">
               {t('tagline')}
             </p>
-
-          </div>
-
-          {/* Navigation */}
-          <div>
-            <h3 className="mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-foreground/60">
-              {t('navTitle')}
-            </h3>
-            <ul className="flex flex-col gap-3">
-              {FOOTER_LINKS.map(({ key, href }) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className="text-sm text-foreground/70 transition-colors hover:text-gold focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-                  >
-                    {t(key)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* Address */}
@@ -70,17 +47,22 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-foreground/10 pt-8 sm:flex-row">
-          <p className="text-xs text-foreground/60">
-            © {new Date().getFullYear()} Kiddie Chic. {t('rights')}
-          </p>
-          <div className="flex gap-5">
-            <Link href="/legal/privacy" className="text-xs text-foreground/60 transition-colors hover:text-foreground/80 focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2">
-              {t('privacy')}
-            </Link>
-            <Link href="/legal/offer" className="text-xs text-foreground/60 transition-colors hover:text-foreground/80 focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2">
-              {t('offer')}
-            </Link>
+        <div className="mt-10 border-t border-foreground/10 pt-8">
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <p className="text-xs text-foreground/60">
+              © {new Date().getFullYear()} Kiddie Chic. {t('rights')}
+            </p>
+            <div className="flex flex-wrap justify-center gap-5">
+              {LEGAL_LINKS.map(({ key, href }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="text-xs text-foreground/60 transition-colors hover:text-gold focus-visible:outline-none focus-visible:rounded focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                >
+                  {t(key)}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>

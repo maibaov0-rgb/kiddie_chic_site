@@ -5,7 +5,7 @@ interface LegalPageLayoutProps {
 
 export default function LegalPageLayout({ title, children }: LegalPageLayoutProps) {
   return (
-    <div className="min-h-screen bg-milk">
+    <div className="min-h-screen bg-milk pt-16 md:pt-20">
       <div className="bg-beige-100 px-4 py-12 text-center md:py-16">
         <h1 className="font-serif text-2xl font-semibold text-foreground md:text-3xl">{title}</h1>
       </div>
