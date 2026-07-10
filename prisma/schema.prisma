@@ -189,6 +189,7 @@ model SiteSettings {
   id Int @id @default(1)
 
   phone           String @default("")
+  email           String @default("")
   telegramLink    String @default("")
   whatsappLink    String @default("")
   viberLink       String @default("")
