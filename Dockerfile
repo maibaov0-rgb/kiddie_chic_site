@@ -20,6 +20,7 @@ COPY --from=build /app/.next ./.next
 COPY --from=build /app/public ./public
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 EXPOSE 3000
 # migrate is idempotent and safe to run on every start; then launch Next
 CMD ["sh","-c","npx prisma migrate deploy && npx next start -p 3000 -H 0.0.0.0"]
