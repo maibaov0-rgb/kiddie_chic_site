@@ -2,7 +2,7 @@
 // Do NOT import this from client components — use lib/catalog.ts for types/helpers.
 
 import { prisma } from '@/lib/prisma';
-import type { Product, ProductVariant, ProductCategory } from '@/lib/catalog';
+import type { Product, ProductVariant, ProductAccessory, ProductCategory } from '@/lib/catalog';
 
 function mapVariant(v: {
   id: string;
@@ -15,6 +15,20 @@ function mapVariant(v: {
     price: typeof v.price === 'object' && 'toNumber' in v.price
       ? v.price.toNumber()
       : Number(v.price),
+  };
+}
+
+function mapAccessory(a: {
+  id: string;
+  type: string;
+  price: { toNumber(): number } | number | string;
+}): ProductAccessory {
+  return {
+    id: a.id,
+    type: a.type,
+    price: typeof a.price === 'object' && 'toNumber' in a.price
+      ? a.price.toNumber()
+      : Number(a.price),
   };
 }
 
@@ -32,6 +46,7 @@ function mapProduct(p: {
   isNew: boolean;
   isBestseller: boolean;
   variants: Parameters<typeof mapVariant>[0][];
+  accessories: Parameters<typeof mapAccessory>[0][];
 }): Product {
   return {
     id: p.id,
@@ -47,6 +62,7 @@ function mapProduct(p: {
     isNew: p.isNew,
     isBestseller: p.isBestseller,
     variants: p.variants.map(mapVariant),
+    accessories: p.accessories.map(mapAccessory),
   };
 }
 
@@ -56,7 +72,7 @@ export async function getProductsByCategory(
   const rows = await prisma.product.findMany({
     where: { category, isHidden: false },
     orderBy: { createdAt: 'desc' },
-    include: { variants: { orderBy: { price: 'asc' } } },
+    include: { variants: { orderBy: { price: 'asc' } }, accessories: true },
   });
   return rows.map(mapProduct);
 }
@@ -64,7 +80,7 @@ export async function getProductsByCategory(
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   const row = await prisma.product.findUnique({
     where: { slug, isHidden: false },
-    include: { variants: { orderBy: { price: 'asc' } } },
+    include: { variants: { orderBy: { price: 'asc' } }, accessories: true },
   });
   return row ? mapProduct(row) : null;
 }
