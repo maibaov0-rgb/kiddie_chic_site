@@ -54,11 +54,39 @@ export function swatchBackground(c: Pick<ColorOption, 'hex' | 'hex2'>): string {
   return c.hex2 ? `linear-gradient(135deg, ${c.hex} 50%, ${c.hex2} 50%)` : c.hex;
 }
 
+// ─── Accessories (fixed, closed list) ──────────────────────────────────────
+
+export type AccessoryType = 'headband' | 'gloves' | 'bag' | 'choker';
+
+export interface AccessoryTypeOption {
+  id: AccessoryType;
+  name_uk: string;
+  name_en: string;
+}
+
+export const ACCESSORY_TYPES: AccessoryTypeOption[] = [
+  { id: 'headband', name_uk: 'Обруч', name_en: 'Headband' },
+  { id: 'gloves', name_uk: 'Рукавички', name_en: 'Gloves' },
+  { id: 'bag', name_uk: 'Сумочка', name_en: 'Bag' },
+  { id: 'choker', name_uk: 'Чокер', name_en: 'Choker' },
+];
+
+export function accessoryTypeName(type: string, en: boolean): string {
+  const a = ACCESSORY_TYPES.find((x) => x.id === type);
+  return a ? (en ? a.name_en : a.name_uk) : type;
+}
+
 // ─── Product shape (mirrors Prisma) ───────────────────────────────────────────
 
 export interface ProductVariant {
   id: string;
   size: string;
+  price: number;
+}
+
+export interface ProductAccessory {
+  id: string;
+  type: string;
   price: number;
 }
 
@@ -76,6 +104,7 @@ export interface Product {
   isNew: boolean;
   isBestseller: boolean;
   variants: ProductVariant[]; // empty for couture
+  accessories: ProductAccessory[]; // empty for couture and dresses with no accessories
 }
 
 // ─── Pure helpers (operate on already-fetched products) ───────────────────────

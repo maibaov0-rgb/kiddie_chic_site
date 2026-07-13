@@ -16,6 +16,7 @@ const EMPTY: ProductInput = {
   isNew: false,
   isBestseller: false,
   variants: [{ size: "86-92", price: undefined as unknown as number }],
+  accessories: [],
 };
 
 export function NewProductForm() {

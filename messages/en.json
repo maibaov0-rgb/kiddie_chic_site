@@ -67,7 +67,9 @@
     "continueShopping": "Continue shopping",
     "goToCart": "Go to cart",
     "decreaseQty": "Decrease quantity",
-    "increaseQty": "Increase quantity"
+    "increaseQty": "Increase quantity",
+    "accessoriesTitle": "Accessories",
+    "addAccessory": "Add {name} to cart"
   },
   "cart": {
     "title": "Cart",

@@ -67,7 +67,9 @@
     "continueShopping": "Продовжити покупки",
     "goToCart": "До кошика",
     "decreaseQty": "Зменшити кількість",
-    "increaseQty": "Збільшити кількість"
+    "increaseQty": "Збільшити кількість",
+    "accessoriesTitle": "Аксесуари",
+    "addAccessory": "Додати {name} до кошика"
   },
   "cart": {
     "title": "Кошик",

@@ -37,3 +37,47 @@ test("rejects non-positive price", () => {
   });
   assert.equal(r.success, false);
 });
+
+test("accepts a product with accessories", () => {
+  const r = productSchema.safeParse({
+    ...valid,
+    accessories: [
+      { type: "headband", price: 150 },
+      { type: "choker", price: 200 },
+    ],
+  });
+  assert.equal(r.success, true);
+});
+
+test("defaults accessories to an empty array when omitted", () => {
+  const r = productSchema.safeParse(valid);
+  assert.equal(r.success, true);
+  if (r.success) assert.deepEqual(r.data.accessories, []);
+});
+
+test("rejects an accessory with a non-positive price", () => {
+  const r = productSchema.safeParse({
+    ...valid,
+    accessories: [{ type: "headband", price: 0 }],
+  });
+  assert.equal(r.success, false);
+});
+
+test("rejects duplicate accessory types on the same product", () => {
+  const r = productSchema.safeParse({
+    ...valid,
+    accessories: [
+      { type: "headband", price: 150 },
+      { type: "headband", price: 180 },
+    ],
+  });
+  assert.equal(r.success, false);
+});
+
+test("rejects an unknown accessory type", () => {
+  const r = productSchema.safeParse({
+    ...valid,
+    accessories: [{ type: "necklace", price: 150 }],
+  });
+  assert.equal(r.success, false);
+});

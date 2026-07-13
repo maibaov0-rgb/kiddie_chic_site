@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { COLORS } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
-import { useCartStore, type CartItem } from '@/lib/stores/cart';
+import { useCartStore, cartItemKey, type CartItem } from '@/lib/stores/cart';
 
 function colorName(id: string | null, en: boolean): string | null {
   if (!id) return null;
@@ -57,7 +57,7 @@ export default function CartView() {
   const totalCount = items.reduce((sum, i) => sum + i.qty, 0);
 
   function handleRemove(item: CartItem) {
-    removeItem(item.productId, item.variantId);
+    removeItem(cartItemKey(item));
     setUndoItem(item);
   }
   function handleUndo() {
@@ -115,7 +115,7 @@ export default function CartView() {
             {hydrated &&
               items.map((item) => (
                 <motion.li
-                  key={`${item.productId}:${item.variantId ?? 'na'}`}
+                  key={cartItemKey(item)}
                   layout
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -126,7 +126,7 @@ export default function CartView() {
                   <div className="flex gap-3 md:gap-5">
                     {/* Image */}
                     <div className="relative aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-2xl bg-beige-100 md:w-32">
-                      {item.imageUrl ? (
+                      {item.kind === 'product' && item.imageUrl ? (
                         <Image
                           src={asset(item.imageUrl)}
                           alt={item.name}
@@ -154,20 +154,22 @@ export default function CartView() {
                       </div>
 
                       {/* Attributes */}
-                      <dl className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[12px] text-foreground/65 md:mt-1.5 md:text-[13px]">
-                        {item.size && (
-                          <div>
-                            <dt className="inline text-foreground/55">{t('size')}: </dt>
-                            <dd className="inline text-foreground/80">{item.size}</dd>
-                          </div>
-                        )}
-                        {item.color && (
-                          <div>
-                            <dt className="inline text-foreground/55">{t('color')}: </dt>
-                            <dd className="inline text-foreground/80">{colorName(item.color, en)}</dd>
-                          </div>
-                        )}
-                      </dl>
+                      {item.kind === 'product' && (item.size || item.color) && (
+                        <dl className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-[12px] text-foreground/65 md:mt-1.5 md:text-[13px]">
+                          {item.size && (
+                            <div>
+                              <dt className="inline text-foreground/55">{t('size')}: </dt>
+                              <dd className="inline text-foreground/80">{item.size}</dd>
+                            </div>
+                          )}
+                          {item.color && (
+                            <div>
+                              <dt className="inline text-foreground/55">{t('color')}: </dt>
+                              <dd className="inline text-foreground/80">{colorName(item.color, en)}</dd>
+                            </div>
+                          )}
+                        </dl>
+                      )}
 
                       {/* Bottom row: qty + price */}
                       <div className="mt-auto flex items-end justify-between gap-2 pt-2.5 md:pt-4">
@@ -175,7 +177,7 @@ export default function CartView() {
                           <button
                             type="button"
                             aria-label={t('decreaseQty')}
-                            onClick={() => updateQty(item.productId, item.variantId, item.qty - 1)}
+                            onClick={() => updateQty(cartItemKey(item), item.qty - 1)}
                             className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
                           >
                             <Minus size={15} />
@@ -190,7 +192,7 @@ export default function CartView() {
                           <button
                             type="button"
                             aria-label={t('increaseQty')}
-                            onClick={() => updateQty(item.productId, item.variantId, item.qty + 1)}
+                            onClick={() => updateQty(cartItemKey(item), item.qty + 1)}
                             className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
                           >
                             <Plus size={15} />

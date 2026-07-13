@@ -37,26 +37,41 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
   if (!payload.novaPoshta.trim()) return { error: 'Вкажіть відділення' };
   if (!payload.items.length) return { error: 'Кошик порожній' };
 
+  const productLines = payload.items.filter(
+    (i): i is Extract<CartItem, { kind: 'product' }> => i.kind === 'product',
+  );
+  const accessoryLines = payload.items.filter(
+    (i): i is Extract<CartItem, { kind: 'accessory' }> => i.kind === 'accessory',
+  );
+
   // ── Fetch authoritative prices from DB (never trust client prices) ───────────
-  const variantIds = payload.items
-    .map((i) => i.variantId)
-    .filter((id): id is string => id !== null);
-  const productIds = payload.items.map((i) => i.productId);
+  const variantIds = productLines.map((i) => i.variantId);
+  const productIds = productLines.map((i) => i.productId);
+  const accessoryIds = accessoryLines.map((i) => i.accessoryId);
 
   let variants: { id: string; price: { toNumber: () => number } | number }[];
   let products: { id: string }[];
+  let accessories: { id: string; price: { toNumber: () => number } | number }[];
   try {
-    [variants, products] = await Promise.all([
+    [variants, products, accessories] = await Promise.all([
       variantIds.length > 0
         ? prisma.productVariant.findMany({
             where: { id: { in: variantIds } },
             select: { id: true, price: true },
           })
         : Promise.resolve([]),
-      prisma.product.findMany({
-        where: { id: { in: productIds } },
-        select: { id: true },
-      }),
+      productIds.length > 0
+        ? prisma.product.findMany({
+            where: { id: { in: productIds } },
+            select: { id: true },
+          })
+        : Promise.resolve([]),
+      accessoryIds.length > 0
+        ? prisma.productAccessory.findMany({
+            where: { id: { in: accessoryIds } },
+            select: { id: true, price: true },
+          })
+        : Promise.resolve([]),
     ]);
   } catch (err) {
     console.error('[placeOrder] DB lookup error', err);
@@ -70,15 +85,19 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
     ]),
   );
   const productIdSet = new Set(products.map((p) => p.id));
+  const accessoryPriceMap = new Map(
+    accessories.map((a) => [
+      a.id,
+      typeof a.price === 'number' ? a.price : a.price.toNumber(),
+    ]),
+  );
 
-  let resolvedItems: (CartItem & { price: number })[];
+  let resolvedProductItems: (Extract<CartItem, { kind: 'product' }> & { price: number })[];
+  let resolvedAccessoryItems: { name: string; price: number; qty: number }[];
   try {
-    resolvedItems = payload.items.map((i) => {
+    resolvedProductItems = productLines.map((i) => {
       if (!productIdSet.has(i.productId)) {
         throw new Error(`Product ${i.productId} not found`);
-      }
-      if (i.variantId === null) {
-        throw new Error(`Item "${i.name}" has no variant`);
       }
       const price = variantPriceMap.get(i.variantId);
       if (price === undefined) {
@@ -89,11 +108,23 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
       }
       return { ...i, price };
     });
+    resolvedAccessoryItems = accessoryLines.map((i) => {
+      const price = accessoryPriceMap.get(i.accessoryId);
+      if (price === undefined) {
+        throw new Error(`Accessory ${i.accessoryId} not found`);
+      }
+      if (!Number.isInteger(i.qty) || i.qty < 1 || i.qty > 99) {
+        throw new Error(`Invalid qty ${i.qty}`);
+      }
+      return { name: i.name, price, qty: i.qty };
+    });
   } catch {
     return { error: 'Товар не знайдено або недоступний' };
   }
 
-  const totalAmount = resolvedItems.reduce((s, i) => s + i.price * i.qty, 0);
+  const totalAmount =
+    resolvedProductItems.reduce((s, i) => s + i.price * i.qty, 0) +
+    resolvedAccessoryItems.reduce((s, i) => s + i.price * i.qty, 0);
   const ref = generateRef();
   const customerName = `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim();
 
@@ -112,12 +143,19 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
         paymentMethod: payload.paymentMethod,
         totalAmount,
         items: {
-          create: resolvedItems.map((i) => ({
+          create: resolvedProductItems.map((i) => ({
             productId: i.productId,
-            variantId: i.variantId ?? undefined,
+            variantId: i.variantId,
             name: i.name,
             size: i.size ?? undefined,
             color: i.color ?? undefined,
+            price: i.price,
+            qty: i.qty,
+          })),
+        },
+        accessoryItems: {
+          create: resolvedAccessoryItems.map((i) => ({
+            name: i.name,
             price: i.price,
             qty: i.qty,
           })),
@@ -142,13 +180,22 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
       totalAmount,
       paymentMethod: 'cod',
       monoPaidAt: null,
-      items: resolvedItems.map((i) => ({
-        name: i.name,
-        size: i.size,
-        color: i.color,
-        price: i.price,
-        qty: i.qty,
-      })),
+      items: [
+        ...resolvedProductItems.map((i) => ({
+          name: i.name,
+          size: i.size,
+          color: i.color,
+          price: i.price,
+          qty: i.qty,
+        })),
+        ...resolvedAccessoryItems.map((i) => ({
+          name: i.name,
+          size: null,
+          color: null,
+          price: i.price,
+          qty: i.qty,
+        })),
+      ],
     }).catch((err) => console.error('[placeOrder] Telegram error', err));
   }
 
