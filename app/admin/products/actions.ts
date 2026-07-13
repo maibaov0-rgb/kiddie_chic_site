@@ -38,7 +38,7 @@ export async function getProductAction(id: string) {
   await requireAdmin();
   return prisma.product.findUnique({
     where: { id },
-    include: { variants: true },
+    include: { variants: true, accessories: true },
   });
 }
 
@@ -78,6 +78,12 @@ export async function createProductAction(
             images: [],
           })),
         },
+        accessories: {
+          create: data.accessories.map((a) => ({
+            type: a.type,
+            price: a.price,
+          })),
+        },
       },
     });
 
@@ -112,6 +118,7 @@ export async function updateProductAction(
   try {
     await prisma.$transaction([
       prisma.productVariant.deleteMany({ where: { productId: id } }),
+      prisma.productAccessory.deleteMany({ where: { productId: id } }),
       prisma.product.update({
         where: { id },
         data: {
@@ -130,6 +137,12 @@ export async function updateProductAction(
               size: v.size,
               price: v.price,
               images: [],
+            })),
+          },
+          accessories: {
+            create: data.accessories.map((a) => ({
+              type: a.type,
+              price: a.price,
             })),
           },
         },
