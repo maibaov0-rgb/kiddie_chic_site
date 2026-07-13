@@ -43,7 +43,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-1.5 font-sans text-xs text-foreground/40 md:mb-8">
           <Link href="/catalog/dresses" className="transition-colors hover:text-gold">
-            {en ? 'Dresses' : 'Сукні'}
+            {en ? 'Main Collection' : 'Основна колекція'}
           </Link>
           <ChevronRight size={13} />
           <span className="text-foreground/60">{en ? product.name_en : product.name_uk}</span>

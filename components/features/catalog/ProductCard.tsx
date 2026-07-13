@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { Heart } from 'lucide-react';
-import { COLORS, cover, minPrice, type Product } from '@/lib/catalog';
+import { colorName, colorSwatch, swatchBackground, cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -19,9 +19,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const prices = product.variants.map((v) => v.price);
   const hasRange = prices.length > 1 && Math.min(...prices) !== Math.max(...prices);
 
-  const colorDots = product.colors
-    .map((id) => COLORS.find((c) => c.id === id))
-    .filter((c): c is (typeof COLORS)[number] => Boolean(c));
+  const colorDots = product.colors.map((id) => colorSwatch(id));
 
   return (
     <Link href={`/catalog/dresses/${product.slug}`} className="group block">
@@ -45,11 +43,6 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.isBestseller && (
             <span className="rounded-full bg-gold px-3 py-1 font-sans text-[9px] font-bold uppercase tracking-widest text-white shadow-card">
               {t('isBestseller')}
-            </span>
-          )}
-          {!product.inStock && (
-            <span className="rounded-full bg-foreground/80 px-3 py-1 font-sans text-[9px] font-bold uppercase tracking-widest text-white shadow-card">
-              {t('outOfStock')}
             </span>
           )}
         </div>
@@ -82,9 +75,9 @@ export default function ProductCard({ product }: { product: Product }) {
               {colorDots.map((c) => (
                 <span
                   key={c.id}
-                  title={locale === 'en' ? c.name_en : c.name_uk}
+                  title={colorName(c.id, locale === 'en')}
                   className="h-3 w-3 rounded-full ring-1 ring-foreground/10"
-                  style={{ backgroundColor: c.hex }}
+                  style={{ background: swatchBackground(c) }}
                 />
               ))}
             </div>

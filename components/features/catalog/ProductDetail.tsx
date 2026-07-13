@@ -6,14 +6,10 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Check, Minus, Plus, ShoppingBag, Clock, Scissors } from 'lucide-react';
-import { COLORS, SIZES, cover, type Product } from '@/lib/catalog';
+import { colorName, colorSwatch, swatchBackground, cover, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
 
-function colorName(id: string, en: boolean): string {
-  const c = COLORS.find((x) => x.id === id);
-  return c ? (en ? c.name_en : c.name_uk) : id;
-}
 export default function ProductDetail({ product }: { product: Product }) {
   const locale = useLocale();
   const en = locale === 'en';
@@ -23,8 +19,10 @@ export default function ProductDetail({ product }: { product: Product }) {
   const name = en ? product.name_en : product.name_uk;
   const description = en ? product.description_en : product.description_uk;
 
-  // Selection — kept valid via "effective" fallbacks instead of effects
-  const sizes = SIZES.filter((s) => product.variants.some((v) => v.size === s));
+  // Selection — kept valid via "effective" fallbacks instead of effects.
+  // Sizes come straight from the product's own variants (not the SIZES preset
+  // list) so a preset change never hides a size that's already for sale.
+  const sizes = [...new Set(product.variants.map((v) => v.size))];
   const [size, setSize] = useState(sizes[0] ?? '');
 
   const [colorRaw, setColor] = useState(product.colors[0] ?? '');
@@ -46,7 +44,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const price = variant?.price ?? null;
 
   function handleAdd() {
-    if (!variant || !product.inStock) return;
+    if (!variant) return;
     addItem({
       productId: product.id,
       variantId: variant.id,
@@ -120,13 +118,6 @@ export default function ProductDetail({ product }: { product: Product }) {
               {t('isBestseller')}
             </span>
           )}
-          <span
-            className={`rounded-full px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-widest ${
-              product.inStock ? 'bg-beige-200 text-foreground/60' : 'bg-foreground/10 text-foreground/50'
-            }`}
-          >
-            {product.inStock ? t('inStock') : t('outOfStock')}
-          </span>
         </div>
 
         <h1 className="font-sans text-2xl font-semibold leading-snug text-foreground md:text-3xl">{name}</h1>
@@ -167,24 +158,21 @@ export default function ProductDetail({ product }: { product: Product }) {
             </h3>
             <div className="flex flex-wrap gap-2.5">
               {product.colors.map((cid) => {
-                const c = COLORS.find((x) => x.id === cid);
-                if (!c) return null;
+                const c = colorSwatch(cid);
                 const on = cid === color;
                 return (
                   <button
                     key={cid}
                     type="button"
-                    aria-label={colorName(cid, en) ?? cid}
+                    aria-label={colorName(cid, en)}
                     aria-pressed={on}
                     onClick={() => setColor(cid)}
                     className={`flex h-11 w-11 items-center justify-center rounded-full ring-1 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
                       on ? 'ring-2 ring-gold ring-offset-2' : 'ring-foreground/20 hover:ring-gold/50'
                     }`}
-                    style={{ backgroundColor: c.hex }}
+                    style={{ background: swatchBackground(c) }}
                   >
-                    {on && (
-                      <Check size={16} className={cid === 'white' || cid === 'powder' ? 'text-foreground/70' : 'text-white'} />
-                    )}
+                    {on && <Check size={16} className={c.dark ? 'text-foreground/70' : 'text-white'} />}
                   </button>
                 );
               })}
@@ -223,7 +211,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           <button
             type="button"
             onClick={handleAdd}
-            disabled={!product.inStock || !variant}
+            disabled={!variant}
             className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 px-6 font-sans text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float disabled:pointer-events-none disabled:opacity-40"
           >
             {added ? <Check size={18} /> : <ShoppingBag size={17} />}
