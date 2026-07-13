@@ -44,7 +44,6 @@ deploy_tag "$IMAGE_TAG"
 if check_healthy; then
   echo "Health check passed for ${IMAGE_TAG}"
   echo "$IMAGE_TAG" > "$LAST_GOOD_FILE"
-  docker image prune -f --filter "label!=keep" >/dev/null 2>&1 || true
   exit 0
 fi
 
