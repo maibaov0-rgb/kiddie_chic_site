@@ -5,12 +5,17 @@
 - VPS: `5.189.167.89` — на сервері крутиться **кілька сайтів**
 - При деплої працювати **тільки з контейнерами `kiddie_chic_*`** (`kiddie_chic_web`, `kiddie_chic_db`)
 - **Ніколи не робити** `docker compose down` без `-f docker-compose.prod.yml` — це може зупинити інші сайти
-- Безпечний деплой: `git pull origin main && docker compose -f docker-compose.prod.yml build web && docker compose -f docker-compose.prod.yml up -d --force-recreate web`
-- Якщо змінювались залежності/Prisma-схема або є сумнів, що Docker підхопив нові файли — додай `--no-cache` до `build`. Завжди звіряй не лише HTTP 200, а й реальний контент сторінки (`curl` + grep на нову фразу) і час створення образу (`docker images kiddie_chic-web --format '{{.CreatedAt}}'`)
-- На сервері встановлено `docker-buildx` (пакет `docker-buildx`, НЕ `docker-buildx-plugin` — та назва з офіційного Docker-репо, тут Ubuntu-репо). Без нього Compose падає в legacy-білдер і кешує шари погано — навіть дрібні зміни (один JSON) перезапускають `npm ci` з нуля (~8 хв). Якщо після оновлення сервера деплої знову стали довгими навіть без `--no-cache` — перевір `docker buildx version`, і якщо команда не знайдена, постав: `apt-get install -y docker-buildx`
+
+### Деплой — повністю автоматичний (з 2026-07-14)
+
+Пуш у `main` → GitHub Actions сам збирає Docker-образ у хмарі (кеш, швидко), пушить у `ghcr.io/maibaov0-rgb/kiddie_chic_site-web`, заходить на VPS по SSH (окремий deploy-ключ, `.github/workflows/deploy.yml`) і запускає `scripts/deploy.sh`. Скрипт стягує готовий образ, перезапускає **тільки** `kiddie_chic_web`, чекає реальний HTTP-контент (`curl` + grep "Kiddie Chic"), і **автоматично відкочує** на попередній робочий тег, якщо новий контейнер не піднявся. VPS більше нічого не білдить — старі проблеми (довгі білди, зависання SSH-сесії посеред деплою, застряглий контейнер без відкату) цим усунуті.
+
+- Нічого руками робити не треба для звичайного деплою — просто пуш у `main`.
+- Прогрес видно в GitHub Actions repo → Actions tab. Червоний хрестик = деплой не пройшов health-check і сам відкотився — прод лишився на попередній версії.
+- Ручний деплой (аварійний, якщо Actions недоступний) — той самий SSH-доступ (пароль, `expect`), команди: `git pull origin main && docker compose -f docker-compose.prod.yml build --no-cache web && docker compose -f docker-compose.prod.yml up -d --force-recreate web`. Але це запасний варіант, не основний шлях.
 - Міграції: запускаються автоматично при старті контейнера (`prisma migrate deploy`)
-- SSH — тільки пароль (без ключа), керувати через `expect`. У `send` уникай `[`/`]`/`^`/`<`/`>` у подвійних лапках (ламає tcl) — обгортай командою в `{...}` або спрощуй grep-патерн
-- Після `up -d --force-recreate` контейнеру треба кілька секунд, щоб почати слухати порт — не роби висновків з `curl`, запущеного одразу; перевіряй ще раз за кілька секунд
+- SSH (ручний доступ) — тільки пароль (без ключа для людини), керувати через `expect`. У `send` уникай `[`/`]`/`^`/`<`/`>` у подвійних лапках (ламає tcl) — обгортай командою в `{...}` або спрощуй grep-патерн. GitHub Actions використовує окремий SSH-ключ (`DEPLOY_SSH_KEY` secret), доданий у `authorized_keys` — паролю не чіпав.
+- Після `up -d --force-recreate` контейнеру треба кілька секунд, щоб почати слухати порт — `deploy.sh` це враховує (health-check з ретраями), при ручній перевірці теж не роби висновків з `curl`, запущеного одразу.
 - **Проксі/TLS**: Caddy на сервері НЕМАЄ. `kiddiechic.ua` термінується nginx-ом **всередині контейнера `pearl-of-art`** (стек іншого сайту): конфіг `/etc/nginx/conf.d/kiddiechic.conf`, проксі на `172.18.0.1:8090`. Зміни: `docker exec pearl-of-art` → редагувати конфіг → `nginx -t && nginx -s reload`. Обережно — контейнер обслуговує і чужий сайт
 
 ## Команди

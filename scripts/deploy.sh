@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Runs ON THE VPS (invoked by GitHub Actions over SSH). Pulls a prebuilt image,
+# switches the web container to it, verifies it's actually serving real content,
+# and rolls back automatically if it isn't. Never touches other kiddie_chic-unrelated
+# containers on this shared server.
+set -euo pipefail
+
+IMAGE_TAG="${1:?usage: deploy.sh <image-tag>}"
+cd /root/kiddie_chic
+COMPOSE="docker compose -f docker-compose.prod.yml"
+LAST_GOOD_FILE="/root/kiddie_chic/.last_good_tag"
+HEALTH_URL="http://localhost:8090/"
+HEALTH_MARKER="Kiddie Chic"
+
+git fetch origin main
+git reset --hard origin/main
+
+echo "Pulling ghcr.io/maibaov0-rgb/kiddie_chic_site-web:${IMAGE_TAG}"
+docker pull "ghcr.io/maibaov0-rgb/kiddie_chic_site-web:${IMAGE_TAG}"
+
+PREVIOUS_TAG=""
+if [ -f "$LAST_GOOD_FILE" ]; then
+  PREVIOUS_TAG=$(cat "$LAST_GOOD_FILE")
+fi
+
+deploy_tag() {
+  local tag="$1"
+  IMAGE_TAG="$tag" $COMPOSE up -d --force-recreate web
+}
+
+check_healthy() {
+  for i in $(seq 1 15); do
+    sleep 4
+    if curl -fsS --max-time 5 "$HEALTH_URL" 2>/dev/null | grep -q "$HEALTH_MARKER"; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+echo "Switching web container to tag: ${IMAGE_TAG}"
+deploy_tag "$IMAGE_TAG"
+
+if check_healthy; then
+  echo "Health check passed for ${IMAGE_TAG}"
+  echo "$IMAGE_TAG" > "$LAST_GOOD_FILE"
+  docker image prune -f --filter "label!=keep" >/dev/null 2>&1 || true
+  exit 0
+fi
+
+echo "Health check FAILED for ${IMAGE_TAG}"
+docker logs --tail=40 kiddie_chic_web || true
+
+if [ -n "$PREVIOUS_TAG" ] && [ "$PREVIOUS_TAG" != "$IMAGE_TAG" ]; then
+  echo "Rolling back to last known-good tag: ${PREVIOUS_TAG}"
+  deploy_tag "$PREVIOUS_TAG"
+  if check_healthy; then
+    echo "Rollback to ${PREVIOUS_TAG} succeeded. Deploy of ${IMAGE_TAG} FAILED."
+    exit 1
+  else
+    echo "Rollback ALSO failed health check. Manual intervention required."
+    exit 2
+  fi
+else
+  echo "No previous good tag recorded — leaving failed container up for inspection."
+  exit 1
+fi
