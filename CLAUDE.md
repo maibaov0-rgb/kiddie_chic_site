@@ -5,8 +5,12 @@
 - VPS: `5.189.167.89` — на сервері крутиться **кілька сайтів**
 - При деплої працювати **тільки з контейнерами `kiddie_chic_*`** (`kiddie_chic_web`, `kiddie_chic_db`)
 - **Ніколи не робити** `docker compose down` без `-f docker-compose.prod.yml` — це може зупинити інші сайти
-- Безпечний деплой: `docker compose -f docker-compose.prod.yml build web && docker compose -f docker-compose.prod.yml up -d web`
+- Безпечний деплой: `git pull origin main && docker compose -f docker-compose.prod.yml build web && docker compose -f docker-compose.prod.yml up -d --force-recreate web`
+- Якщо змінювались залежності/Prisma-схема або є сумнів, що Docker підхопив нові файли — додай `--no-cache` до `build`. Завжди звіряй не лише HTTP 200, а й реальний контент сторінки (`curl` + grep на нову фразу) і час створення образу (`docker images kiddie_chic-web --format '{{.CreatedAt}}'`)
+- На сервері встановлено `docker-buildx` (пакет `docker-buildx`, НЕ `docker-buildx-plugin` — та назва з офіційного Docker-репо, тут Ubuntu-репо). Без нього Compose падає в legacy-білдер і кешує шари погано — навіть дрібні зміни (один JSON) перезапускають `npm ci` з нуля (~8 хв). Якщо після оновлення сервера деплої знову стали довгими навіть без `--no-cache` — перевір `docker buildx version`, і якщо команда не знайдена, постав: `apt-get install -y docker-buildx`
 - Міграції: запускаються автоматично при старті контейнера (`prisma migrate deploy`)
+- SSH — тільки пароль (без ключа), керувати через `expect`. У `send` уникай `[`/`]`/`^`/`<`/`>` у подвійних лапках (ламає tcl) — обгортай командою в `{...}` або спрощуй grep-патерн
+- Після `up -d --force-recreate` контейнеру треба кілька секунд, щоб почати слухати порт — не роби висновків з `curl`, запущеного одразу; перевіряй ще раз за кілька секунд
 
 ## Команди
 
