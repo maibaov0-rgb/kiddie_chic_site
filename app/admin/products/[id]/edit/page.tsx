@@ -27,6 +27,10 @@ export default async function EditProductPage({
       size: v.size,
       price: Number(v.price),
     })),
+    accessories: product.accessories.map((a) => ({
+      type: a.type as "headband" | "gloves" | "bag" | "choker",
+      price: Number(a.price),
+    })),
   };
 
   return (
