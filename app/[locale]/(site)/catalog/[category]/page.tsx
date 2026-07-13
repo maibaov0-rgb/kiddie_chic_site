@@ -7,7 +7,9 @@ import { getProductsByCategory } from '@/lib/products';
 import CatalogView from '@/components/features/catalog/CatalogView';
 import CoutureGallery from '@/components/features/catalog/CoutureGallery';
 
-export const dynamic = 'force-dynamic';
+// ISR: rendered on demand, then served from cache. Admin product actions call
+// revalidatePath, so edits show up immediately — the timer is just a backstop.
+export const revalidate = 300;
 
 type Params = { locale: string; category: string };
 

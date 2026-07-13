@@ -1,23 +1,24 @@
-'use client';
+import { redirect } from '@/i18n/navigation';
+import { setRequestLocale } from 'next-intl/server';
+import CatalogRedirectClient from './redirect-client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+// Catalog opens on the "Dresses" sub-menu by default. The full-stack app
+// redirects on the server (baked into the prerendered page, so navigations
+// resolve it without an extra client round-trip); redirect() is unsupported
+// under static export, so the GitHub Pages demo keeps the client-side one.
+const isStatic = process.env.STATIC_EXPORT === 'true';
 
-// Catalog opens on the "Dresses" sub-menu by default.
-// Client-side redirect so it also works under static export (GitHub Pages).
-export default function CatalogIndexPage() {
-  const router = useRouter();
+export default async function CatalogIndexPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
 
-  useEffect(() => {
-    router.replace('/catalog/dresses');
-  }, [router]);
+  if (!isStatic) {
+    redirect({ href: '/catalog/dresses', locale });
+  }
 
-  return (
-    <section className="flex min-h-[60vh] items-center justify-center px-4 pt-32">
-      <Link href="/catalog/dresses" className="font-sans text-sm font-semibold text-gold underline underline-offset-4">
-        Основна колекція →
-      </Link>
-    </section>
-  );
+  return <CatalogRedirectClient />;
 }

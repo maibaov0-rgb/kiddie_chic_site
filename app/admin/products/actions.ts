@@ -17,6 +17,14 @@ async function requireAdmin() {
   if (!session?.user || role !== "ADMIN") throw new Error("UNAUTHORIZED");
 }
 
+// Public catalog pages are ISR-cached (see app/[locale]/(site)/catalog/…);
+// bust the whole tree after any product mutation so changes go live at once.
+// The site is small enough that invalidating everything beats enumerating
+// every locale × category × slug combination.
+function revalidateCatalog() {
+  revalidatePath("/", "layout");
+}
+
 function isPrismaErrorWithCode(error: unknown, code: string): boolean {
   return (
     typeof error === "object" &&
@@ -91,6 +99,7 @@ export async function createProductAction(
     });
 
     revalidatePath("/admin/products");
+    revalidateCatalog();
     return { ok: true, id: created.id };
   } catch (error) {
     // Concurrent creates of the same name can race the slug @unique constraint.
@@ -157,6 +166,7 @@ export async function updateProductAction(
 
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${id}/edit`);
+  revalidateCatalog();
   return { ok: true, id };
 }
 
@@ -188,5 +198,6 @@ export async function deleteProductAction(id: string): Promise<ActionResult> {
     return { ok: false, error: "Не вдалося видалити товар. Спробуйте ще раз." };
   }
   revalidatePath("/admin/products");
+  revalidateCatalog();
   return { ok: true };
 }

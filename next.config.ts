@@ -20,14 +20,25 @@ const nextConfig: NextConfig = {
       }
     : {
         images: {
-          remotePatterns: [
-            {
-              protocol: "https",
-              hostname: "res.cloudinary.com",
-              pathname: "/**",
-            },
-          ],
+          // Cloudinary's CDN resizes/optimizes product photos itself — the VPS
+          // never proxies images (see lib/image-loader.ts).
+          loader: "custom" as const,
+          loaderFile: "./lib/image-loader.ts",
         },
+        // Files in /public are served by Next with max-age=0 by default; the
+        // hero video and photos rarely change, so let browsers keep them a day
+        // and revalidate in the background for a week.
+        headers: async () => [
+          {
+            source: "/:dir(videos|images)/:path*",
+            headers: [
+              {
+                key: "Cache-Control",
+                value: "public, max-age=86400, stale-while-revalidate=604800",
+              },
+            ],
+          },
+        ],
       }),
 };
 

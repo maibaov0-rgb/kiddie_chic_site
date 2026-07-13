@@ -8,7 +8,9 @@ import { useCartStore } from '@/lib/stores/cart';
 import LanguageSwitcher from './LanguageSwitcher';
 
 const NAV_LINKS = [
-  { key: 'catalog',  href: '/catalog' },
+  // Straight to the default sub-category — /catalog itself only redirects,
+  // which costs a full extra navigation round-trip on mobile.
+  { key: 'catalog',  href: '/catalog/dresses' },
   { key: 'terms',    href: '/terms' },
   { key: 'about',    href: '/about' },
   { key: 'contacts', href: '/contacts' },

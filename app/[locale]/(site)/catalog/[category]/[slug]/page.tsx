@@ -7,7 +7,9 @@ import { cover } from '@/lib/catalog';
 import { getProductBySlug } from '@/lib/products';
 import ProductDetail from '@/components/features/catalog/ProductDetail';
 
-export const dynamic = 'force-dynamic';
+// ISR: rendered on demand, then served from cache. Admin product actions call
+// revalidatePath, so edits show up immediately — the timer is just a backstop.
+export const revalidate = 300;
 
 type Params = { locale: string; category: string; slug: string };
 
