@@ -1263,6 +1263,97 @@ git commit -m "feat: make CartItem a discriminated union to support accessory li
 
 ---
 
+### Task 8b (gap found during Task 8 implementation): `components/features/checkout/CheckoutView.tsx` — order-summary sidebar
+
+**Discovered by:** the Task 8 implementer, via `npm run typecheck` after landing the `CartItem` union. This plan's original file survey (written during `writing-plans`) only found `CartView.tsx` and `ProductDetail.tsx` as `CartItem` consumers outside the store itself — `CheckoutView.tsx`'s order-summary sidebar (around line 448) is a fourth consumer that directly destructures `it.productId`/`it.variantId`/`it.imageUrl`/`it.size`/`it.color` without narrowing by `kind`. This is a genuine plan gap, not implementer error.
+
+**Files:**
+- Modify: `components/features/checkout/CheckoutView.tsx`
+
+**Interfaces:**
+- Consumes: `cartItemKey` (Task 8).
+
+- [ ] **Step 1: Import `cartItemKey`**
+
+Find:
+
+```ts
+import { useCartStore } from '@/lib/stores/cart';
+```
+
+Change to:
+
+```ts
+import { useCartStore, cartItemKey } from '@/lib/stores/cart';
+```
+
+- [ ] **Step 2: Fix the list key and gate product-only fields**
+
+Find:
+
+```tsx
+              {items.map((it) => (
+                <li key={`${it.productId}-${it.variantId ?? 'x'}`} className="flex gap-3">
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-powder-100">
+                    {it.imageUrl && (
+                      <Image src={asset(it.imageUrl)} alt={it.name} fill sizes="64px" className="object-cover" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-foreground">{it.name}</p>
+                    <p className="text-[12px] text-foreground/55">
+                      {[it.size, it.color].filter(Boolean).join(' · ') || '—'}
+                    </p>
+                    <p className="mt-0.5 text-[12px] text-foreground/55">× {it.qty}</p>
+                  </div>
+                  <span className="shrink-0 text-sm font-semibold text-foreground">
+                    {(it.price * it.qty).toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴
+                  </span>
+                </li>
+              ))}
+```
+
+Change to:
+
+```tsx
+              {items.map((it) => (
+                <li key={cartItemKey(it)} className="flex gap-3">
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-powder-100">
+                    {it.kind === 'product' && it.imageUrl && (
+                      <Image src={asset(it.imageUrl)} alt={it.name} fill sizes="64px" className="object-cover" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-foreground">{it.name}</p>
+                    <p className="text-[12px] text-foreground/55">
+                      {it.kind === 'product' ? [it.size, it.color].filter(Boolean).join(' · ') || '—' : '—'}
+                    </p>
+                    <p className="mt-0.5 text-[12px] text-foreground/55">× {it.qty}</p>
+                  </div>
+                  <span className="shrink-0 text-sm font-semibold text-foreground">
+                    {(it.price * it.qty).toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴
+                  </span>
+                </li>
+              ))}
+```
+
+- [ ] **Step 3: Typecheck**
+
+```bash
+npm run typecheck
+```
+
+Expected: no more errors in `components/features/checkout/CheckoutView.tsx`.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add components/features/checkout/CheckoutView.tsx
+git commit -m "fix: checkout order summary supports accessory line items via cartItemKey"
+```
+
+---
+
 ### Task 9: `components/features/cart/CartView.tsx` — render accessory lines
 
 **Files:**
