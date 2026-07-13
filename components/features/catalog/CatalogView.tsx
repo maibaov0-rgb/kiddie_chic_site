@@ -6,6 +6,7 @@ import { SlidersHorizontal, X, Check } from 'lucide-react';
 import {
   COLORS,
   SIZES,
+  swatchBackground,
   filterProducts,
   type Filters,
   type Product,
@@ -222,14 +223,9 @@ function FilterControls({
                 className={`flex h-11 w-11 items-center justify-center rounded-full ring-1 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
                   on ? 'ring-2 ring-gold ring-offset-2' : 'ring-foreground/20 hover:ring-gold/50'
                 }`}
-                style={{ backgroundColor: c.hex }}
+                style={{ background: swatchBackground(c) }}
               >
-                {on && (
-                  <Check
-                    size={14}
-                    className={c.id === 'white' || c.id === 'powder' ? 'text-foreground/70' : 'text-white'}
-                  />
-                )}
+                {on && <Check size={14} className={c.dark ? 'text-foreground/70' : 'text-white'} />}
               </button>
             );
           })}

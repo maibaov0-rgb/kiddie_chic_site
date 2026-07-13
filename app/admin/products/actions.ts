@@ -67,7 +67,10 @@ export async function createProductAction(
         description_en: data.description_en,
         images: data.images,
         colors: data.colors,
-        inStock: data.inStock,
+        // "In stock" is no longer a concept admins manage — every product is
+        // treated as in stock. Force true so stale data (or historic rows)
+        // never disables purchasing.
+        inStock: true,
         isNew: data.isNew,
         isBestseller: data.isBestseller,
         isHidden: false,
@@ -122,7 +125,7 @@ export async function updateProductAction(
           description_en: data.description_en,
           images: data.images,
           colors: data.colors,
-          inStock: data.inStock,
+          inStock: true,
           isNew: data.isNew,
           isBestseller: data.isBestseller,
           variants: {

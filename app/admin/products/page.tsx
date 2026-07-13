@@ -4,8 +4,8 @@ import { listProductsAction } from "./actions";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
 
 const CATEGORY_LABEL: Record<string, string> = {
-  dress: "Сукні",
-  couture: "Кутюр",
+  dress: "Основна колекція",
+  couture: "Кутюрна колекція",
 };
 
 export default async function ProductsPage() {
@@ -80,11 +80,10 @@ export default async function ProductsPage() {
                     </p>
 
                     {/* Badges */}
-                    {(p.isNew || p.isBestseller || !p.inStock) && (
+                    {(p.isNew || p.isBestseller) && (
                       <div className="mt-1.5 flex flex-wrap gap-1">
                         {p.isNew && <Badge>Новинка</Badge>}
                         {p.isBestseller && <Badge>Хіт</Badge>}
-                        {!p.inStock && <Badge>Немає</Badge>}
                       </div>
                     )}
                   </div>

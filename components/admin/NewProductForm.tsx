@@ -12,7 +12,7 @@ const EMPTY: ProductInput = {
   description_en: "",
   images: [],
   colors: [],
-  inStock: true,
+  inStock: true, // no longer editable — actions.ts forces this true on save
   isNew: false,
   isBestseller: false,
   variants: [{ size: "86-92", price: undefined as unknown as number }],

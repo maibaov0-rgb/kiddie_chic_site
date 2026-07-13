@@ -63,8 +63,8 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
         <div className="space-y-2">
           <label className={labelCls}>Категорія</label>
           <select {...register("category")} className={inputCls}>
-            <option value="dress">Сукні</option>
-            <option value="couture">Кутюр</option>
+            <option value="dress">Основна колекція</option>
+            <option value="couture">Кутюрна колекція</option>
           </select>
         </div>
 
@@ -153,7 +153,6 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
         <div className="flex flex-wrap gap-6">
           {(
             [
-              ["inStock", "В наявності"],
               ["isNew", "Новинка"],
               ["isBestseller", "Хіт"],
             ] as const
