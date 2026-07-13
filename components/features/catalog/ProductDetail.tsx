@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Check, Minus, Plus, ShoppingBag, Clock, Scissors } from 'lucide-react';
-import { colorName, colorSwatch, swatchBackground, cover, type Product } from '@/lib/catalog';
+import { colorName, colorSwatch, swatchBackground, accessoryTypeName, cover, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
 
@@ -46,6 +46,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   function handleAdd() {
     if (!variant) return;
     addItem({
+      kind: 'product',
       productId: product.id,
       variantId: variant.id,
       name,
@@ -54,6 +55,17 @@ export default function ProductDetail({ product }: { product: Product }) {
       price: variant.price,
       qty,
       imageUrl: cover(product),
+    });
+    setAddedTick((n) => n + 1);
+  }
+
+  function handleAddAccessory(a: Product['accessories'][number]) {
+    addItem({
+      kind: 'accessory',
+      accessoryId: a.id,
+      name: accessoryTypeName(a.type, en),
+      price: a.price,
+      qty: 1,
     });
     setAddedTick((n) => n + 1);
   }
@@ -218,6 +230,40 @@ export default function ProductDetail({ product }: { product: Product }) {
             {t('addToCart')}
           </button>
         </div>
+
+        {/* Accessories */}
+        {product.accessories.length > 0 && (
+          <div className="mt-6">
+            <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
+              {t('accessoriesTitle')}
+            </h3>
+            <div className="space-y-2">
+              {product.accessories.map((a) => (
+                <div
+                  key={a.id}
+                  className="flex items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 shadow-card"
+                >
+                  <span className="font-sans text-sm font-medium text-foreground/80">
+                    {accessoryTypeName(a.type, en)}
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="font-sans text-sm font-bold text-gold">
+                      {a.price.toLocaleString('uk-UA')} ₴
+                    </span>
+                    <button
+                      type="button"
+                      aria-label={t('addAccessory', { name: accessoryTypeName(a.type, en) })}
+                      onClick={() => handleAddAccessory(a)}
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-powder-200 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Secondary CTAs */}
         <div className="mt-4 flex flex-col gap-2.5 sm:flex-row">
