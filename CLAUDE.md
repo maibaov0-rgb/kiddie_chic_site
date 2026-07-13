@@ -11,6 +11,7 @@
 - Міграції: запускаються автоматично при старті контейнера (`prisma migrate deploy`)
 - SSH — тільки пароль (без ключа), керувати через `expect`. У `send` уникай `[`/`]`/`^`/`<`/`>` у подвійних лапках (ламає tcl) — обгортай командою в `{...}` або спрощуй grep-патерн
 - Після `up -d --force-recreate` контейнеру треба кілька секунд, щоб почати слухати порт — не роби висновків з `curl`, запущеного одразу; перевіряй ще раз за кілька секунд
+- **Проксі/TLS**: Caddy на сервері НЕМАЄ. `kiddiechic.ua` термінується nginx-ом **всередині контейнера `pearl-of-art`** (стек іншого сайту): конфіг `/etc/nginx/conf.d/kiddiechic.conf`, проксі на `172.18.0.1:8090`. Зміни: `docker exec pearl-of-art` → редагувати конфіг → `nginx -t && nginx -s reload`. Обережно — контейнер обслуговує і чужий сайт
 
 ## Команди
 
@@ -21,7 +22,7 @@
 
 ## Стек
 
-Next.js 15 (App Router, TS strict) · PostgreSQL + Prisma · Tailwind + shadcn/ui · Framer Motion · next-intl · Auth.js · Zustand · Cloudinary · Resend · grammy · Docker + Caddy
+Next.js 16 (App Router, TS strict) · PostgreSQL + Prisma · Tailwind + shadcn/ui · Framer Motion · next-intl · Auth.js · Zustand · Cloudinary · Resend · grammy · Docker + nginx (в контейнері `pearl-of-art`, див. вище)
 
 ## Code style
 
