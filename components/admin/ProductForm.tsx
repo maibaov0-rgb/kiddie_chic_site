@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useForm, useFieldArray, useWatch, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { productSchema, type ProductInput } from "@/lib/validation/product";
 import { ImageUploader } from "@/components/admin/ImageUploader";
-import { SIZES, COLORS } from "@/lib/catalog";
+import { SIZES, COLORS, ACCESSORY_TYPES } from "@/lib/catalog";
 import type { ActionResult } from "@/app/admin/products/actions";
 
 interface Props {
@@ -45,6 +45,11 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
   });
 
   const variants = useFieldArray({ control, name: "variants" });
+  const accessories = useFieldArray({ control, name: "accessories" });
+  const watchedAccessories = useWatch({ control, name: "accessories" }) ?? [];
+  const availableAccessoryTypes = ACCESSORY_TYPES.filter(
+    (t) => !watchedAccessories.some((a) => a?.type === t.id),
+  );
 
   async function submit(data: ProductInput) {
     setServerError(null);
@@ -210,6 +215,61 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
               </button>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="space-y-4 rounded-3xl bg-white p-6 shadow-soft">
+        <div className="flex items-center justify-between">
+          <label className={labelCls}>Аксесуари</label>
+          <select
+            value=""
+            disabled={availableAccessoryTypes.length === 0}
+            onChange={(e) => {
+              const type = e.target.value as (typeof ACCESSORY_TYPES)[number]["id"] | "";
+              if (!type) return;
+              accessories.append({ type, price: undefined as unknown as number });
+            }}
+            className="rounded-full bg-[#FDF8F4] px-4 py-2 text-sm font-medium transition-all duration-300 ease-in-out hover:bg-[#EDE0D4] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="" disabled>
+              + Додати аксесуар
+            </option>
+            {availableAccessoryTypes.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name_uk}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="space-y-3">
+          {accessories.fields.map((f, i) => {
+            const typeLabel = ACCESSORY_TYPES.find((t) => t.id === f.type)?.name_uk ?? f.type;
+            return (
+              <div key={f.id} className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto]">
+                {/* `type` has no visible input (it's a read-only label below) —
+                    register it as hidden so react-hook-form actually includes
+                    it in the submitted data. Without this, only registered
+                    leaf inputs are guaranteed to survive submission. */}
+                <input type="hidden" {...register(`accessories.${i}.type`)} />
+                <span className={`${inputCls} flex items-center bg-[#FDF8F4]`}>{typeLabel}</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="Ціна, ₴"
+                  {...register(`accessories.${i}.price`)}
+                  className={inputCls}
+                />
+                <button
+                  type="button"
+                  onClick={() => accessories.remove(i)}
+                  className="rounded-full px-4 py-3 text-sm text-[#9b4a4a] transition-all duration-300 ease-in-out hover:bg-[#F4C6C6]/30"
+                >
+                  Видалити
+                </button>
+              </div>
+            );
+          })}
         </div>
       </section>
 
