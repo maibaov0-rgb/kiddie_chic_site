@@ -84,6 +84,13 @@ enum PaymentMethod {
   card
 }
 
+enum AccessoryType {
+  headband // Обруч
+  gloves   // Рукавички
+  bag      // Сумочка
+  choker   // Чокер
+}
+
 // ─── Domain models ─────────────────────────────────────────────────────────────
 
 model Product {
@@ -104,8 +111,9 @@ model Product {
   isBestseller Boolean @default(false)
   isHidden     Boolean @default(false)
 
-  variants   ProductVariant[]
-  orderItems OrderItem[]
+  variants    ProductVariant[]
+  accessories ProductAccessory[]
+  orderItems  OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -127,6 +135,17 @@ model ProductVariant {
   @@index([productId])
 }
 
+model ProductAccessory {
+  id        String        @id @default(cuid())
+  productId String
+  type      AccessoryType
+  price     Decimal       @db.Decimal(10, 2)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, type])
+}
+
 model Order {
   id           String        @id @default(cuid())
   ref          String        @unique
@@ -140,8 +159,9 @@ model Order {
   novaPoshta   String
   note         String?       @db.Text
 
-  items       OrderItem[]
-  totalAmount Decimal       @db.Decimal(10, 2)
+  items          OrderItem[]
+  accessoryItems OrderAccessoryItem[]
+  totalAmount    Decimal               @db.Decimal(10, 2)
 
   monoInvoiceId String?
   monoPaidAt    DateTime?
@@ -171,6 +191,18 @@ model OrderItem {
   order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product         @relation(fields: [productId], references: [id])
   variant ProductVariant? @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+}
+
+model OrderAccessoryItem {
+  id      String  @id @default(cuid())
+  orderId String
+  name    String // snapshot at order time, e.g. "Обруч"
+  price   Decimal @db.Decimal(10, 2)
+  qty     Int     @default(1)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
 }
