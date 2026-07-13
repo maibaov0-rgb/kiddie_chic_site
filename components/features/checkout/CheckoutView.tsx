@@ -8,7 +8,7 @@ import {
   Check, ChevronDown, CreditCard, Loader2, Lock, MapPin, Package,
   RefreshCcw, Truck, User, Wallet,
 } from 'lucide-react';
-import { useCartStore } from '@/lib/stores/cart';
+import { useCartStore, cartItemKey } from '@/lib/stores/cart';
 import { asset } from '@/lib/asset';
 import { TOP_UA_CITIES } from '@/lib/np-fallback';
 import { placeOrder } from '@/app/[locale]/(checkout)/checkout/actions';
@@ -446,16 +446,16 @@ export default function CheckoutView() {
 
             <ul className="mt-5 space-y-3">
               {items.map((it) => (
-                <li key={`${it.productId}-${it.variantId ?? 'x'}`} className="flex gap-3">
+                <li key={cartItemKey(it)} className="flex gap-3">
                   <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-powder-100">
-                    {it.imageUrl && (
+                    {it.kind === 'product' && it.imageUrl && (
                       <Image src={asset(it.imageUrl)} alt={it.name} fill sizes="64px" className="object-cover" />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-foreground">{it.name}</p>
                     <p className="text-[12px] text-foreground/55">
-                      {[it.size, it.color].filter(Boolean).join(' · ') || '—'}
+                      {it.kind === 'product' ? [it.size, it.color].filter(Boolean).join(' · ') || '—' : '—'}
                     </p>
                     <p className="mt-0.5 text-[12px] text-foreground/55">× {it.qty}</p>
                   </div>
