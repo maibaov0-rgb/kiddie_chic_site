@@ -16,7 +16,7 @@
 - Міграції: запускаються автоматично при старті контейнера (`prisma migrate deploy`)
 - SSH (ручний доступ) — тільки пароль (без ключа для людини), керувати через `expect`. У `send` уникай `[`/`]`/`^`/`<`/`>` у подвійних лапках (ламає tcl) — обгортай командою в `{...}` або спрощуй grep-патерн. GitHub Actions використовує окремий SSH-ключ (`DEPLOY_SSH_KEY` secret), доданий у `authorized_keys` — паролю не чіпав.
 - Після `up -d --force-recreate` контейнеру треба кілька секунд, щоб почати слухати порт — `deploy.sh` це враховує (health-check з ретраями), при ручній перевірці теж не роби висновків з `curl`, запущеного одразу.
-- **Проксі/TLS**: Caddy на сервері НЕМАЄ. `kiddiechic.ua` термінується nginx-ом **всередині контейнера `pearl-of-art`** (стек іншого сайту): конфіг `/etc/nginx/conf.d/kiddiechic.conf`, проксі на `172.18.0.1:8090`. Зміни: `docker exec pearl-of-art` → редагувати конфіг → `nginx -t && nginx -s reload`. Обережно — контейнер обслуговує і чужий сайт
+- **Проксі/TLS**: Caddy на сервері НЕМАЄ. `kiddiechic.ua` термінується nginx-ом **всередині контейнера `pearl-of-art`** (стек іншого сайту), проксі на `172.18.0.1:8090`. Конфіг **НЕ редагується через `docker exec`** — файл змонтований read-only з хоста: `/root/kiddie_chic/nginx/kiddiechic.conf` → `/etc/nginx/conf.d/kiddiechic.conf`. Редагувати на хості напряму, потім `docker exec pearl-of-art nginx -t && docker exec pearl-of-art nginx -s reload`. `kiddiechic.conf` і `pearlofart.com`-конфіг (`default.conf`) — окремі `server{}` блоки в окремих файлах, зміни в одному не чіпають інший, але помилка синтаксису валить **весь** nginx (`nginx -t` перед reload — обов'язково). Робити бекап файлу перед правкою.
 
 ## Команди
 
@@ -36,6 +36,8 @@ Next.js 16 (App Router, TS strict) · PostgreSQL + Prisma · Tailwind + shadcn/u
 - Зображення тільки через `next/image` з Cloudinary loader
 - Усі тексти через `next-intl` — **жодних hardcoded рядків** у UI
 - Кошик — Zustand з persist у localStorage
+- **Кожен серверний компонент у `[locale]` дереві, що читає переклади (`useTranslations`/`getTranslations`), мусить бути під сторінкою/лейаутом, де викликано `setRequestLocale(locale)`.** Без цього next-intl тягне локаль з `headers()`, а виклик `headers()` мовчки переводить **усю сторінку в dynamic-рендер** — ISR/SSG вимикається без жодної помилки в білді. Так одного разу випав `Footer` у `(site)` layout і весь каталог рендерився наживо на кожен запит (0.5–1с TTFB замість кешованих ~3мс). Підозра: сторінка "гальмує без причини" → перше, що перевірити — `next build` показує її як `ƒ` (dynamic) замість `●`/`○`.
+- Сторінки, що читають Prisma напряму (не через `lib/products.ts`), не можна віддавати під `generateStaticParams` без БД під час білду — CI-образ збирається без доступу до БД. Тримай `revalidate` + порожній `generateStaticParams` (ISR-fallback) або `export const dynamic = 'force-dynamic'`.
 
 ## Mobile-first (КРИТИЧНО)
 
@@ -68,15 +70,6 @@ Next.js 16 (App Router, TS strict) · PostgreSQL + Prisma · Tailwind + shadcn/u
 - Тіні — м'які розмиті (`shadow-soft`), ніяких різких
 - Hover-стани — плавна анімація `transition-all duration-300 ease-in-out`
 - Spacing — щедрий `padding`, `gap`, `margin` — «повітря» пріоритет
-
-### Скіли для UI
-
-Використовуй при розробці компонентів:
-- `ui-ux-pro-max` — планування та перевірка UI/UX
-- `ui-styling` — shadcn/ui + Tailwind компоненти
-- `design` — дизайн-токени, банери, іконки
-- `brand` — консистентність бренду
-- `frontend-design` — нестандартні візуальні рішення, антишаблонність
 
 ## Використання скілів та плагінів (КРИТИЧНО)
 
