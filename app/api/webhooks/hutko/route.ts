@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!verifySignature(password, payload)) {
-    console.error("[hutko webhook] invalid signature", payload);
+    console.error("[hutko webhook] invalid signature", { order_id: payload.order_id });
     return NextResponse.json({ error: "invalid signature" }, { status: 400 });
   }
 

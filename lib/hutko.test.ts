@@ -4,7 +4,7 @@ import { buildSignature, verifySignature } from "./hutko.ts";
 
 // Known-good example straight from docs.hutko.org ("Формування підпису"):
 // raw string "test|125|USD|1396424|test order|test123456" → sha1 → this hex
-const DOC_EXAMPLE_HASH = "df38818facfbfd79953fa847667dac73a1291127".slice(0, 40);
+const DOC_EXAMPLE_HASH = "df38818facfbfd79953fa847667dac73a1291127";
 
 test("buildSignature matches the documented example string and hash", () => {
   const sig = buildSignature("test", {

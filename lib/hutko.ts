@@ -59,8 +59,15 @@ export type CreateHutkoPaymentResult = { checkoutUrl: string } | { error: string
 export async function createHutkoPayment(
   params: CreateHutkoPaymentParams,
 ): Promise<CreateHutkoPaymentResult> {
-  const merchantId = getMerchantId();
-  const password = getMerchantPassword();
+  let merchantId: string;
+  let password: string;
+  try {
+    merchantId = getMerchantId();
+    password = getMerchantPassword();
+  } catch (err) {
+    console.error("[createHutkoPayment] missing credentials", err);
+    return { error: "Платіжний сервіс тимчасово недоступний. Спробуйте ще раз пізніше." };
+  }
   const amountKopecks = Math.round(params.amount * 100);
 
   const requestParams: Record<string, string> = {
