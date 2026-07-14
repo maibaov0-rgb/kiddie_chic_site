@@ -287,6 +287,7 @@
     "resultsFew": "{count} models",
     "resultsMany": "{count} models",
     "priceFrom": "from",
+    "showMore": "Show more",
     "filters": {
       "title": "Filters",
       "open": "Filters",

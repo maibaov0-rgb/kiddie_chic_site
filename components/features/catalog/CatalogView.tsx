@@ -14,6 +14,7 @@ import ProductCard from './ProductCard';
 import { ColorPill } from './ColorPill';
 
 const EMPTY: Filters = { sizes: [], colors: [] };
+const PAGE_SIZE = 24;
 
 function toggle(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
@@ -25,9 +26,21 @@ export default function CatalogView({ products }: { products: Product[] }) {
   const tCommon = useTranslations('common');
   const [filters, setFilters] = useState<Filters>(EMPTY);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const filtered = useMemo(() => filterProducts(products, filters), [products, filters]);
   const activeCount = filters.sizes.length + filters.colors.length;
+
+  // Reset pagination whenever the filters change (React-recommended pattern:
+  // adjust state during render instead of in an effect, avoiding an extra render pass)
+  const [prevFilters, setPrevFilters] = useState(filters);
+  if (prevFilters !== filters) {
+    setPrevFilters(filters);
+    setVisibleCount(PAGE_SIZE);
+  }
+
+  const visible = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -105,11 +118,24 @@ export default function CatalogView({ products }: { products: Product[] }) {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-3">
-            {filtered.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-3">
+              {visible.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+            {hasMore && (
+              <div className="mt-8 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                  className="bg-pink-soft inline-flex h-12 min-w-44 items-center justify-center rounded-full px-8 text-sm font-semibold text-foreground/80 shadow-card transition-all duration-300 ease-in-out hover:bg-powder-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                >
+                  {t('showMore')}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 

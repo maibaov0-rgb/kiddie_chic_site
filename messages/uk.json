@@ -287,6 +287,7 @@
     "resultsFew": "{count} моделі",
     "resultsMany": "{count} моделей",
     "priceFrom": "від",
+    "showMore": "Показати ще",
     "filters": {
       "title": "Фільтри",
       "open": "Фільтри",
