@@ -54,6 +54,10 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={`${sans.variable} ${serif.variable} h-full antialiased`}>
+      <head>
+        {/* Product photos come from Cloudinary — warm up the connection early */}
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
           {children}

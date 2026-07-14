@@ -3,6 +3,10 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 
+// Reads SiteSettings from the DB — must stay dynamic: the CI image build has
+// no database, so this page cannot be prerendered at build time.
+export const dynamic = 'force-dynamic';
+
 type Params = { locale: string };
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {

@@ -11,6 +11,12 @@ import ProductDetail from '@/components/features/catalog/ProductDetail';
 // revalidatePath, so edits show up immediately — the timer is just a backstop.
 export const revalidate = 300;
 
+// No paths at build time: the CI image build has no database, and products
+// change at runtime anyway. First request renders + caches (ISR fallback).
+export function generateStaticParams(): Array<{ category: string; slug: string }> {
+  return [];
+}
+
 type Params = { locale: string; category: string; slug: string };
 
 export async function generateMetadata({
