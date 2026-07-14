@@ -163,8 +163,8 @@ model Order {
   accessoryItems OrderAccessoryItem[]
   totalAmount    Decimal               @db.Decimal(10, 2)
 
-  monoInvoiceId String?
-  monoPaidAt    DateTime?
+  paymentInvoiceId String?
+  paidAt           DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
