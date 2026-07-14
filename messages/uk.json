@@ -131,7 +131,7 @@
     "branchOptionPrefix": "№",
     "payCardTitle": "Оплатити карткою",
     "payCardSubtitle": "Visa / Mastercard / Apple Pay",
-    "payCardBadge": "Скоро",
+    "payCardRetry": "Спробувати ще раз",
     "payCodTitle": "Післяплата",
     "payCodSubtitle": "Оплата при отриманні у відділенні Нової Пошти",
     "agreePrefix": "Я погоджуюся з",

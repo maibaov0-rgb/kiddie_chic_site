@@ -131,7 +131,7 @@
     "branchOptionPrefix": "No.",
     "payCardTitle": "Pay by card",
     "payCardSubtitle": "Visa / Mastercard / Apple Pay",
-    "payCardBadge": "Soon",
+    "payCardRetry": "Try again",
     "payCodTitle": "Cash on delivery",
     "payCodSubtitle": "Pay when collecting at a Nova Poshta branch",
     "agreePrefix": "I agree to the",

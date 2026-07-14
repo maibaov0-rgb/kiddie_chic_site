@@ -11,7 +11,8 @@ import {
 import { useCartStore, cartItemKey } from '@/lib/stores/cart';
 import { asset } from '@/lib/asset';
 import { TOP_UA_CITIES } from '@/lib/np-fallback';
-import { placeOrder } from '@/app/[locale]/(checkout)/checkout/actions';
+import { placeOrder, createHutkoPayment } from '@/app/[locale]/(checkout)/checkout/actions';
+import type { Locale } from '@/i18n/routing';
 
 type PayMethod = 'card' | 'cod';
 
@@ -60,6 +61,7 @@ export default function CheckoutView() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [hutkoRetry, setHutkoRetry] = useState<{ id: string; ref: string } | null>(null);
 
   // Empty cart → catalog (only after hydration AND only if we didn't just
   // submit — otherwise clearCart() would race the success-page redirect)
@@ -186,6 +188,20 @@ export default function CheckoutView() {
   const formValid = Object.values(errors).every((e) => e === null);
 
   // ───────── submit ─────────
+  async function attemptHutkoPayment(orderId: string, ref: string) {
+    setServerError(null);
+    setSubmitting(true);
+    const result = await createHutkoPayment(orderId, locale as Locale);
+    if ('error' in result) {
+      setSubmitting(false);
+      setHutkoRetry({ id: orderId, ref });
+      setServerError(result.error);
+      return;
+    }
+    clearCart();
+    window.location.href = result.checkoutUrl;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setTouched({ firstName: true, lastName: true, phone: true, city: true, branch: true });
@@ -194,9 +210,9 @@ export default function CheckoutView() {
       first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    if (form.payment === 'card') return;
 
     setServerError(null);
+    setHutkoRetry(null);
     setSubmitting(true);
     setSubmitted(true);
 
@@ -215,6 +231,11 @@ export default function CheckoutView() {
       setSubmitting(false);
       setSubmitted(false);
       setServerError(result.error);
+      return;
+    }
+
+    if (form.payment === 'card') {
+      await attemptHutkoPayment(result.orderId, result.ref);
       return;
     }
 
@@ -416,12 +437,10 @@ export default function CheckoutView() {
           <div className="grid gap-3 sm:grid-cols-2">
             <PayCard
               selected={form.payment === 'card'}
-              disabled
               icon={<CreditCard size={20} />}
               title={t('payCardTitle')}
               subtitle={t('payCardSubtitle')}
-              badge={t('payCardBadge')}
-              onClick={() => undefined}
+              onClick={() => setField('payment', 'card')}
             />
             <PayCard
               selected={form.payment === 'cod'}
@@ -483,7 +502,7 @@ export default function CheckoutView() {
 
             <button
               type="submit"
-              disabled={submitting || form.payment === 'card'}
+              disabled={submitting}
               className="mt-5 hidden h-12 w-full items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 lg:flex"
             >
               {submitting ? <Loader2 size={18} className="animate-spin" /> : <Lock size={16} />}
@@ -511,7 +530,7 @@ export default function CheckoutView() {
         </div>
         <button
           type="submit"
-          disabled={submitting || form.payment === 'card'}
+          disabled={submitting}
           className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {submitting ? <Loader2 size={18} className="animate-spin" /> : <Lock size={16} />}
@@ -520,10 +539,21 @@ export default function CheckoutView() {
       </div>
 
       {serverError && (
-        <div className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+        <div className="fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-4">
           <div className="rounded-2xl bg-red-50 border border-red-200 px-5 py-3 text-sm text-red-700 shadow-float">
             {serverError}
           </div>
+          {hutkoRetry && (
+            <button
+              type="button"
+              onClick={() => attemptHutkoPayment(hutkoRetry.id, hutkoRetry.ref)}
+              disabled={submitting}
+              className="flex h-11 items-center gap-2 rounded-full bg-gold px-5 text-sm font-semibold text-white shadow-card transition-all hover:bg-gold/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {submitting ? <Loader2 size={16} className="animate-spin" /> : <RefreshCcw size={16} />}
+              {t('payCardRetry')}
+            </button>
+          )}
         </div>
       )}
 
@@ -596,42 +626,30 @@ function Field({
 }
 
 function PayCard({
-  selected, disabled, icon, title, subtitle, badge, onClick,
+  selected, icon, title, subtitle, onClick,
 }: {
   selected: boolean;
-  disabled?: boolean;
   icon: React.ReactNode;
   title: string;
   subtitle: string;
-  badge?: string;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={disabled}
       aria-pressed={selected}
       className={`group relative flex items-start gap-3 rounded-3xl border-2 p-4 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
         selected
           ? 'border-gold bg-gold/5'
-          : disabled
-            ? 'cursor-not-allowed border-foreground/10 bg-foreground/3 opacity-60'
-            : 'border-foreground/15 bg-white hover:border-gold/50'
+          : 'border-foreground/15 bg-white hover:border-gold/50'
       }`}
     >
       <span className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${selected ? 'bg-gold text-white' : 'bg-powder-100 text-gold'}`}>
         {icon}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="flex items-center gap-2">
-          <span className="text-base font-semibold text-foreground">{title}</span>
-          {badge && (
-            <span className="rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gold">
-              {badge}
-            </span>
-          )}
-        </span>
+        <span className="text-base font-semibold text-foreground">{title}</span>
         <span className="mt-0.5 block text-[13px] leading-snug text-foreground/55">{subtitle}</span>
       </span>
       {selected && (
