@@ -22,7 +22,7 @@ interface Form {
   phone: string;
   city: { ref: string; name: string; area: string } | null;
   branch: { ref: string; number: string; description: string } | null;
-  payment: PayMethod;
+  payment: PayMethod | null;
 }
 
 const EMPTY_FORM: Form = {
@@ -31,7 +31,7 @@ const EMPTY_FORM: Form = {
   phone: '+380',
   city: null,
   branch: null,
-  payment: 'cod',
+  payment: null,
 };
 
 function isValidPhone(p: string) {
@@ -184,6 +184,7 @@ export default function CheckoutView() {
     phone: !isValidPhone(form.phone) ? t('errPhone') : null,
     city: !form.city ? t('errCity') : null,
     branch: !form.branch ? t('errBranch') : null,
+    payment: !form.payment ? t('errPayment') : null,
   };
   const formValid = Object.values(errors).every((e) => e === null);
 
@@ -204,8 +205,8 @@ export default function CheckoutView() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setTouched({ firstName: true, lastName: true, phone: true, city: true, branch: true });
-    if (!formValid) {
+    setTouched({ firstName: true, lastName: true, phone: true, city: true, branch: true, payment: true });
+    if (!formValid || !form.payment) {
       const first = document.querySelector('[data-invalid="true"]');
       first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -434,22 +435,34 @@ export default function CheckoutView() {
 
         {/* SECTION 3: Payment */}
         <Section icon={<Wallet size={18} />} title={t('sectionPayment')}>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div
+            className="grid gap-3 sm:grid-cols-2"
+            data-invalid={touched.payment && !!errors.payment}
+          >
             <PayCard
               selected={form.payment === 'card'}
               icon={<CreditCard size={20} />}
               title={t('payCardTitle')}
               subtitle={t('payCardSubtitle')}
-              onClick={() => setField('payment', 'card')}
+              onClick={() => {
+                setField('payment', 'card');
+                blur('payment');
+              }}
             />
             <PayCard
               selected={form.payment === 'cod'}
               icon={<Package size={20} />}
               title={t('payCodTitle')}
               subtitle={t('payCodSubtitle')}
-              onClick={() => setField('payment', 'cod')}
+              onClick={() => {
+                setField('payment', 'cod');
+                blur('payment');
+              }}
             />
           </div>
+          {touched.payment && errors.payment && (
+            <p className="mt-2 text-xs text-red-500">{errors.payment}</p>
+          )}
         </Section>
 
       </div>

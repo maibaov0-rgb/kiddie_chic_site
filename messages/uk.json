@@ -154,6 +154,7 @@
     "errPhone": "Формат: +380XXXXXXXXX",
     "errCity": "Оберіть місто",
     "errBranch": "Оберіть відділення",
+    "errPayment": "Оберіть спосіб оплати",
     "errAgree": "Підтвердіть згоду"
   },
   "orderSuccess": {

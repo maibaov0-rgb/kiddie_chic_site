@@ -154,6 +154,7 @@
     "errPhone": "Format: +380XXXXXXXXX",
     "errCity": "Choose a city",
     "errBranch": "Choose a branch",
+    "errPayment": "Choose a payment method",
     "errAgree": "Please confirm your agreement"
   },
   "orderSuccess": {
