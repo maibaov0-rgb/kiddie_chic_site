@@ -5,21 +5,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { Heart } from 'lucide-react';
-import { colorName, colorSwatch, swatchBackground, cover, minPrice, type Product } from '@/lib/catalog';
+import { cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
+import { ColorPillStatic } from './ColorPill';
 
 export default function ProductCard({ product }: { product: Product }) {
   const locale = useLocale();
+  const en = locale === 'en';
   const t = useTranslations('product');
   const tc = useTranslations('catalog');
   const [liked, setLiked] = useState(false);
 
-  const name = locale === 'en' ? product.name_en : product.name_uk;
+  const name = en ? product.name_en : product.name_uk;
   const from = minPrice(product);
-  const prices = product.variants.map((v) => v.price);
-  const hasRange = prices.length > 1 && Math.min(...prices) !== Math.max(...prices);
-
-  const colorDots = product.colors.map((id) => colorSwatch(id));
 
   return (
     <Link href={`/catalog/dresses/${product.slug}`} className="group block">
@@ -66,26 +64,19 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Info */}
       <div className="mt-3 px-0.5">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-sans text-sm font-medium leading-snug text-foreground md:text-[15px]">
-            {name}
-          </h3>
-          {colorDots.length > 0 && (
-            <div className="mt-1 flex shrink-0 items-center gap-1">
-              {colorDots.map((c) => (
-                <span
-                  key={c.id}
-                  title={colorName(c.id, locale === 'en')}
-                  className="h-3 w-3 rounded-full ring-1 ring-foreground/10"
-                  style={{ background: swatchBackground(c) }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <h3 className="font-sans text-sm font-medium leading-snug text-foreground md:text-[15px]">
+          {name}
+        </h3>
+        {product.colors.length > 0 && (
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {product.colors.map((id) => (
+              <ColorPillStatic key={id} id={id} en={en} />
+            ))}
+          </div>
+        )}
         {from !== null && (
           <p className="mt-1 font-sans text-sm font-bold text-gold">
-            {hasRange && <span className="font-medium text-foreground/40">{tc('priceFrom')} </span>}
+            <span className="font-medium text-foreground/40">{tc('priceFrom')} </span>
             {from.toLocaleString('uk-UA')} ₴
           </p>
         )}

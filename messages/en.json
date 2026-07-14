@@ -54,7 +54,8 @@
   "product": {
     "addToCart": "Add to cart",
     "askDelivery": "Ask about delivery",
-    "customOrder": "Custom-made",
+    "prevImage": "Previous photo",
+    "nextImage": "Next photo",
     "size": "Size",
     "fabric": "Fabric",
     "color": "Color",

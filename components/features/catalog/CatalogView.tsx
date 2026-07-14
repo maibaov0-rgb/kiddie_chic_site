@@ -2,16 +2,16 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { SlidersHorizontal, X, Check } from 'lucide-react';
+import { SlidersHorizontal, X } from 'lucide-react';
 import {
   COLORS,
   SIZES,
-  swatchBackground,
   filterProducts,
   type Filters,
   type Product,
 } from '@/lib/catalog';
 import ProductCard from './ProductCard';
+import { ColorPill } from './ColorPill';
 
 const EMPTY: Filters = { sizes: [], colors: [] };
 
@@ -209,26 +209,16 @@ function FilterControls({
         <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
           {t('color')}
         </h3>
-        <div className="flex flex-wrap gap-2.5">
-          {COLORS.map((c) => {
-            const on = filters.colors.includes(c.id);
-            return (
-              <button
-                key={c.id}
-                type="button"
-                title={locale === 'en' ? c.name_en : c.name_uk}
-                aria-label={locale === 'en' ? c.name_en : c.name_uk}
-                aria-pressed={on}
-                onClick={() => setFilters((f) => ({ ...f, colors: toggle(f.colors, c.id) }))}
-                className={`flex h-11 w-11 items-center justify-center rounded-full ring-1 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-                  on ? 'ring-2 ring-gold ring-offset-2' : 'ring-foreground/20 hover:ring-gold/50'
-                }`}
-                style={{ background: swatchBackground(c) }}
-              >
-                {on && <Check size={14} className={c.dark ? 'text-foreground/70' : 'text-white'} />}
-              </button>
-            );
-          })}
+        <div className="flex flex-wrap gap-2">
+          {COLORS.map((c) => (
+            <ColorPill
+              key={c.id}
+              id={c.id}
+              en={locale === 'en'}
+              selected={filters.colors.includes(c.id)}
+              onClick={() => setFilters((f) => ({ ...f, colors: toggle(f.colors, c.id) }))}
+            />
+          ))}
         </div>
       </div>
 

@@ -54,7 +54,8 @@
   "product": {
     "addToCart": "Додати в кошик",
     "askDelivery": "Уточнити терміни",
-    "customOrder": "Пошив по параметрах",
+    "prevImage": "Попереднє фото",
+    "nextImage": "Наступне фото",
     "size": "Розмір",
     "fabric": "Тканина",
     "color": "Колір",

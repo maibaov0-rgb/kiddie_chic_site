@@ -5,10 +5,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Check, Minus, Plus, ShoppingBag, Clock, Scissors } from 'lucide-react';
-import { colorName, colorSwatch, swatchBackground, accessoryTypeName, cover, type Product } from '@/lib/catalog';
+import { ArrowRight, Check, Minus, Plus, ShoppingBag, Clock, ChevronLeft, ChevronRight, Hand } from 'lucide-react';
+import { colorName, accessoryTypeName, cover, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
+import { ColorPill } from './ColorPill';
 
 export default function ProductDetail({ product }: { product: Product }) {
   const locale = useLocale();
@@ -32,6 +33,20 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [activeImg, setActiveImg] = useState(0);
   const [addedTick, setAddedTick] = useState(0);
   const added = addedTick > 0;
+  const [showSwipeHint, setShowSwipeHint] = useState(product.images.length > 1);
+
+  useEffect(() => {
+    if (!showSwipeHint) return;
+    const id = setTimeout(() => setShowSwipeHint(false), 1800);
+    return () => clearTimeout(id);
+  }, [showSwipeHint]);
+
+  function prevImg() {
+    setActiveImg((i) => (i - 1 + product.images.length) % product.images.length);
+  }
+  function nextImg() {
+    setActiveImg((i) => (i + 1) % product.images.length);
+  }
 
   // Auto-dismiss "added" toast 5s after last add; new add resets the timer.
   useEffect(() => {
@@ -71,11 +86,15 @@ export default function ProductDetail({ product }: { product: Product }) {
   }
 
   return (
-    <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+    <div className="grid gap-8 md:grid-cols-[42%_1fr] md:gap-12">
       {/* ── Gallery ───────────────────────────────────────── */}
       <div>
         {/* Mobile: horizontal swipe — each image fills the width, centered */}
-        <div className="flex snap-x snap-mandatory overflow-x-auto pb-2 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div
+          className="relative flex snap-x snap-mandatory overflow-x-auto pb-2 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          onTouchStart={() => setShowSwipeHint(false)}
+          onScroll={() => setShowSwipeHint(false)}
+        >
           {product.images.map((src, i) => (
             <div
               key={i}
@@ -84,6 +103,24 @@ export default function ProductDetail({ product }: { product: Product }) {
               <Image src={asset(src)} alt={`${name} ${i + 1}`} fill sizes="100vw" className="object-cover" priority={i === 0} />
             </div>
           ))}
+          <AnimatePresence>
+            {showSwipeHint && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="pointer-events-none absolute inset-0 flex items-center justify-center"
+              >
+                <motion.div
+                  animate={{ x: [-18, 18, -18] }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                  className="flex h-14 w-14 items-center justify-center rounded-full bg-white/85 shadow-float"
+                >
+                  <Hand size={22} className="text-powder-300" />
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Desktop: main + thumbnails */}
@@ -93,10 +130,30 @@ export default function ProductDetail({ product }: { product: Product }) {
               src={asset(product.images[activeImg] ?? cover(product))}
               alt={name}
               fill
-              sizes="50vw"
+              sizes="42vw"
               className="object-cover"
               priority
             />
+            {product.images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  aria-label={t('prevImage')}
+                  onClick={prevImg}
+                  className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-powder-300 shadow-card transition-all hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  type="button"
+                  aria-label={t('nextImage')}
+                  onClick={nextImg}
+                  className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-powder-300 shadow-card transition-all hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </>
+            )}
           </div>
           {product.images.length > 1 && (
             <div className="mt-3 flex gap-3">
@@ -168,26 +225,10 @@ export default function ProductDetail({ product }: { product: Product }) {
             <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
               {t('color')}: <span className="text-foreground/60">{colorName(color, en)}</span>
             </h3>
-            <div className="flex flex-wrap gap-2.5">
-              {product.colors.map((cid) => {
-                const c = colorSwatch(cid);
-                const on = cid === color;
-                return (
-                  <button
-                    key={cid}
-                    type="button"
-                    aria-label={colorName(cid, en)}
-                    aria-pressed={on}
-                    onClick={() => setColor(cid)}
-                    className={`flex h-11 w-11 items-center justify-center rounded-full ring-1 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-                      on ? 'ring-2 ring-gold ring-offset-2' : 'ring-foreground/20 hover:ring-gold/50'
-                    }`}
-                    style={{ background: swatchBackground(c) }}
-                  >
-                    {on && <Check size={16} className={c.dark ? 'text-foreground/70' : 'text-white'} />}
-                  </button>
-                );
-              })}
+            <div className="flex flex-wrap gap-2">
+              {product.colors.map((cid) => (
+                <ColorPill key={cid} id={cid} en={en} selected={cid === color} onClick={() => setColor(cid)} />
+              ))}
             </div>
           </div>
         )}
@@ -266,24 +307,15 @@ export default function ProductDetail({ product }: { product: Product }) {
         )}
 
         {/* Secondary CTAs */}
-        <div className="mt-4 flex flex-col gap-2.5 sm:flex-row">
+        <div className="mt-4">
           <a
             href="https://wa.me/380991234567"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 font-sans text-sm font-medium text-foreground/65 shadow-card transition-colors hover:text-gold"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 font-sans text-sm font-medium text-foreground/65 shadow-card transition-colors hover:text-gold"
           >
             <Clock size={15} />
             {t('askDelivery')}
-          </a>
-          <a
-            href="https://wa.me/380991234567"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 font-sans text-sm font-medium text-foreground/65 shadow-card transition-colors hover:text-gold"
-          >
-            <Scissors size={15} />
-            {t('customOrder')}
           </a>
         </div>
       </div>
