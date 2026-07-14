@@ -56,6 +56,26 @@ export default function CartView() {
   const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0);
   const totalCount = items.reduce((sum, i) => sum + i.qty, 0);
 
+  // Accessories are added alongside a specific product (ProductDetail passes
+  // productId), so a product's line and its accessories are still separate
+  // cart items — that keeps qty/remove independent per accessory — but we
+  // display them nested under the product they were added with. An accessory
+  // whose product got removed from the cart (or a pre-migration cart that
+  // never recorded productId) has nothing to nest under, so it falls back to
+  // rendering as its own standalone row, same as before this change.
+  const productItems = items.filter(
+    (i): i is Extract<CartItem, { kind: 'product' }> => i.kind === 'product',
+  );
+  function accessoriesOf(productId: string) {
+    return items.filter(
+      (i): i is Extract<CartItem, { kind: 'accessory' }> =>
+        i.kind === 'accessory' && i.productId === productId,
+    );
+  }
+  const topLevelItems = items.filter(
+    (i) => i.kind === 'product' || !productItems.some((p) => p.productId === i.productId),
+  );
+
   function handleRemove(item: CartItem) {
     removeItem(cartItemKey(item));
     setUndoItem(item);
@@ -113,7 +133,7 @@ export default function CartView() {
         <ul className="flex flex-col gap-4">
           <AnimatePresence initial={false}>
             {hydrated &&
-              items.map((item) => (
+              topLevelItems.map((item) => (
                 <motion.li
                   key={cartItemKey(item)}
                   layout
@@ -205,6 +225,42 @@ export default function CartView() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Accessories added alongside this product */}
+                  {item.kind === 'product' && accessoriesOf(item.productId).length > 0 && (
+                    <ul className="mt-3 space-y-1.5 border-t border-foreground/10 pt-3">
+                      <AnimatePresence initial={false}>
+                        {accessoriesOf(item.productId).map((acc) => (
+                          <motion.li
+                            key={cartItemKey(acc)}
+                            layout
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0, height: 0, marginTop: 0, transition: { duration: 0.2 } }}
+                            className="flex items-center justify-between gap-2 pl-2"
+                          >
+                            <span className="truncate text-[13px] text-foreground/70">
+                              + {acc.name}
+                              {acc.qty > 1 ? ` × ${acc.qty}` : ''}
+                            </span>
+                            <div className="flex shrink-0 items-center gap-1.5">
+                              <span className="text-[13px] font-semibold text-foreground/80">
+                                {fmt(acc.price * acc.qty, locale)} ₴
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemove(acc)}
+                                aria-label={t('remove')}
+                                className="-my-2.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground/50 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                              >
+                                <X size={13} />
+                              </button>
+                            </div>
+                          </motion.li>
+                        ))}
+                      </AnimatePresence>
+                    </ul>
+                  )}
                 </motion.li>
               ))}
           </AnimatePresence>

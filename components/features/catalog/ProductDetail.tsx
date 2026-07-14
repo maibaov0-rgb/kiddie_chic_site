@@ -77,6 +77,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   function handleAddAccessory(a: Product['accessories'][number]) {
     addItem({
       kind: 'accessory',
+      productId: product.id,
       accessoryId: a.id,
       name: accessoryTypeName(a.type, en),
       price: a.price,

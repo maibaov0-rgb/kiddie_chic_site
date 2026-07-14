@@ -17,6 +17,10 @@ export type CartItem =
     }
   | {
       kind: "accessory";
+      // Which product this accessory was added alongside — lets the cart UI
+      // group the accessory under its parent product line instead of
+      // rendering it as an unrelated item with no photo of its own.
+      productId: string;
       accessoryId: string;
       name: string;
       price: number;
@@ -26,7 +30,7 @@ export type CartItem =
 export function cartItemKey(item: CartItem): string {
   return item.kind === "product"
     ? `product:${item.productId}:${item.variantId}`
-    : `accessory:${item.accessoryId}`;
+    : `accessory:${item.productId}:${item.accessoryId}`;
 }
 
 interface CartState {
@@ -81,16 +85,25 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "kiddie-chic-cart",
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => localStorage),
       // Carts persisted before this change have items with no `kind` field —
       // stamp them as "product" (the only kind that existed back then) so
-      // returning shoppers don't lose their cart or crash the page.
+      // returning shoppers don't lose their cart or crash the page. Carts
+      // from v1 have accessory items with no `productId` (added before we
+      // tracked which product they belong to) — fall back to "" so they
+      // render as ungrouped orphans in the cart instead of crashing.
       migrate: (persisted) => {
         const state = persisted as { items?: Array<Record<string, unknown>> } | undefined;
         if (!state?.items) return { items: [] };
         return {
-          items: state.items.map((i) => (i.kind ? i : { ...i, kind: "product" })),
+          items: state.items.map((i) => {
+            if (!i.kind) return { ...i, kind: "product" };
+            if (i.kind === "accessory" && typeof i.productId !== "string") {
+              return { ...i, productId: "" };
+            }
+            return i;
+          }),
         };
       },
     }

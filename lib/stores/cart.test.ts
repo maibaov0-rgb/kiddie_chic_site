@@ -35,8 +35,14 @@ test("cartItemKey is stable for the same product+variant", () => {
 });
 
 test("cartItemKey distinguishes accessory items by accessoryId", () => {
-  const a: CartItem = { kind: "accessory", accessoryId: "acc1", name: "Обруч", price: 150, qty: 1 };
+  const a: CartItem = { kind: "accessory", productId: "p1", accessoryId: "acc1", name: "Обруч", price: 150, qty: 1 };
   const b: CartItem = { ...a, accessoryId: "acc2" };
+  assert.notEqual(cartItemKey(a), cartItemKey(b));
+});
+
+test("cartItemKey distinguishes the same accessory added to different products", () => {
+  const a: CartItem = { kind: "accessory", productId: "p1", accessoryId: "acc1", name: "Обруч", price: 150, qty: 1 };
+  const b: CartItem = { ...a, productId: "p2" };
   assert.notEqual(cartItemKey(a), cartItemKey(b));
 });
 
@@ -52,6 +58,6 @@ test("cartItemKey never collides a product item with an accessory item", () => {
     qty: 1,
     imageUrl: null,
   };
-  const accessory: CartItem = { kind: "accessory", accessoryId: "acc1", name: "Обруч", price: 150, qty: 1 };
+  const accessory: CartItem = { kind: "accessory", productId: "acc1", accessoryId: "acc1", name: "Обруч", price: 150, qty: 1 };
   assert.notEqual(cartItemKey(product), cartItemKey(accessory));
 });
