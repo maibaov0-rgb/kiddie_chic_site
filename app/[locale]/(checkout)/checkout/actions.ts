@@ -3,6 +3,8 @@
 import { prisma } from '@/lib/prisma';
 import { sendNewOrderNotification } from '@/lib/telegram';
 import type { CartItem } from '@/lib/stores/cart';
+import { createHutkoPayment as requestHutkoCheckout } from '@/lib/hutko';
+import { routing, type Locale } from '@/i18n/routing';
 
 export interface PlaceOrderPayload {
   firstName: string;
@@ -179,7 +181,7 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
       note: payload.note.trim() || null,
       totalAmount,
       paymentMethod: 'cod',
-      monoPaidAt: null,
+      paidAt: null,
       items: [
         ...resolvedProductItems.map((i) => ({
           name: i.name,
@@ -200,4 +202,30 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
   }
 
   return { orderId: order.id, ref: order.ref };
+}
+
+export async function createHutkoPayment(
+  orderId: string,
+  locale: Locale,
+): Promise<{ checkoutUrl: string } | { error: string }> {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    select: { ref: true, status: true, totalAmount: true },
+  });
+  if (!order) return { error: 'Замовлення не знайдено' };
+  if (order.status !== 'new') return { error: 'Це замовлення вже оброблено' };
+
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? '').replace(/\/$/, '');
+  const localePath = locale === routing.defaultLocale ? '' : `/${locale}`;
+
+  const amount =
+    typeof order.totalAmount === 'number' ? order.totalAmount : order.totalAmount.toNumber();
+
+  return requestHutkoCheckout({
+    orderId: order.ref,
+    amount,
+    orderDesc: `Замовлення ${order.ref} — Kiddie Chic`,
+    responseUrl: `${appUrl}${localePath}/order-success?ref=${order.ref}`,
+    serverCallbackUrl: `${appUrl}/api/webhooks/hutko`,
+  });
 }
