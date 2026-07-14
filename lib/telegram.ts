@@ -26,7 +26,7 @@ export interface OrderForNotification {
   note: string | null;
   totalAmount: number;
   paymentMethod: "cod" | "card";
-  monoPaidAt: Date | null;
+  paidAt: Date | null;
   items: Array<{
     name: string;
     size: string | null;

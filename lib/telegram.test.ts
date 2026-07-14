@@ -11,7 +11,7 @@ const baseOrder = {
   note: null,
   totalAmount: 1600,
   paymentMethod: "cod" as const,
-  monoPaidAt: null,
+  paidAt: null,
   items: [
     { name: "Сукня", size: "110", color: "рожева", price: 1200, qty: 1 },
     { name: "Обідок", size: null, color: null, price: 200, qty: 2 },
@@ -39,7 +39,7 @@ test("buildOrderMessage formats card payment as paid", () => {
   const msg = buildOrderMessage({
     ...baseOrder,
     paymentMethod: "card",
-    monoPaidAt: new Date(),
+    paidAt: new Date(),
   });
   assert.ok(msg.includes("Онлайн"));
   assert.ok(msg.includes("Оплачено"));
