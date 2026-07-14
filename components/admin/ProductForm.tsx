@@ -198,13 +198,20 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
                   </option>
                 ))}
               </select>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="Ціна, ₴"
-                {...register(`variants.${i}.price`)}
-                className={inputCls}
-              />
+              <div>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="Ціна, ₴"
+                  {...register(`variants.${i}.price`)}
+                  className={inputCls}
+                />
+                {errors.variants?.[i]?.price && (
+                  <p className="mt-1 text-sm text-[#9b4a4a]">
+                    {errors.variants[i]?.price?.message}
+                  </p>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => variants.remove(i)}
@@ -252,13 +259,20 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
                     leaf inputs are guaranteed to survive submission. */}
                 <input type="hidden" {...register(`accessories.${i}.type`)} />
                 <span className={`${inputCls} flex items-center bg-[#FDF8F4]`}>{typeLabel}</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="Ціна, ₴"
-                  {...register(`accessories.${i}.price`)}
-                  className={inputCls}
-                />
+                <div>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Ціна, ₴"
+                    {...register(`accessories.${i}.price`)}
+                    className={inputCls}
+                  />
+                  {errors.accessories?.[i]?.price && (
+                    <p className="mt-1 text-sm text-[#9b4a4a]">
+                      {errors.accessories[i]?.price?.message}
+                    </p>
+                  )}
+                </div>
                 <button
                   type="button"
                   onClick={() => accessories.remove(i)}
