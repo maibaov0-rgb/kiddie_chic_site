@@ -11,6 +11,84 @@ import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
 import { ColorPill } from './ColorPill';
 
+// Each accessory gets its own qty stepper and its own "added" confirmation —
+// entirely separate from the dress's qty and its "Додати в кошик" button, so
+// adding an accessory never makes it look like the dress itself was added.
+function AccessoryRow({
+  name,
+  price,
+  onAdd,
+  decreaseLabel,
+  increaseLabel,
+  addLabel,
+}: {
+  name: string;
+  price: number;
+  onAdd: (qty: number) => void;
+  decreaseLabel: string;
+  increaseLabel: string;
+  addLabel: string;
+}) {
+  const [qty, setQty] = useState(1);
+  const [justAdded, setJustAdded] = useState(false);
+
+  useEffect(() => {
+    if (!justAdded) return;
+    const id = setTimeout(() => setJustAdded(false), 2000);
+    return () => clearTimeout(id);
+  }, [justAdded]);
+
+  function handleAdd() {
+    onAdd(qty);
+    setJustAdded(true);
+  }
+
+  return (
+    <div className="rounded-2xl bg-white px-4 py-3 shadow-card">
+      <div className="flex items-center justify-between gap-3">
+        <span className="font-sans text-sm font-medium text-foreground/80">{name}</span>
+        <span className="font-sans text-sm font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</span>
+      </div>
+      <div className="mt-2.5 flex items-center justify-between gap-3">
+        <div className="flex h-11 items-center rounded-full bg-milk shadow-card">
+          <button
+            type="button"
+            aria-label={decreaseLabel}
+            onClick={() => setQty((q) => Math.max(1, q - 1))}
+            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+          >
+            <Minus size={14} />
+          </button>
+          <span
+            className="min-w-6 px-1 text-center text-sm font-semibold text-foreground"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {qty}
+          </span>
+          <button
+            type="button"
+            aria-label={increaseLabel}
+            onClick={() => setQty((q) => q + 1)}
+            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+          >
+            <Plus size={14} />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          aria-label={addLabel}
+          onClick={handleAdd}
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-powder-200 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+        >
+          {justAdded ? <Check size={16} /> : <Plus size={16} />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function ProductDetail({ product }: { product: Product }) {
   const locale = useLocale();
   const en = locale === 'en';
@@ -33,6 +111,11 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [activeImg, setActiveImg] = useState(0);
   const [addedTick, setAddedTick] = useState(0);
   const added = addedTick > 0;
+  // Separate from `added` above: that one drives the shared "added to cart"
+  // toast for both the dress and its accessories. This one drives only the
+  // main "Додати в кошик" button's own checkmark, so adding an accessory
+  // doesn't visually claim the dress itself was added.
+  const [productJustAdded, setProductJustAdded] = useState(false);
   const [showSwipeHint, setShowSwipeHint] = useState(product.images.length > 1);
 
   useEffect(() => {
@@ -55,6 +138,13 @@ export default function ProductDetail({ product }: { product: Product }) {
     return () => clearTimeout(id);
   }, [addedTick]);
 
+  // Auto-dismiss the main button's own checkmark 2s after the dress is added.
+  useEffect(() => {
+    if (!productJustAdded) return;
+    const id = setTimeout(() => setProductJustAdded(false), 2000);
+    return () => clearTimeout(id);
+  }, [productJustAdded]);
+
   const variant = product.variants.find((v) => v.size === size) ?? null;
   const price = variant?.price ?? null;
 
@@ -72,16 +162,17 @@ export default function ProductDetail({ product }: { product: Product }) {
       imageUrl: cover(product),
     });
     setAddedTick((n) => n + 1);
+    setProductJustAdded(true);
   }
 
-  function handleAddAccessory(a: Product['accessories'][number]) {
+  function handleAddAccessory(a: Product['accessories'][number], accessoryQty: number) {
     addItem({
       kind: 'accessory',
       productId: product.id,
       accessoryId: a.id,
       name: accessoryTypeName(a.type, en),
       price: a.price,
-      qty: 1,
+      qty: accessoryQty,
     });
     setAddedTick((n) => n + 1);
   }
@@ -268,7 +359,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             disabled={!variant}
             className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 px-6 font-sans text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float disabled:pointer-events-none disabled:opacity-40"
           >
-            {added ? <Check size={18} /> : <ShoppingBag size={17} />}
+            {productJustAdded ? <Check size={18} /> : <ShoppingBag size={17} />}
             {t('addToCart')}
           </button>
         </div>
@@ -281,27 +372,15 @@ export default function ProductDetail({ product }: { product: Product }) {
             </h3>
             <div className="space-y-2">
               {product.accessories.map((a) => (
-                <div
+                <AccessoryRow
                   key={a.id}
-                  className="flex items-center justify-between gap-3 rounded-2xl bg-white px-4 py-3 shadow-card"
-                >
-                  <span className="font-sans text-sm font-medium text-foreground/80">
-                    {accessoryTypeName(a.type, en)}
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <span className="font-sans text-sm font-bold text-gold">
-                      {a.price.toLocaleString('uk-UA')} ₴
-                    </span>
-                    <button
-                      type="button"
-                      aria-label={t('addAccessory', { name: accessoryTypeName(a.type, en) })}
-                      onClick={() => handleAddAccessory(a)}
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-powder-200 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-                    >
-                      <Plus size={16} />
-                    </button>
-                  </div>
-                </div>
+                  name={accessoryTypeName(a.type, en)}
+                  price={a.price}
+                  onAdd={(accessoryQty) => handleAddAccessory(a, accessoryQty)}
+                  decreaseLabel={t('decreaseQty')}
+                  increaseLabel={t('increaseQty')}
+                  addLabel={t('addAccessory', { name: accessoryTypeName(a.type, en) })}
+                />
               ))}
             </div>
           </div>
