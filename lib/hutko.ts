@@ -79,6 +79,7 @@ export async function createHutkoPayment(
     response_url: params.responseUrl,
     server_callback_url: params.serverCallbackUrl,
     version: "1.0.1",
+    payment_systems: "card",
   };
   const signature = buildSignature(password, requestParams);
 
