@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { productSchema, type ProductInput } from "@/lib/validation/product";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { CheckboxItem } from "@/components/ui/checkbox-item";
 import { SIZES, COLORS, ACCESSORY_TYPES } from "@/lib/catalog";
 import type { ActionResult } from "@/app/admin/products/actions";
 
@@ -125,28 +126,22 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
           control={control}
           name="colors"
           render={({ field }) => (
-            <div className="flex flex-wrap gap-2">
+            <div className="grid max-h-80 grid-cols-1 gap-x-4 overflow-y-auto pr-1 sm:grid-cols-2 lg:grid-cols-3">
               {COLORS.map((c) => {
                 const selected = (field.value ?? []).includes(c.id);
                 return (
-                  <button
+                  <CheckboxItem
                     key={c.id}
-                    type="button"
-                    onClick={() =>
+                    label={c.name_uk}
+                    checked={selected}
+                    onChange={() =>
                       field.onChange(
                         selected
                           ? (field.value ?? []).filter((v: string) => v !== c.id)
                           : [...(field.value ?? []), c.id],
                       )
                     }
-                    className={`rounded-full border px-4 py-2 text-sm transition-all duration-300 ease-in-out ${
-                      selected
-                        ? "border-[#C9A96E] bg-[#FDF8F4]"
-                        : "border-[#EDE0D4]"
-                    }`}
-                  >
-                    {c.name_uk}
-                  </button>
+                  />
                 );
               })}
             </div>

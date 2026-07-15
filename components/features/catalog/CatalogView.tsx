@@ -11,7 +11,7 @@ import {
   type Product,
 } from '@/lib/catalog';
 import ProductCard from './ProductCard';
-import { ColorPill } from './ColorPill';
+import { CheckboxItem } from '@/components/ui/checkbox-item';
 
 const EMPTY: Filters = { sizes: [], colors: [] };
 const PAGE_SIZE = 24;
@@ -208,25 +208,15 @@ function FilterControls({
         <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
           {t('size')}
         </h3>
-        <div className="flex flex-wrap gap-2">
-          {SIZES.map((size) => {
-            const on = filters.sizes.includes(size);
-            return (
-              <button
-                key={size}
-                type="button"
-                onClick={() => setFilters((f) => ({ ...f, sizes: toggle(f.sizes, size) }))}
-                aria-pressed={on}
-                className={`inline-flex min-h-11 items-center rounded-full border px-4 text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-                  on
-                    ? 'border-gold bg-gold/10 text-gold'
-                    : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
-                }`}
-              >
-                {size}
-              </button>
-            );
-          })}
+        <div className="grid grid-cols-2 gap-x-2">
+          {SIZES.map((size) => (
+            <CheckboxItem
+              key={size}
+              label={size}
+              checked={filters.sizes.includes(size)}
+              onChange={() => setFilters((f) => ({ ...f, sizes: toggle(f.sizes, size) }))}
+            />
+          ))}
         </div>
       </div>
 
@@ -235,14 +225,13 @@ function FilterControls({
         <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
           {t('color')}
         </h3>
-        <div className="flex flex-wrap gap-2">
+        <div className="max-h-72 overflow-y-auto pr-1">
           {COLORS.map((c) => (
-            <ColorPill
+            <CheckboxItem
               key={c.id}
-              id={c.id}
-              en={locale === 'en'}
-              selected={filters.colors.includes(c.id)}
-              onClick={() => setFilters((f) => ({ ...f, colors: toggle(f.colors, c.id) }))}
+              label={locale === 'en' ? c.name_en : c.name_uk}
+              checked={filters.colors.includes(c.id)}
+              onChange={() => setFilters((f) => ({ ...f, colors: toggle(f.colors, c.id) }))}
             />
           ))}
         </div>

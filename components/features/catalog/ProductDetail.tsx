@@ -295,19 +295,25 @@ export default function ProductDetail({ product }: { product: Product }) {
             {t('size')}
           </h3>
           <div className="flex flex-wrap gap-2">
-            {sizes.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSize(s)}
-                aria-pressed={s === size}
-                className={`inline-flex min-h-11 min-w-12 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-                  s === size ? 'border-gold bg-gold/10 text-gold' : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
-                }`}
-              >
-                {s}
-              </button>
-            ))}
+            {sizes.map((s) => {
+              const sizePrice = product.variants.find((v) => v.size === s)?.price ?? null;
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setSize(s)}
+                  aria-pressed={s === size}
+                  className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
+                    s === size ? 'border-gold bg-gold/10 text-gold' : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
+                  }`}
+                >
+                  {s}
+                  {sizePrice !== null && (
+                    <span className="ml-1 text-foreground/50">({sizePrice.toLocaleString('uk-UA')} ₴)</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
