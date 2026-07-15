@@ -294,27 +294,21 @@ export default function ProductDetail({ product }: { product: Product }) {
           <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
             {t('size')}
           </h3>
-          <div className="flex flex-wrap gap-2">
+          <select
+            value={size}
+            onChange={(e) => setSize(e.target.value)}
+            className="w-full min-h-11 rounded-2xl border border-foreground/20 bg-white px-4 text-sm font-medium text-foreground/80 outline-none transition-all focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+          >
             {sizes.map((s) => {
               const sizePrice = product.variants.find((v) => v.size === s)?.price ?? null;
               return (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setSize(s)}
-                  aria-pressed={s === size}
-                  className={`inline-flex min-h-11 items-center justify-center rounded-full border px-4 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-                    s === size ? 'border-gold bg-gold/10 text-gold' : 'border-foreground/20 text-foreground/75 hover:border-gold/50'
-                  }`}
-                >
+                <option key={s} value={s}>
                   {s}
-                  {sizePrice !== null && (
-                    <span className="ml-1 text-foreground/50">({sizePrice.toLocaleString('uk-UA')} ₴)</span>
-                  )}
-                </button>
+                  {sizePrice !== null ? ` (${sizePrice.toLocaleString('uk-UA')} ₴)` : ''}
+                </option>
               );
             })}
-          </div>
+          </select>
         </div>
 
         {/* Color */}
