@@ -45,13 +45,15 @@ export default function CartView() {
     () => false,
   );
 
-  // Undo toast
-  const [undoItem, setUndoItem] = useState<CartItem | null>(null);
+  // Undo toast — holds every item removed by the last action, so undoing a
+  // product removal also restores the accessories that were cascade-removed
+  // with it.
+  const [undoItems, setUndoItems] = useState<CartItem[] | null>(null);
   useEffect(() => {
-    if (!undoItem) return;
-    const id = setTimeout(() => setUndoItem(null), 5000);
+    if (!undoItems) return;
+    const id = setTimeout(() => setUndoItems(null), 5000);
     return () => clearTimeout(id);
-  }, [undoItem]);
+  }, [undoItems]);
 
   const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0);
   const totalCount = items.reduce((sum, i) => sum + i.qty, 0);
@@ -77,13 +79,17 @@ export default function CartView() {
   );
 
   function handleRemove(item: CartItem) {
-    removeItem(cartItemKey(item));
-    setUndoItem(item);
+    // Removing a dress/product also drops the accessories added alongside
+    // it — an orphaned accessory has no product photo to render next to,
+    // so it looked broken sitting alone in the list.
+    const removed = item.kind === 'product' ? [item, ...accessoriesOf(item.productId)] : [item];
+    removed.forEach((i) => removeItem(cartItemKey(i)));
+    setUndoItems(removed);
   }
   function handleUndo() {
-    if (!undoItem) return;
-    addItem(undoItem);
-    setUndoItem(null);
+    if (!undoItems) return;
+    undoItems.forEach((i) => addItem(i));
+    setUndoItems(null);
   }
 
   // ── Empty state ────────────────────────────────────────────────
@@ -346,7 +352,7 @@ export default function CartView() {
 
       {/* ── Undo toast ──────────────────────────────────────── */}
       <AnimatePresence>
-        {undoItem && (
+        {undoItems && (
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}

@@ -55,6 +55,23 @@ export default function CheckoutView() {
   const subtotal = useMemo(() => items.reduce((s, i) => s + i.price * i.qty, 0), [items]);
   const itemCount = useMemo(() => items.reduce((s, i) => s + i.qty, 0), [items]);
 
+  // Group accessories under the product they were added with, same as the
+  // cart page — otherwise a dress + accessory kit splits into flat unrelated
+  // rows here even though it's one kit in the cart.
+  const productItems = useMemo(
+    () => items.filter((i): i is Extract<typeof items[number], { kind: 'product' }> => i.kind === 'product'),
+    [items],
+  );
+  const accessoriesOf = (productId: string) =>
+    items.filter(
+      (i): i is Extract<typeof items[number], { kind: 'accessory' }> =>
+        i.kind === 'accessory' && i.productId === productId,
+    );
+  const topLevelItems = useMemo(
+    () => items.filter((i) => i.kind === 'product' || !productItems.some((p) => p.productId === i.productId)),
+    [items, productItems],
+  );
+
   // ───────── form state ─────────
   const [form, setForm] = useState<Form>(EMPTY_FORM);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -477,23 +494,41 @@ export default function CheckoutView() {
             </p>
 
             <ul className="mt-5 space-y-3">
-              {items.map((it) => (
-                <li key={cartItemKey(it)} className="flex gap-3">
-                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-powder-100">
-                    {it.kind === 'product' && it.imageUrl && (
-                      <Image src={asset(it.imageUrl)} alt={it.name} fill sizes="64px" className="object-cover" />
-                    )}
+              {topLevelItems.map((it) => (
+                <li key={cartItemKey(it)}>
+                  <div className="flex gap-3">
+                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl bg-powder-100">
+                      {it.kind === 'product' && it.imageUrl && (
+                        <Image src={asset(it.imageUrl)} alt={it.name} fill sizes="64px" className="object-cover" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-foreground">{it.name}</p>
+                      <p className="text-[12px] text-foreground/55">
+                        {it.kind === 'product' ? [it.size, it.color].filter(Boolean).join(' · ') || '—' : '—'}
+                      </p>
+                      <p className="mt-0.5 text-[12px] text-foreground/55">× {it.qty}</p>
+                    </div>
+                    <span className="shrink-0 text-sm font-semibold text-foreground">
+                      {(it.price * it.qty).toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴
+                    </span>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-foreground">{it.name}</p>
-                    <p className="text-[12px] text-foreground/55">
-                      {it.kind === 'product' ? [it.size, it.color].filter(Boolean).join(' · ') || '—' : '—'}
-                    </p>
-                    <p className="mt-0.5 text-[12px] text-foreground/55">× {it.qty}</p>
-                  </div>
-                  <span className="shrink-0 text-sm font-semibold text-foreground">
-                    {(it.price * it.qty).toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴
-                  </span>
+
+                  {it.kind === 'product' && accessoriesOf(it.productId).length > 0 && (
+                    <ul className="mt-2 space-y-1.5 pl-[4.75rem]">
+                      {accessoriesOf(it.productId).map((acc) => (
+                        <li key={cartItemKey(acc)} className="flex items-center justify-between gap-2">
+                          <span className="truncate text-[12px] text-foreground/65">
+                            + {acc.name}
+                            {acc.qty > 1 ? ` × ${acc.qty}` : ''}
+                          </span>
+                          <span className="shrink-0 text-[12px] font-semibold text-powder-300">
+                            {(acc.price * acc.qty).toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
