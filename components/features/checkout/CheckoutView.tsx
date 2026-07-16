@@ -28,15 +28,11 @@ interface Form {
 const EMPTY_FORM: Form = {
   firstName: '',
   lastName: '',
-  phone: '+380',
+  phone: '',
   city: null,
   branch: null,
   payment: null,
 };
-
-function isValidPhone(p: string) {
-  return /^\+380\d{9}$/.test(p.replace(/\s/g, ''));
-}
 
 export default function CheckoutView() {
   const locale = useLocale();
@@ -198,7 +194,7 @@ export default function CheckoutView() {
   // ───────── validation ─────────
   const errors = {
     firstName: !form.firstName.trim() ? t('errFirstName') : null,
-    phone: !isValidPhone(form.phone) ? t('errPhone') : null,
+    phone: !form.phone.trim() ? t('errPhone') : null,
     city: !form.city ? t('errCity') : null,
     branch: !form.branch ? t('errBranch') : null,
     payment: !form.payment ? t('errPayment') : null,
@@ -304,7 +300,7 @@ export default function CheckoutView() {
               label={t('phone')}
               required
               value={form.phone}
-              onChange={(v) => setField('phone', v.startsWith('+') ? v : `+${v}`)}
+              onChange={(v) => setField('phone', v)}
               onBlur={() => blur('phone')}
               type="tel"
               inputMode="tel"

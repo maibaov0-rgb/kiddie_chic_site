@@ -21,8 +21,19 @@ export type PlaceOrderResult =
   | { orderId: string; ref: string }
   | { error: string };
 
-function isValidPhone(p: string): boolean {
-  return /^\+380\d{9}$/.test(p.replace(/\s/g, ''));
+// Client accepts any phone format the customer types (no mask, no strict
+// pattern) — this normalizes common variants (0501234567, 380501234567,
+// +380 50 123 45 67, ...) to +380XXXXXXXXX for storage and Telegram. If the
+// input doesn't look like a phone number at all, it's kept as typed rather
+// than blocking the order.
+function normalizePhone(raw: string): string {
+  const trimmed = raw.trim();
+  const digits = trimmed.replace(/\D/g, '');
+  if (!digits) return trimmed;
+  let local = digits;
+  if (local.length > 9 && local.startsWith('380')) local = local.slice(3);
+  else if (local.length > 9 && local.startsWith('0')) local = local.slice(1);
+  return `+380${local}`;
 }
 
 function generateRef(): string {
@@ -34,7 +45,7 @@ function generateRef(): string {
 export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrderResult> {
   // ── Validate input ───────────────────────────────────────────────────────────
   if (!payload.firstName.trim()) return { error: "Вкажіть ім'я" };
-  if (!isValidPhone(payload.phone)) return { error: 'Невірний номер телефону' };
+  if (!payload.phone.trim()) return { error: 'Вкажіть номер телефону' };
   if (!payload.city.trim()) return { error: 'Вкажіть місто' };
   if (!payload.novaPoshta.trim()) return { error: 'Вкажіть відділення' };
   if (!payload.items.length) return { error: 'Кошик порожній' };
@@ -129,6 +140,7 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
     resolvedAccessoryItems.reduce((s, i) => s + i.price * i.qty, 0);
   const ref = generateRef();
   const customerName = `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim();
+  const phone = normalizePhone(payload.phone);
 
   // ── Persist ──────────────────────────────────────────────────────────────────
   let order: { id: string; ref: string };
@@ -137,7 +149,7 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
       data: {
         ref,
         customerName,
-        phone: payload.phone.replace(/\s/g, ''),
+        phone,
         email: '',
         city: payload.city,
         novaPoshta: payload.novaPoshta,
@@ -175,7 +187,7 @@ export async function placeOrder(payload: PlaceOrderPayload): Promise<PlaceOrder
     void sendNewOrderNotification({
       ref: order.ref,
       customerName,
-      phone: payload.phone.replace(/\s/g, ''),
+      phone,
       city: payload.city,
       novaPoshta: payload.novaPoshta,
       note: payload.note.trim() || null,
