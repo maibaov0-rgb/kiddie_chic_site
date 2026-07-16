@@ -85,10 +85,13 @@ enum PaymentMethod {
 }
 
 enum AccessoryType {
-  headband // Обруч
-  gloves   // Рукавички
-  bag      // Сумочка
-  choker   // Чокер
+  headband  // Обруч
+  gloves    // Рукавички
+  bag       // Сумочка
+  choker    // Чокер
+  train     // Шлейф
+  wristband // Прикраса на руку
+  hairpiece // Прикраса на волосся
 }
 
 // ─── Domain models ─────────────────────────────────────────────────────────────

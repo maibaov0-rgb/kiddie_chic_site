@@ -109,7 +109,14 @@ export function colorName(id: string, en: boolean): string {
 
 // ─── Accessories (fixed, closed list) ──────────────────────────────────────
 
-export type AccessoryType = 'headband' | 'gloves' | 'bag' | 'choker';
+export type AccessoryType =
+  | 'headband'
+  | 'gloves'
+  | 'bag'
+  | 'choker'
+  | 'train'
+  | 'wristband'
+  | 'hairpiece';
 
 export interface AccessoryTypeOption {
   id: AccessoryType;
@@ -122,6 +129,9 @@ export const ACCESSORY_TYPES: AccessoryTypeOption[] = [
   { id: 'gloves', name_uk: 'Рукавички', name_en: 'Gloves' },
   { id: 'bag', name_uk: 'Сумочка', name_en: 'Bag' },
   { id: 'choker', name_uk: 'Чокер', name_en: 'Choker' },
+  { id: 'train', name_uk: 'Шлейф', name_en: 'Train' },
+  { id: 'wristband', name_uk: 'Прикраса на руку', name_en: 'Wrist accessory' },
+  { id: 'hairpiece', name_uk: 'Прикраса на волосся', name_en: 'Hair accessory' },
 ];
 
 export function accessoryTypeName(type: string, en: boolean): string {

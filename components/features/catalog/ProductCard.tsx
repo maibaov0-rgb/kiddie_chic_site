@@ -7,7 +7,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Heart } from 'lucide-react';
 import { cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
-import { ColorPillStatic } from './ColorPill';
 
 export default function ProductCard({ product }: { product: Product }) {
   const locale = useLocale();
@@ -67,13 +66,6 @@ export default function ProductCard({ product }: { product: Product }) {
         <h3 className="font-sans text-sm font-medium leading-snug text-foreground md:text-[15px]">
           {name}
         </h3>
-        {product.colors.length > 0 && (
-          <div className="mt-1.5 flex flex-wrap gap-1">
-            {product.colors.map((id) => (
-              <ColorPillStatic key={id} id={id} en={en} />
-            ))}
-          </div>
-        )}
         {from !== null && (
           <p className="mt-1 font-sans text-sm font-bold text-gold">
             <span className="font-medium text-foreground/40">{tc('priceFrom')} </span>

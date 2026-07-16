@@ -26,11 +26,3 @@ export function ColorPill({
     </button>
   );
 }
-
-export function ColorPillStatic({ id, en }: { id: string; en: boolean }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-foreground/15 px-2 py-0.5 text-[10px] font-medium text-foreground/60">
-      {colorName(id, en)}
-    </span>
-  );
-}
