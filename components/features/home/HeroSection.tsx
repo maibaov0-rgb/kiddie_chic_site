@@ -197,9 +197,22 @@ export default function HeroSection() {
         >
           <Link
             href="/catalog/dresses"
-            className="inline-flex h-14 items-center justify-center rounded-full bg-powder-200 px-10 text-base font-bold text-white shadow-float transition-all duration-300 ease-in-out hover:bg-powder-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+            className="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-full bg-white/80 px-10 text-base font-semibold text-powder-300 shadow-float backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder-300 focus-visible:ring-offset-2"
           >
-            {t('cta')}
+            {!reduceMotion && (
+              <motion.span
+                aria-hidden
+                initial={{ x: '-150%' }}
+                animate={phase === 'final' ? { x: '250%' } : {}}
+                transition={
+                  phase === 'final'
+                    ? { duration: 1.8, ease: EASE, delay: 0.9, repeat: Infinity, repeatDelay: 3 }
+                    : undefined
+                }
+                className="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white to-transparent"
+              />
+            )}
+            <span className="relative">{t('cta')}</span>
           </Link>
         </motion.div>
 
