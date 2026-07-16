@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { asset } from '@/lib/asset';
 
 const PLACEHOLDER_PRODUCTS = [
@@ -87,16 +87,6 @@ function ProductCard({
             {product.badge}
           </span>
         )}
-
-        {/* Wishlist */}
-        <button
-          type="button"
-          aria-label="Додати у вибране"
-          className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/92 text-foreground/60 shadow-card transition-all hover:scale-110 hover:bg-white hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-          onClick={(e) => e.preventDefault()}
-        >
-          <Heart size={14} />
-        </button>
 
         {/* Hover CTA */}
         <div className="absolute inset-x-3 bottom-3 translate-y-14 rounded-xl bg-foreground/90 py-2.5 text-center transition-transform duration-300 group-hover:translate-y-0">

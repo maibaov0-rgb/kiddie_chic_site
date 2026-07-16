@@ -1,10 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { Heart } from 'lucide-react';
 import { cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 
@@ -13,7 +11,6 @@ export default function ProductCard({ product }: { product: Product }) {
   const en = locale === 'en';
   const t = useTranslations('product');
   const tc = useTranslations('catalog');
-  const [liked, setLiked] = useState(false);
 
   const name = en ? product.name_en : product.name_uk;
   const from = minPrice(product);
@@ -43,22 +40,6 @@ export default function ProductCard({ product }: { product: Product }) {
             </span>
           )}
         </div>
-
-        {/* Wishlist */}
-        <button
-          type="button"
-          aria-label={liked ? 'Видалити з вибраного' : 'Додати у вибране'}
-          aria-pressed={liked}
-          onClick={(e) => {
-            e.preventDefault();
-            setLiked((v) => !v);
-          }}
-          className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-white/92 text-foreground/60 shadow-card transition-all hover:scale-110 hover:bg-white hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-        >
-          <Heart size={15} className={liked ? 'fill-gold text-gold' : ''} />
-        </button>
-
-
       </div>
 
       {/* Info */}

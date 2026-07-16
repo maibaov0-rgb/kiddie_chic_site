@@ -168,12 +168,11 @@ export default function CatalogView({ products }: { products: Product[] }) {
         role="dialog"
         aria-modal="true"
         aria-label={t('filters.title')}
-        className={`bg-pink-soft fixed inset-x-0 bottom-0 z-50 max-h-[85dvh] overflow-y-auto rounded-t-3xl p-6 shadow-float transition-transform duration-300 ease-in-out md:hidden ${
+        className={`bg-pink-soft fixed inset-x-0 bottom-0 z-50 flex max-h-[85dvh] flex-col rounded-t-3xl shadow-float transition-transform duration-300 ease-in-out md:hidden ${
           drawerOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
-        style={{ paddingBottom: 'max(2rem, calc(env(safe-area-inset-bottom) + 1.5rem))' }}
       >
-        <div className="mb-5 flex items-center justify-between">
+        <div className="flex items-center justify-between px-6 pb-5 pt-6">
           <h2 className="text-lg font-semibold text-foreground">{t('filters.title')}</h2>
           <button
             type="button"
@@ -184,8 +183,15 @@ export default function CatalogView({ products }: { products: Product[] }) {
             <X size={18} />
           </button>
         </div>
-        {controls}
-        <div className="mt-6 flex gap-3">
+
+        {/* Scrollable filter list — footer below stays pinned so "Apply"
+            never requires scrolling past a long color/size list to reach. */}
+        <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-4">{controls}</div>
+
+        <div
+          className="flex gap-3 px-6 pt-4 shadow-[0_-8px_16px_-12px_rgba(0,0,0,0.15)]"
+          style={{ paddingBottom: 'max(1.5rem, calc(env(safe-area-inset-bottom) + 1rem))' }}
+        >
           {activeCount > 0 && (
             <button
               type="button"

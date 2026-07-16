@@ -6,10 +6,9 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Check, Minus, Plus, ShoppingBag, Clock, ChevronLeft, ChevronRight, Hand } from 'lucide-react';
-import { colorName, accessoryTypeName, cover, type Product } from '@/lib/catalog';
+import { colorName, accessoryTypeName, cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
-import { ColorPill } from './ColorPill';
 
 // Accessories are part of the dress's own configuration (like size/color),
 // not a separate purchase — checking one just adds its qty stepper; the
@@ -96,19 +95,20 @@ export default function ProductDetail({ product }: { product: Product }) {
   const locale = useLocale();
   const en = locale === 'en';
   const t = useTranslations('product');
+  const tc = useTranslations('catalog');
   const addItem = useCartStore((s) => s.addItem);
 
   const name = en ? product.name_en : product.name_uk;
   const description = en ? product.description_en : product.description_uk;
 
-  // Selection — kept valid via "effective" fallbacks instead of effects.
-  // Sizes come straight from the product's own variants (not the SIZES preset
-  // list) so a preset change never hides a size that's already for sale.
+  // Size and color start unselected — the shopper must actively choose both
+  // before "Add to cart" unlocks, rather than silently defaulting to the
+  // first variant. Sizes come straight from the product's own variants (not
+  // the SIZES preset list) so a preset change never hides a size on sale.
   const sizes = [...new Set(product.variants.map((v) => v.size))];
-  const [size, setSize] = useState(sizes[0] ?? '');
-
-  const [colorRaw, setColor] = useState(product.colors[0] ?? '');
-  const color = product.colors.includes(colorRaw) ? colorRaw : (product.colors[0] ?? '');
+  const [size, setSize] = useState('');
+  const [color, setColor] = useState('');
+  const requiresColor = product.colors.length > 0;
 
   const [qty, setQty] = useState(1);
   // Accessory selection: id -> qty. Presence in the map means "checked".
@@ -147,7 +147,9 @@ export default function ProductDetail({ product }: { product: Product }) {
   }, [productJustAdded]);
 
   const variant = product.variants.find((v) => v.size === size) ?? null;
-  const price = variant?.price ?? null;
+  // Shown under the gallery regardless of the chosen size — the exact price
+  // per size is already visible inline in the size dropdown's options.
+  const fromPrice = minPrice(product);
 
   function toggleAccessory(id: string) {
     setSelectedAccessories((prev) => {
@@ -169,7 +171,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   // the dress in one cart write, as a kit (still independently removable in
   // the cart, since each cart item carries its own key).
   function handleAdd() {
-    if (!variant) return;
+    if (!variant || (requiresColor && !color)) return;
     addItem({
       kind: 'product',
       productId: product.id,
@@ -303,8 +305,11 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         <h1 className="font-sans text-2xl font-semibold leading-snug text-foreground md:text-3xl">{name}</h1>
 
-        {price !== null && (
-          <p className="mt-3 font-sans text-2xl font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</p>
+        {fromPrice !== null && (
+          <p className="mt-3 font-sans text-2xl font-bold text-gold">
+            <span className="font-medium text-foreground/40">{tc('priceFrom')} </span>
+            {fromPrice.toLocaleString('uk-UA')} ₴
+          </p>
         )}
 
         <p className="mt-4 font-sans text-base leading-relaxed text-foreground/60">{description}</p>
@@ -317,8 +322,13 @@ export default function ProductDetail({ product }: { product: Product }) {
           <select
             value={size}
             onChange={(e) => setSize(e.target.value)}
-            className="w-full min-h-11 rounded-2xl border border-foreground/20 bg-white px-4 text-sm font-medium text-foreground/80 outline-none transition-all focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+            className={`w-full min-h-11 rounded-2xl border-2 border-powder-200 bg-white px-4 text-sm font-medium outline-none transition-all hover:border-powder-300 focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
+              size === '' ? 'text-foreground/40' : 'text-foreground/80'
+            }`}
           >
+            <option value="" disabled>
+              {t('selectSize')}
+            </option>
             {sizes.map((s) => {
               const sizePrice = product.variants.find((v) => v.size === s)?.price ?? null;
               return (
@@ -335,13 +345,24 @@ export default function ProductDetail({ product }: { product: Product }) {
         {product.colors.length > 0 && (
           <div className="mt-6">
             <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
-              {t('color')}: <span className="text-foreground/60">{colorName(color, en)}</span>
+              {t('color')}
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <select
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+              className={`w-full min-h-11 rounded-2xl border-2 border-powder-200 bg-white px-4 text-sm font-medium outline-none transition-all hover:border-powder-300 focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
+                color === '' ? 'text-foreground/40' : 'text-foreground/80'
+              }`}
+            >
+              <option value="" disabled>
+                {t('selectColor')}
+              </option>
               {product.colors.map((cid) => (
-                <ColorPill key={cid} id={cid} en={en} selected={cid === color} onClick={() => setColor(cid)} />
+                <option key={cid} value={cid}>
+                  {colorName(cid, en)}
+                </option>
               ))}
-            </div>
+            </select>
           </div>
         )}
 
@@ -401,7 +422,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           <button
             type="button"
             onClick={handleAdd}
-            disabled={!variant}
+            disabled={!variant || (requiresColor && !color)}
             className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 px-6 font-sans text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float disabled:pointer-events-none disabled:opacity-40"
           >
             {productJustAdded ? <Check size={18} /> : <ShoppingBag size={17} />}
