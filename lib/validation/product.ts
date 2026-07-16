@@ -17,7 +17,7 @@ export const productSchema = z
     name_en: z.string().default(""),
     description_uk: z.string().default(""),
     description_en: z.string().default(""),
-    images: z.array(z.string().url()).default([]),
+    images: z.array(z.string().url()).min(1, "Додайте хоча б одне фото"),
     colors: z.array(z.string()).default([]),
     inStock: z.boolean().default(true),
     isNew: z.boolean().default(false),

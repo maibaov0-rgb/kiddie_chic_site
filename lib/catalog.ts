@@ -173,7 +173,7 @@ export interface Product {
 // ─── Pure helpers (operate on already-fetched products) ───────────────────────
 
 export function cover(product: Product): string {
-  return product.images[0] ?? '/images/hero/dress-1.jpg';
+  return product.images[0] ?? '/images/catalog/no-image.svg';
 }
 
 export function minPrice(product: Product): number | null {

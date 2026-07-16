@@ -118,6 +118,9 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
             <ImageUploader value={field.value ?? []} onChange={field.onChange} />
           )}
         />
+        {errors.images && (
+          <p className="text-sm text-[#9b4a4a]">{errors.images.message}</p>
+        )}
       </section>
 
       <section className="space-y-4 rounded-3xl bg-white p-6 shadow-soft">
