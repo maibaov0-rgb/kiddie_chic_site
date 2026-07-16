@@ -197,7 +197,7 @@ export default function HeroSection() {
         >
           <Link
             href="/catalog/dresses"
-            className="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-full bg-white/80 px-10 text-base font-semibold text-powder-300 shadow-float backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder-300 focus-visible:ring-offset-2"
+            className="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-full bg-white/70 px-10 text-base font-semibold text-powder-300 shadow-float backdrop-blur-sm transition-all duration-300 ease-in-out hover:bg-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-powder-300 focus-visible:ring-offset-2"
           >
             {!reduceMotion && (
               <motion.span
