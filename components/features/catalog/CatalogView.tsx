@@ -137,7 +137,7 @@ export default function CatalogView({ products }: { products: Product[] }) {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-3 md:gap-5 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-8 md:gap-x-5 md:gap-y-11 lg:grid-cols-3">
               {visible.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
