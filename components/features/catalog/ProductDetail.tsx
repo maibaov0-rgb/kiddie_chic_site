@@ -55,7 +55,7 @@ function AccessoryRow({
           />
           <span className="font-sans text-sm font-medium text-foreground/80">{name}</span>
         </span>
-        <span className="font-sans text-sm font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</span>
+        <span className="font-sans text-sm font-bold text-powder-300">{price.toLocaleString('uk-UA')} ₴</span>
       </label>
 
       {checked && (
@@ -303,7 +303,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           )}
         </div>
 
-        <h1 className="font-sans text-2xl font-semibold leading-snug text-powder-300 md:text-3xl">{name}</h1>
+        <h1 className="font-sans text-2xl font-semibold leading-snug text-neutral-600 md:text-3xl">{name}</h1>
 
         {fromPrice !== null && (
           <p className="mt-3 font-sans text-2xl font-semibold text-powder-300">

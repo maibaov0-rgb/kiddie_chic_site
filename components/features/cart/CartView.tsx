@@ -219,7 +219,7 @@ export default function CartView() {
                           </button>
                         </div>
 
-                        <p className="text-lg font-bold text-gold md:text-xl">
+                        <p className="text-lg font-bold text-powder-300 md:text-xl">
                           {fmt(item.price * item.qty, locale)} ₴
                         </p>
                       </div>
@@ -244,7 +244,7 @@ export default function CartView() {
                               {acc.qty > 1 ? ` × ${acc.qty}` : ''}
                             </span>
                             <div className="flex shrink-0 items-center gap-1.5">
-                              <span className="text-[13px] font-semibold text-foreground/80">
+                              <span className="text-[13px] font-semibold text-powder-300">
                                 {fmt(acc.price * acc.qty, locale)} ₴
                               </span>
                               <button
@@ -280,7 +280,7 @@ export default function CartView() {
           <div className="rounded-3xl bg-white p-5 shadow-float md:p-7">
             <div className="flex items-baseline justify-between gap-3">
               <span className="font-sans text-lg font-semibold text-foreground md:text-xl">{t('total')}</span>
-              <span className="text-2xl font-bold text-gold md:text-3xl">
+              <span className="text-2xl font-bold text-powder-300 md:text-3xl">
                 {hydrated ? `${fmt(subtotal, locale)} ₴` : '—'}
               </span>
             </div>
@@ -329,7 +329,7 @@ export default function CartView() {
               <span className="text-[10px] font-medium uppercase tracking-widest text-foreground/60">
                 {t('total')}
               </span>
-              <span className="font-sans text-xl font-bold text-gold">
+              <span className="font-sans text-xl font-bold text-powder-300">
                 {hydrated ? `${fmt(subtotal, locale)} ₴` : '—'}
               </span>
             </div>

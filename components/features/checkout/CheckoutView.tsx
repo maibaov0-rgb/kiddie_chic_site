@@ -509,7 +509,7 @@ export default function CheckoutView() {
               </div>
               <div className="mt-3 flex items-center justify-between border-t border-foreground/10 pt-3 text-base font-semibold text-foreground">
                 <span>{t('rowTotal')}</span>
-                <span className="text-gold">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</span>
+                <span className="text-powder-300">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</span>
               </div>
             </div>
 
@@ -539,7 +539,7 @@ export default function CheckoutView() {
       >
         <div className="min-w-0">
           <p className="text-[11px] uppercase tracking-wider text-foreground/55">{t('rowTotal')}</p>
-          <p className="truncate text-lg font-bold text-gold">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</p>
+          <p className="truncate text-lg font-bold text-powder-300">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</p>
         </div>
         <button
           type="submit"
