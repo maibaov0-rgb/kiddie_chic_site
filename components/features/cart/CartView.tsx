@@ -312,8 +312,14 @@ export default function CartView() {
         </aside>
       </div>
 
-      {/* ── Sticky mobile checkout bar ──────────────────────── */}
-      {hydrated && items.length > 0 && (
+      {/* ── Sticky mobile checkout bar ──────────────────────────────
+          Mounted from first paint (mirrors the always-mounted desktop
+          Link above) instead of waiting for cart-store hydration —
+          gating the mount on `hydrated` left the button briefly absent
+          from the DOM, so a tap right after the page "looked" ready
+          landed on nothing and required a second tap once it appeared.
+          Only hide it once hydration confirms the cart is truly empty. */}
+      {(!hydrated || items.length > 0) && (
         <div
           className="fixed inset-x-0 bottom-0 z-40 border-t border-foreground/10 bg-white px-4 pt-3 lg:hidden"
           style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
@@ -324,7 +330,7 @@ export default function CartView() {
                 {t('total')}
               </span>
               <span className="font-sans text-xl font-bold text-gold">
-                {fmt(subtotal, locale)} ₴
+                {hydrated ? `${fmt(subtotal, locale)} ₴` : '—'}
               </span>
             </div>
             <Link
