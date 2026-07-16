@@ -206,10 +206,10 @@ export default function HeroSection() {
                 animate={phase === 'final' ? { x: '250%' } : {}}
                 transition={
                   phase === 'final'
-                    ? { duration: 1.8, ease: EASE, delay: 0.9, repeat: Infinity, repeatDelay: 3 }
+                    ? { duration: 3, ease: EASE, delay: 0.9, repeat: Infinity, repeatDelay: 0 }
                     : undefined
                 }
-                className="pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white to-transparent"
+                className="pointer-events-none absolute inset-y-0 left-0 w-2/3 skew-x-[-20deg] bg-gradient-to-r from-transparent via-white via-50% to-transparent opacity-100 mix-blend-overlay"
               />
             )}
             <span className="relative">{t('cta')}</span>

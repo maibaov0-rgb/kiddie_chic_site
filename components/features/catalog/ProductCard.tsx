@@ -44,13 +44,12 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Info */}
       <div className="mt-3 px-0.5">
-        <h3 className="font-sans text-sm font-medium leading-snug text-foreground md:text-[15px]">
+        <h3 className="font-sans text-sm font-medium leading-snug text-powder-300 md:text-[15px]">
           {name}
         </h3>
         {from !== null && (
-          <p className="mt-1 font-sans text-sm font-bold text-gold">
-            <span className="font-medium text-foreground/40">{tc('priceFrom')} </span>
-            {from.toLocaleString('uk-UA')} ₴
+          <p className="mt-1 font-sans text-sm font-semibold text-powder-300">
+            {tc('priceFrom')} {from.toLocaleString('uk-UA')} ₴
           </p>
         )}
       </div>

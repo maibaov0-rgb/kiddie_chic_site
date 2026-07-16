@@ -303,11 +303,11 @@ export default function ProductDetail({ product }: { product: Product }) {
           )}
         </div>
 
-        <h1 className="font-sans text-2xl font-semibold leading-snug text-foreground md:text-3xl">{name}</h1>
+        <h1 className="font-sans text-2xl font-semibold leading-snug text-powder-300 md:text-3xl">{name}</h1>
 
         {fromPrice !== null && (
-          <p className="mt-3 font-sans text-2xl font-bold text-gold">
-            <span className="text-base font-medium text-foreground/40">{tc('priceFrom')} </span>
+          <p className="mt-3 font-sans text-2xl font-semibold text-powder-300">
+            <span className="text-base font-medium text-powder-300">{tc('priceFrom')} </span>
             {fromPrice.toLocaleString('uk-UA')} ₴
           </p>
         )}
