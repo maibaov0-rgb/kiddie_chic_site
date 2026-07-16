@@ -10,6 +10,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 // prefix it so the hero video resolves under GitHub Pages' /repo base path.
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 const VIDEO_SRC = `${BASE_PATH}/videos/hero.mp4`;
+const VIDEO_SRC_MOBILE = `${BASE_PATH}/videos/hero-mobile.mp4`;
 const POSTER_SRC = `${BASE_PATH}/images/hero/hero-poster.jpg`;
 
 /** Intro: doors closed → doors sliding open → final hero layout */
@@ -168,7 +169,6 @@ export default function HeroSection() {
           animate={revealed ? { scale: 1, opacity: 1 } : {}}
           transition={{ duration: 1.4, ease: EASE }}
           className="absolute inset-0 h-full w-full object-cover"
-          src={VIDEO_SRC}
           poster={POSTER_SRC}
           autoPlay
           muted
@@ -178,7 +178,12 @@ export default function HeroSection() {
           controls={false}
           disablePictureInPicture
           aria-label={t('dressAlt')}
-        />
+        >
+          {/* Lighter encode for phones — the browser picks the first matching
+              <source> at load, so this keeps mobile data usage down without JS. */}
+          <source src={VIDEO_SRC_MOBILE} media="(max-width: 768px)" />
+          <source src={VIDEO_SRC} />
+        </motion.video>
 
         {/* Soft scrim so the button and bottom bar stay legible over the video */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-foreground/20 via-transparent to-foreground/5" />

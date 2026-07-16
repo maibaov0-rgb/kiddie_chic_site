@@ -307,7 +307,7 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         {fromPrice !== null && (
           <p className="mt-3 font-sans text-2xl font-bold text-gold">
-            <span className="font-medium text-foreground/40">{tc('priceFrom')} </span>
+            <span className="text-base font-medium text-foreground/40">{tc('priceFrom')} </span>
             {fromPrice.toLocaleString('uk-UA')} ₴
           </p>
         )}
