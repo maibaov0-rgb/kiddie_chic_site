@@ -70,7 +70,7 @@
     "decreaseQty": "Decrease quantity",
     "increaseQty": "Increase quantity",
     "accessoriesTitle": "Accessories",
-    "addAccessory": "Add {name} to cart"
+    "selectAccessory": "Select {name}"
   },
   "cart": {
     "title": "Cart",

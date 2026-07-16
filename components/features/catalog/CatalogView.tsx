@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { SlidersHorizontal, X } from 'lucide-react';
 import {
@@ -42,6 +42,24 @@ export default function CatalogView({ products }: { products: Product[] }) {
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
 
+  // When a filter change collapses the results to zero, the page's total
+  // height shrinks while the scroll position doesn't — the browser can land
+  // anywhere on the now-short page (often the footer), leaving the "no
+  // results" message scrolled out of view above the fold. Bring it into
+  // view explicitly. Skipped on first mount so landing on the catalog page
+  // with an empty result set never auto-scrolls.
+  const resultsTopRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (filtered.length === 0) {
+      resultsTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [filters, filtered.length]);
+
   useEffect(() => {
     if (!drawerOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -67,7 +85,7 @@ export default function CatalogView({ products }: { products: Product[] }) {
     <div className="flex flex-col gap-6 md:flex-row md:gap-8">
       {/* Desktop sidebar */}
       <aside className="hidden w-64 shrink-0 md:block">
-        <div className="bg-pink-soft sticky top-24 rounded-3xl p-6 shadow-card">
+        <div className="bg-pink-soft sticky top-24 max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-3xl p-6 shadow-card">
           <div className="mb-5 flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-[0.15em] text-foreground/65">
               {t('filters.title')}
@@ -89,7 +107,7 @@ export default function CatalogView({ products }: { products: Product[] }) {
       {/* Main column */}
       <div className="min-w-0 flex-1">
         {/* Top bar: count + mobile filter trigger */}
-        <div className="mb-5 flex items-center justify-between">
+        <div ref={resultsTopRef} className="mb-5 flex items-center justify-between">
           <p className="text-sm text-foreground/65" aria-live="polite">{resultsLabel(filtered.length)}</p>
           <button
             type="button"
@@ -225,7 +243,7 @@ function FilterControls({
         <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
           {t('color')}
         </h3>
-        <div className="max-h-72 overflow-y-auto pr-1">
+        <div>
           {COLORS.map((c) => (
             <CheckboxItem
               key={c.id}

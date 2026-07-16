@@ -11,80 +11,83 @@ import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
 import { ColorPill } from './ColorPill';
 
-// Each accessory gets its own qty stepper and its own "added" confirmation —
-// entirely separate from the dress's qty and its "Додати в кошик" button, so
-// adding an accessory never makes it look like the dress itself was added.
+// Accessories are part of the dress's own configuration (like size/color),
+// not a separate purchase — checking one just adds its qty stepper; the
+// actual cart write happens once, together with the dress, on the main
+// "Додати в кошик" click.
 function AccessoryRow({
   name,
   price,
-  onAdd,
+  checked,
+  qty,
+  onToggle,
+  onQtyChange,
   decreaseLabel,
   increaseLabel,
-  addLabel,
+  selectLabel,
 }: {
   name: string;
   price: number;
-  onAdd: (qty: number) => void;
+  checked: boolean;
+  qty: number;
+  onToggle: () => void;
+  onQtyChange: (qty: number) => void;
   decreaseLabel: string;
   increaseLabel: string;
-  addLabel: string;
+  selectLabel: string;
 }) {
-  const [qty, setQty] = useState(1);
-  const [justAdded, setJustAdded] = useState(false);
-
-  useEffect(() => {
-    if (!justAdded) return;
-    const id = setTimeout(() => setJustAdded(false), 2000);
-    return () => clearTimeout(id);
-  }, [justAdded]);
-
-  function handleAdd() {
-    onAdd(qty);
-    setJustAdded(true);
-  }
-
   return (
     <div className="rounded-2xl bg-white px-4 py-3 shadow-card">
-      <div className="flex items-center justify-between gap-3">
-        <span className="font-sans text-sm font-medium text-foreground/80">{name}</span>
-        <span className="font-sans text-sm font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</span>
-      </div>
-      <div className="mt-2.5 flex items-center justify-between gap-3">
-        <div className="flex h-11 items-center rounded-full bg-milk shadow-card">
-          <button
-            type="button"
-            aria-label={decreaseLabel}
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
-            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-          >
-            <Minus size={14} />
-          </button>
+      <label className="flex cursor-pointer items-center justify-between gap-3">
+        <span className="flex items-center gap-3">
           <span
-            className="min-w-6 px-1 text-center text-sm font-semibold text-foreground"
-            aria-live="polite"
-            aria-atomic="true"
+            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border-2 transition-colors ${
+              checked ? 'border-gold bg-gold' : 'border-foreground/25 bg-white'
+            }`}
           >
-            {qty}
+            {checked && <Check size={14} className="text-white" />}
           </span>
-          <button
-            type="button"
-            aria-label={increaseLabel}
-            onClick={() => setQty((q) => q + 1)}
-            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-          >
-            <Plus size={14} />
-          </button>
-        </div>
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={onToggle}
+            aria-label={selectLabel}
+            className="sr-only"
+          />
+          <span className="font-sans text-sm font-medium text-foreground/80">{name}</span>
+        </span>
+        <span className="font-sans text-sm font-bold text-gold">{price.toLocaleString('uk-UA')} ₴</span>
+      </label>
 
-        <button
-          type="button"
-          aria-label={addLabel}
-          onClick={handleAdd}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-powder-200 text-foreground/80 transition-all duration-300 ease-in-out hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-        >
-          {justAdded ? <Check size={16} /> : <Plus size={16} />}
-        </button>
-      </div>
+      {checked && (
+        <div className="mt-2.5 flex justify-end">
+          <div className="flex h-11 items-center rounded-full bg-milk shadow-card">
+            <button
+              type="button"
+              aria-label={decreaseLabel}
+              onClick={() => onQtyChange(Math.max(1, qty - 1))}
+              className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+            >
+              <Minus size={14} />
+            </button>
+            <span
+              className="min-w-6 px-1 text-center text-sm font-semibold text-foreground"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {qty}
+            </span>
+            <button
+              type="button"
+              aria-label={increaseLabel}
+              onClick={() => onQtyChange(qty + 1)}
+              className="flex h-11 w-11 items-center justify-center rounded-full text-foreground/65 transition-colors hover:bg-powder-100 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -108,13 +111,11 @@ export default function ProductDetail({ product }: { product: Product }) {
   const color = product.colors.includes(colorRaw) ? colorRaw : (product.colors[0] ?? '');
 
   const [qty, setQty] = useState(1);
+  // Accessory selection: id -> qty. Presence in the map means "checked".
+  const [selectedAccessories, setSelectedAccessories] = useState<Record<string, number>>({});
   const [activeImg, setActiveImg] = useState(0);
   const [addedTick, setAddedTick] = useState(0);
   const added = addedTick > 0;
-  // Separate from `added` above: that one drives the shared "added to cart"
-  // toast for both the dress and its accessories. This one drives only the
-  // main "Додати в кошик" button's own checkmark, so adding an accessory
-  // doesn't visually claim the dress itself was added.
   const [productJustAdded, setProductJustAdded] = useState(false);
   const [showSwipeHint, setShowSwipeHint] = useState(product.images.length > 1);
 
@@ -148,6 +149,25 @@ export default function ProductDetail({ product }: { product: Product }) {
   const variant = product.variants.find((v) => v.size === size) ?? null;
   const price = variant?.price ?? null;
 
+  function toggleAccessory(id: string) {
+    setSelectedAccessories((prev) => {
+      const next = { ...prev };
+      if (id in next) {
+        delete next[id];
+      } else {
+        next[id] = 1;
+      }
+      return next;
+    });
+  }
+
+  function setAccessoryQty(id: string, accessoryQty: number) {
+    setSelectedAccessories((prev) => ({ ...prev, [id]: accessoryQty }));
+  }
+
+  // Accessories are never sold on their own — they're added together with
+  // the dress in one cart write, as a kit (still independently removable in
+  // the cart, since each cart item carries its own key).
   function handleAdd() {
     if (!variant) return;
     addItem({
@@ -161,20 +181,20 @@ export default function ProductDetail({ product }: { product: Product }) {
       qty,
       imageUrl: cover(product),
     });
+    for (const a of product.accessories) {
+      const accessoryQty = selectedAccessories[a.id];
+      if (!accessoryQty) continue;
+      addItem({
+        kind: 'accessory',
+        productId: product.id,
+        accessoryId: a.id,
+        name: accessoryTypeName(a.type, en),
+        price: a.price,
+        qty: accessoryQty,
+      });
+    }
     setAddedTick((n) => n + 1);
     setProductJustAdded(true);
-  }
-
-  function handleAddAccessory(a: Product['accessories'][number], accessoryQty: number) {
-    addItem({
-      kind: 'accessory',
-      productId: product.id,
-      accessoryId: a.id,
-      name: accessoryTypeName(a.type, en),
-      price: a.price,
-      qty: accessoryQty,
-    });
-    setAddedTick((n) => n + 1);
   }
 
   return (
@@ -325,6 +345,31 @@ export default function ProductDetail({ product }: { product: Product }) {
           </div>
         )}
 
+        {/* Accessories */}
+        {product.accessories.length > 0 && (
+          <div className="mt-6">
+            <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
+              {t('accessoriesTitle')}
+            </h3>
+            <div className="space-y-2">
+              {product.accessories.map((a) => (
+                <AccessoryRow
+                  key={a.id}
+                  name={accessoryTypeName(a.type, en)}
+                  price={a.price}
+                  checked={a.id in selectedAccessories}
+                  qty={selectedAccessories[a.id] ?? 1}
+                  onToggle={() => toggleAccessory(a.id)}
+                  onQtyChange={(accessoryQty) => setAccessoryQty(a.id, accessoryQty)}
+                  decreaseLabel={t('decreaseQty')}
+                  increaseLabel={t('increaseQty')}
+                  selectLabel={t('selectAccessory', { name: accessoryTypeName(a.type, en) })}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Quantity + add to cart */}
         <div className="mt-8 flex items-center gap-3">
           <div className="flex h-12 items-center rounded-full bg-white shadow-card">
@@ -363,28 +408,6 @@ export default function ProductDetail({ product }: { product: Product }) {
             {t('addToCart')}
           </button>
         </div>
-
-        {/* Accessories */}
-        {product.accessories.length > 0 && (
-          <div className="mt-6">
-            <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-foreground/60">
-              {t('accessoriesTitle')}
-            </h3>
-            <div className="space-y-2">
-              {product.accessories.map((a) => (
-                <AccessoryRow
-                  key={a.id}
-                  name={accessoryTypeName(a.type, en)}
-                  price={a.price}
-                  onAdd={(accessoryQty) => handleAddAccessory(a, accessoryQty)}
-                  decreaseLabel={t('decreaseQty')}
-                  increaseLabel={t('increaseQty')}
-                  addLabel={t('addAccessory', { name: accessoryTypeName(a.type, en) })}
-                />
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Secondary CTAs */}
         <div className="mt-4">

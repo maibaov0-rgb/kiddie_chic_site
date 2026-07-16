@@ -70,7 +70,7 @@
     "decreaseQty": "Зменшити кількість",
     "increaseQty": "Збільшити кількість",
     "accessoriesTitle": "Аксесуари",
-    "addAccessory": "Додати {name} до кошика"
+    "selectAccessory": "Обрати {name}"
   },
   "cart": {
     "title": "Кошик",
