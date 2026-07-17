@@ -6,7 +6,23 @@ export const variantSchema = z.object({
 });
 
 export const accessorySchema = z.object({
-  type: z.enum(["headband", "gloves", "bag", "choker", "train", "wristband", "hairpiece"]),
+  type: z.enum([
+    "headband",
+    "gloves",
+    "bag",
+    "choker",
+    "train",
+    "wristband",
+    "hairpiece",
+    "bowTrain",
+    "dressBow",
+    "basqueTrain",
+    "slipperTies",
+    "sleeves",
+    "wristbandSet2",
+    "dressBowSet2",
+    "skirt",
+  ]),
   price: z.coerce.number().positive("Ціна обов'язкова і має бути більшою за 0"),
 });
 

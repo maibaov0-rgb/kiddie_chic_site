@@ -116,7 +116,15 @@ export type AccessoryType =
   | 'choker'
   | 'train'
   | 'wristband'
-  | 'hairpiece';
+  | 'hairpiece'
+  | 'bowTrain'
+  | 'dressBow'
+  | 'basqueTrain'
+  | 'slipperTies'
+  | 'sleeves'
+  | 'wristbandSet2'
+  | 'dressBowSet2'
+  | 'skirt';
 
 export interface AccessoryTypeOption {
   id: AccessoryType;
@@ -132,6 +140,14 @@ export const ACCESSORY_TYPES: AccessoryTypeOption[] = [
   { id: 'train', name_uk: 'Шлейф', name_en: 'Train' },
   { id: 'wristband', name_uk: 'Прикраса на руку', name_en: 'Wrist accessory' },
   { id: 'hairpiece', name_uk: 'Прикраса на волосся', name_en: 'Hair accessory' },
+  { id: 'bowTrain', name_uk: 'Бант зі шлейфом', name_en: 'Bow with train' },
+  { id: 'dressBow', name_uk: 'Бант на сукні', name_en: 'Bow on dress' },
+  { id: 'basqueTrain', name_uk: 'Баска шлейф', name_en: 'Basque train' },
+  { id: 'slipperTies', name_uk: "Зав'язки до чешок", name_en: 'Ballet flat ties' },
+  { id: 'sleeves', name_uk: 'Рукава', name_en: 'Sleeves' },
+  { id: 'wristbandSet2', name_uk: 'Прикраса на руку (2 шт)', name_en: 'Wrist accessory (2 pcs)' },
+  { id: 'dressBowSet2', name_uk: 'Банти на сукні (2 шт)', name_en: 'Dress bows (2 pcs)' },
+  { id: 'skirt', name_uk: 'Спідниця', name_en: 'Skirt' },
 ];
 
 export function accessoryTypeName(type: string, en: boolean): string {

@@ -2,10 +2,26 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { accessoryTypeName, ACCESSORY_TYPES } from "./catalog.ts";
 
-test("ACCESSORY_TYPES has exactly the 4 fixed entries", () => {
+test("ACCESSORY_TYPES has exactly the fixed entries", () => {
   assert.deepEqual(
     ACCESSORY_TYPES.map((a) => a.id),
-    ["headband", "gloves", "bag", "choker"],
+    [
+      "headband",
+      "gloves",
+      "bag",
+      "choker",
+      "train",
+      "wristband",
+      "hairpiece",
+      "bowTrain",
+      "dressBow",
+      "basqueTrain",
+      "slipperTies",
+      "sleeves",
+      "wristbandSet2",
+      "dressBowSet2",
+      "skirt",
+    ],
   );
 });
 
