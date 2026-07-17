@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import {
-  Check, ChevronDown, CreditCard, Loader2, Lock, MapPin, Package,
-  RefreshCcw, Truck, User, Wallet,
+  ChevronDown, Loader2, Lock, MapPin, Package,
+  RefreshCcw, Truck, User,
 } from 'lucide-react';
 import { useCartStore, cartItemKey } from '@/lib/stores/cart';
 import { asset } from '@/lib/asset';
@@ -14,15 +14,12 @@ import { TOP_UA_CITIES } from '@/lib/np-fallback';
 import { placeOrder, createHutkoPayment } from '@/app/[locale]/(checkout)/checkout/actions';
 import type { Locale } from '@/i18n/routing';
 
-type PayMethod = 'card' | 'cod';
-
 interface Form {
   firstName: string;
   lastName: string;
   phone: string;
   city: { ref: string; name: string; area: string } | null;
   branch: { ref: string; number: string; description: string } | null;
-  payment: PayMethod | null;
 }
 
 const EMPTY_FORM: Form = {
@@ -31,7 +28,6 @@ const EMPTY_FORM: Form = {
   phone: '',
   city: null,
   branch: null,
-  payment: null,
 };
 
 export default function CheckoutView() {
@@ -197,7 +193,6 @@ export default function CheckoutView() {
     phone: !form.phone.trim() ? t('errPhone') : null,
     city: !form.city ? t('errCity') : null,
     branch: !form.branch ? t('errBranch') : null,
-    payment: !form.payment ? t('errPayment') : null,
   };
   const formValid = Object.values(errors).every((e) => e === null);
 
@@ -218,8 +213,8 @@ export default function CheckoutView() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setTouched({ firstName: true, lastName: true, phone: true, city: true, branch: true, payment: true });
-    if (!formValid || !form.payment) {
+    setTouched({ firstName: true, lastName: true, phone: true, city: true, branch: true });
+    if (!formValid) {
       const first = document.querySelector('[data-invalid="true"]');
       first?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -237,7 +232,7 @@ export default function CheckoutView() {
       city: form.city?.name ?? '',
       novaPoshta: form.branch ? `№${form.branch.number} — ${form.branch.description}` : '',
       note: '',
-      paymentMethod: form.payment,
+      paymentMethod: 'card',
       items,
     });
 
@@ -248,13 +243,7 @@ export default function CheckoutView() {
       return;
     }
 
-    if (form.payment === 'card') {
-      await attemptHutkoPayment(result.orderId, result.ref);
-      return;
-    }
-
-    router.push(`/${locale}/order-success?ref=${result.ref}`);
-    clearCart();
+    await attemptHutkoPayment(result.orderId, result.ref);
   }
 
   // Don't flash empty content during hydration
@@ -444,38 +433,6 @@ export default function CheckoutView() {
               <p className="mt-1.5 text-xs text-red-500">{errors.branch}</p>
             )}
           </div>
-        </Section>
-
-        {/* SECTION 3: Payment */}
-        <Section icon={<Wallet size={18} />} title={t('sectionPayment')}>
-          <div
-            className="grid gap-3 sm:grid-cols-2"
-            data-invalid={touched.payment && !!errors.payment}
-          >
-            <PayCard
-              selected={form.payment === 'card'}
-              icon={<CreditCard size={20} />}
-              title={t('payCardTitle')}
-              subtitle={t('payCardSubtitle')}
-              onClick={() => {
-                setField('payment', 'card');
-                blur('payment');
-              }}
-            />
-            <PayCard
-              selected={form.payment === 'cod'}
-              icon={<Package size={20} />}
-              title={t('payCodTitle')}
-              subtitle={t('payCodSubtitle')}
-              onClick={() => {
-                setField('payment', 'cod');
-                blur('payment');
-              }}
-            />
-          </div>
-          {touched.payment && errors.payment && (
-            <p className="mt-2 text-xs text-red-500">{errors.payment}</p>
-          )}
         </Section>
 
       </div>
@@ -669,38 +626,3 @@ function Field({
   );
 }
 
-function PayCard({
-  selected, icon, title, subtitle, onClick,
-}: {
-  selected: boolean;
-  icon: React.ReactNode;
-  title: string;
-  subtitle: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={selected}
-      className={`group relative flex items-start gap-3 rounded-3xl border-2 p-4 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-        selected
-          ? 'border-gold bg-gold/5'
-          : 'border-foreground/15 bg-white hover:border-gold/50'
-      }`}
-    >
-      <span className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${selected ? 'bg-gold text-white' : 'bg-powder-100 text-gold'}`}>
-        {icon}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="text-base font-semibold text-foreground">{title}</span>
-        <span className="mt-0.5 block text-[13px] leading-snug text-foreground/55">{subtitle}</span>
-      </span>
-      {selected && (
-        <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-gold text-white">
-          <Check size={14} />
-        </span>
-      )}
-    </button>
-  );
-}

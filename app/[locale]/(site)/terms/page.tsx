@@ -35,11 +35,7 @@ export default async function TermsPage({ params }: { params: Promise<Params> })
         </h2>
         <div className="space-y-3">
           <p><strong className="text-foreground">{t('payOnline')}:</strong> {t('payOnlineDesc')}</p>
-          <p><strong className="text-foreground">{t('payCod')}:</strong> {t('payCodDesc')}</p>
         </div>
-        <p className="mt-4 rounded-2xl bg-beige-100 px-4 py-3 text-sm text-foreground/70">
-          {t('payCodNote')}
-        </p>
       </section>
 
       <section>
