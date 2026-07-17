@@ -309,10 +309,6 @@ export default function CartView() {
                 <Truck size={14} className="shrink-0 text-gold/80" strokeWidth={1.8} />
                 {t('trustShip')}
               </li>
-              <li className="flex items-center gap-2.5">
-                <Undo2 size={14} className="shrink-0 text-gold/80" strokeWidth={1.8} />
-                {t('trustReturn')}
-              </li>
             </ul>
           </div>
         </aside>

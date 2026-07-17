@@ -49,7 +49,10 @@
       "hoursTitle": "Графік роботи",
       "hoursLine1": "Щодня",
       "hoursLine2": "11:00 – 19:00"
-    }
+    },
+    "contactToggle": "Зв'язатися з нами",
+    "contactViber": "Написати у Viber",
+    "contactWhatsapp": "Написати у WhatsApp"
   },
   "product": {
     "addToCart": "Додати в кошик",
@@ -97,7 +100,6 @@
     "color": "Колір",
     "trustPay": "Безпечна оплата",
     "trustShip": "Доставка Новою Поштою",
-    "trustReturn": "Повернення 14 днів",
     "decreaseQty": "Зменшити кількість",
     "increaseQty": "Збільшити кількість"
   },
@@ -146,7 +148,6 @@
     "submitting": "Обробка…",
     "trustSsl": "Захищена оплата SSL",
     "trustShipping": "Доставка 1–3 дні по Україні",
-    "trustReturn": "Обмін / повернення 14 днів",
     "errFirstName": "Введіть імʼя",
     "errPhone": "Введіть номер телефону",
     "errCity": "Оберіть місто",

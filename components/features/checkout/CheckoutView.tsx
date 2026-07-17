@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import {
-  ChevronDown, Loader2, Lock, MapPin, Package,
+  ChevronDown, CreditCard, Loader2, Lock, MapPin, Package,
   RefreshCcw, Truck, User,
 } from 'lucide-react';
 import { useCartStore, cartItemKey } from '@/lib/stores/cart';
@@ -506,7 +506,7 @@ export default function CheckoutView() {
               disabled={submitting}
               className="mt-5 hidden h-12 w-full items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 lg:flex"
             >
-              {submitting ? <Loader2 size={18} className="animate-spin" /> : <Lock size={16} />}
+              {submitting ? <Loader2 size={18} className="animate-spin" /> : <CreditCard size={16} />}
               {submitting ? t('submitting') : t('submit')}
             </button>
           </div>
@@ -515,7 +515,6 @@ export default function CheckoutView() {
           <div className="hidden gap-2 rounded-2xl bg-white/70 px-4 py-3 text-[12px] text-foreground/60 lg:flex lg:flex-col">
             <span className="inline-flex items-center gap-2"><Lock size={13} className="text-gold" /> {t('trustSsl')}</span>
             <span className="inline-flex items-center gap-2"><Truck size={13} className="text-gold" /> {t('trustShipping')}</span>
-            <span className="inline-flex items-center gap-2"><RefreshCcw size={13} className="text-gold" /> {t('trustReturn')}</span>
           </div>
         </div>
       </aside>
@@ -534,7 +533,7 @@ export default function CheckoutView() {
           disabled={submitting}
           className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {submitting ? <Loader2 size={18} className="animate-spin" /> : <Lock size={16} />}
+          {submitting ? <Loader2 size={18} className="animate-spin" /> : <CreditCard size={16} />}
           {submitting ? t('submitting') : t('submitShort')}
         </button>
       </div>

@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import HeroSection from '@/components/features/home/HeroSection';
 import ReviewsMarquee from '@/components/features/reviews/ReviewsMarquee';
 import AboutSection from '@/components/features/home/AboutSection';
+import FloatingContactButton from '@/components/features/home/FloatingContactButton';
 
 type Params = { locale: string };
 
@@ -24,6 +25,7 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
       <HeroSection />
       <ReviewsMarquee />
       <AboutSection />
+      <FloatingContactButton />
     </>
   );
 }
