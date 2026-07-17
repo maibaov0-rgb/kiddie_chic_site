@@ -38,7 +38,7 @@ export default function FloatingContactButtonClient({ viberLink, whatsappLink }:
     <div
       ref={rootRef}
       className="fixed right-6 z-50 md:right-8"
-      style={{ bottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+      style={{ bottom: 'max(2.5rem, calc(env(safe-area-inset-bottom) + 1rem))' }}
     >
       <div className="relative flex h-14 w-14 items-center justify-center">
         <AnimatePresence>
@@ -64,26 +64,14 @@ export default function FloatingContactButtonClient({ viberLink, whatsappLink }:
 
         <AnimatePresence>
           {!open && (
-            <>
-              <motion.span
-                key="ring-1"
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 rounded-full bg-powder-300"
-                initial={{ scale: 1, opacity: 0.55 }}
-                animate={{ scale: 1.7, opacity: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
-              />
-              <motion.span
-                key="ring-2"
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 rounded-full bg-powder-300"
-                initial={{ scale: 1, opacity: 0.55 }}
-                animate={{ scale: 1.7, opacity: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeOut', delay: 1 }}
-              />
-            </>
+            <motion.span
+              key="ring"
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 rounded-full bg-powder-300"
+              initial={{ scale: 1, opacity: 0.35 }}
+              animate={{ scale: 1.45, opacity: 0, transition: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } }}
+              exit={{ opacity: 0, transition: { duration: 0.2, ease: 'easeOut' } }}
+            />
           )}
         </AnimatePresence>
 
@@ -94,15 +82,11 @@ export default function FloatingContactButtonClient({ viberLink, whatsappLink }:
           aria-expanded={open}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
+          animate={open ? { scale: 1 } : { scale: [1, 1.06, 1] }}
+          transition={open ? { duration: 0.15 } : { duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
           className="relative flex h-14 w-14 items-center justify-center rounded-full bg-powder-300 text-white shadow-float"
         >
-          <motion.span
-            className="flex"
-            animate={open ? { rotate: 0, scale: 1 } : { rotate: [0, -8, 8, 0], scale: [1, 1.12, 1] }}
-            transition={open ? { duration: 0.15 } : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
-          </motion.span>
+          <span className="flex">{open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}</span>
         </motion.button>
       </div>
     </div>
