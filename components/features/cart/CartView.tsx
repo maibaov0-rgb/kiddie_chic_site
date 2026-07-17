@@ -326,18 +326,10 @@ export default function CartView() {
           className="fixed inset-x-0 bottom-0 z-40 border-t border-foreground/10 bg-white px-4 pt-3 lg:hidden"
           style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
         >
-          <div className="mx-auto flex max-w-2xl items-center gap-3">
-            <div className="flex min-w-0 flex-col leading-tight">
-              <span className="text-[10px] font-medium uppercase tracking-widest text-foreground/60">
-                {t('total')}
-              </span>
-              <span className="font-sans text-xl font-bold text-powder-300">
-                {hydrated ? `${fmt(subtotal, locale)} ₴` : '—'}
-              </span>
-            </div>
+          <div className="mx-auto max-w-2xl">
             <Link
               href="/checkout"
-              className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 font-sans text-base font-semibold text-foreground/85 transition-colors hover:bg-powder-300 hover:text-foreground"
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-powder-200 font-sans text-base font-semibold text-foreground/85 transition-colors hover:bg-powder-300 hover:text-foreground"
             >
               {t('checkout')}
               <ArrowRight size={16} />

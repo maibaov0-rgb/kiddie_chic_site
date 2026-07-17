@@ -486,19 +486,9 @@ export default function CheckoutView() {
               ))}
             </ul>
 
-            <div className="mt-5 space-y-2 border-t border-foreground/10 pt-5 text-sm">
-              <div className="flex items-center justify-between text-foreground/65">
-                <span>{t('rowSubtotal')}</span>
-                <span>{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</span>
-              </div>
-              <div className="flex items-center justify-between text-foreground/65">
-                <span>{t('rowDelivery')}</span>
-                <span className="text-[13px]">{t('deliveryByNp')}</span>
-              </div>
-              <div className="mt-3 flex items-center justify-between border-t border-foreground/10 pt-3 text-base font-semibold text-foreground">
-                <span>{t('rowTotal')}</span>
-                <span className="text-powder-300">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</span>
-              </div>
+            <div className="mt-5 flex items-center justify-between border-t border-foreground/10 pt-5 text-base font-semibold text-foreground">
+              <span>{t('rowTotal')}</span>
+              <span className="text-powder-300">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</span>
             </div>
 
             <button
@@ -521,17 +511,13 @@ export default function CheckoutView() {
 
       {/* Mobile sticky submit bar */}
       <div
-        className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3 border-t border-foreground/10 bg-white px-4 pt-3 lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-foreground/10 bg-white px-4 pt-3 lg:hidden"
         style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
       >
-        <div className="min-w-0">
-          <p className="text-[11px] uppercase tracking-wider text-foreground/55">{t('rowTotal')}</p>
-          <p className="truncate text-lg font-bold text-powder-300">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</p>
-        </div>
         <button
           type="submit"
           disabled={submitting}
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-powder-200 text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {submitting ? <Loader2 size={18} className="animate-spin" /> : <CreditCard size={16} />}
           {submitting ? t('submitting') : t('submitShort')}
