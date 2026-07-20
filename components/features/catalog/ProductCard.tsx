@@ -24,6 +24,7 @@ export default function ProductCard({ product }: { product: Product }) {
           alt={name}
           fill
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+          quality={55}
           className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
         />
 

@@ -36,6 +36,7 @@ export default function CoutureGallery({ products }: { products: Product[] }) {
                   alt={name}
                   fill
                   sizes="(min-width: 768px) 33vw, 50vw"
+                  quality={55}
                   className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                 />
                 {/* Consultation overlay on hover */}

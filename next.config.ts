@@ -24,6 +24,14 @@ const nextConfig: NextConfig = {
           // never proxies images (see lib/image-loader.ts).
           loader: "custom" as const,
           loaderFile: "./lib/image-loader.ts",
+          // Trim Next's default breakpoints (...1920,2048,3840) — nothing on
+          // the site renders wider than a full viewport, so 2048/3840 only
+          // added extra Cloudinary transformation variants nobody ever saw.
+          deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+          // Default 75 stays for detail views; 55 is opted into explicitly by
+          // catalog list thumbnails (ProductCard, CoutureGallery) to cut bandwidth
+          // where visitors see many small images at once and won't notice.
+          qualities: [55, 75],
         },
         // Files in /public are served by Next with max-age=0 by default; the
         // hero video and photos rarely change, so let browsers keep them a day

@@ -16,7 +16,10 @@ export async function uploadImage(
   const result = await cloudinary.uploader.upload(file, {
     folder,
     resource_type: "image",
-    transformation: [{ quality: "auto", fetch_format: "auto" }],
+    // width/crop cap keeps the stored master reasonable (product photos are
+    // never shown wider than ~1600px anywhere on the site) without touching
+    // quality — only affects new uploads, existing Cloudinary assets are untouched.
+    transformation: [{ quality: "auto", fetch_format: "auto", width: 1600, crop: "limit" }],
   });
   return { url: result.secure_url, publicId: result.public_id };
 }
