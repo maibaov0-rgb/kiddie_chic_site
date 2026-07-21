@@ -45,3 +45,4 @@ next-env.d.ts
 # raw camera footage kept as source for re-encoding, not for the repo
 /hero_video_original
 
+.tokensave

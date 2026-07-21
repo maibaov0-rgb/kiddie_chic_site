@@ -155,23 +155,17 @@
     "title": "Thank you for your order!",
     "message": "We've received your order and will contact you shortly to confirm the details.",
     "orderNumber": "Order number",
-    "continueShopping": "Continue shopping",
-    "leaveReview": "Leave a review"
+    "continueShopping": "Continue shopping"
   },
-  "reviewModal": {
-    "title": "Leave a review",
-    "subtitle": "Share your impression — it will help other moms make a choice",
-    "rating": "Site rating",
-    "ratingAria": "{n} out of 5",
-    "name": "Name",
-    "comment": "Comment",
-    "commentPlaceholder": "What did you love about our dress or service?",
-    "submit": "Submit review"
-  },
-  "reviewsMarquee": {
+  "clientPhotos": {
     "badge": "Reviews",
-    "title": "What our customers say",
-    "ratingAria": "{n} out of 5"
+    "title": "Your happy moments",
+    "moreOnSocial": "See more photos and reviews on our social media",
+    "photoAlt": "Kiddie Chic customer photo {n}",
+    "lightboxClose": "Close photo view",
+    "lightboxPrev": "Previous photo",
+    "lightboxNext": "Next photo",
+    "lightboxCounter": "{current} of {total}"
   },
   "about": {
     "title": "About Us",
@@ -293,6 +287,7 @@
     "title": "Couture dresses",
     "subtitle": "Exclusive handcrafted models tailored to your specifications",
     "cta": "Get a consultation",
+    "view": "View photos",
     "modal": {
       "title": "Get a consultation",
       "subtitle": "Leave your number — we'll get in touch, answer your questions and help you pick the perfect dress.",

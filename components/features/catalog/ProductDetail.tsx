@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Check, Minus, Plus, ShoppingBag, Clock, ChevronLeft, ChevronRight, Hand } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, Check, Minus, Plus, ShoppingBag, MessageCircle, ChevronDown, ChevronLeft, ChevronRight, Hand } from 'lucide-react';
 import { colorName, accessoryTypeName, cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
+import MessengerButtons from './MessengerButtons';
 
 // Accessories are part of the dress's own configuration (like size/color),
 // not a separate purchase — checking one just adds its qty stepper; the
@@ -87,6 +88,55 @@ function AccessoryRow({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * "Get a consultation" CTA. Keeps the exact pill shape of the old single
+ * button, but a tap expands it to reveal the same messengers offered on the
+ * home screen (Viber + WhatsApp) so the client picks where to write.
+ */
+function ConsultationCTA() {
+  const t = useTranslations('product');
+  const reduceMotion = useReducedMotion();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="mt-4">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 font-sans text-sm font-medium text-foreground/65 shadow-card transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+      >
+        {/* Chat icon gives a periodic wiggle+pulse to invite a tap; it rests
+            once the menu is open (and stays still if reduced motion is on). */}
+        <motion.span
+          aria-hidden="true"
+          className="flex"
+          animate={
+            reduceMotion || open
+              ? { rotate: 0, scale: 1 }
+              : { rotate: [0, -14, 12, -9, 7, 0], scale: [1, 1.12, 1.06, 1.1, 1, 1] }
+          }
+          transition={
+            reduceMotion || open
+              ? { duration: 0.2 }
+              : { duration: 1.1, repeat: Infinity, repeatDelay: 1.7, ease: 'easeInOut' }
+          }
+          style={{ originX: 0.5, originY: 0.9 }}
+        >
+          <MessageCircle size={15} />
+        </motion.span>
+        {t('getConsultation')}
+        <ChevronDown
+          size={15}
+          className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      <MessengerButtons open={open} />
     </div>
   );
 }
@@ -430,18 +480,8 @@ export default function ProductDetail({ product }: { product: Product }) {
           </button>
         </div>
 
-        {/* Secondary CTAs */}
-        <div className="mt-4">
-          <a
-            href="https://wa.me/380991234567"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 font-sans text-sm font-medium text-foreground/65 shadow-card transition-colors hover:text-gold"
-          >
-            <Clock size={15} />
-            {t('askDelivery')}
-          </a>
-        </div>
+        {/* Secondary CTA — consultation via messenger */}
+        <ConsultationCTA />
       </div>
 
 {/* ── "Added to cart" toast with explicit next-step choices ───── */}
