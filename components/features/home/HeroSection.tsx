@@ -9,8 +9,6 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 // next/image applies basePath automatically, but a raw <video> src does not —
 // prefix it so the hero video resolves under GitHub Pages' /repo base path.
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-const VIDEO_SRC = `${BASE_PATH}/videos/hero.mp4`;
-const VIDEO_SRC_MOBILE = `${BASE_PATH}/videos/hero-mobile.mp4`;
 const POSTER_SRC = `${BASE_PATH}/images/hero/hero-poster.jpg`;
 
 /** Intro: doors closed → doors sliding open → final hero layout */
@@ -71,7 +69,12 @@ function DoorsOverlay() {
   );
 }
 
-export default function HeroSection() {
+type HeroSectionProps = {
+  videoSrc: string;
+  videoSrcMobile: string;
+};
+
+export default function HeroSection({ videoSrc, videoSrcMobile }: HeroSectionProps) {
   const t = useTranslations('home.hero');
   const reduceMotion = useReducedMotion();
   const [phase, setPhase] = useState<Phase>('doors');
@@ -139,8 +142,8 @@ export default function HeroSection() {
         >
           {/* Lighter encode for phones — the browser picks the first matching
               <source> at load, so this keeps mobile data usage down without JS. */}
-          <source src={VIDEO_SRC_MOBILE} media="(max-width: 768px)" />
-          <source src={VIDEO_SRC} />
+          <source src={`${BASE_PATH}${videoSrcMobile}`} media="(max-width: 768px)" />
+          <source src={`${BASE_PATH}${videoSrc}`} />
         </motion.video>
 
         {/* Soft scrim so the button and bottom bar stay legible over the video */}
