@@ -23,6 +23,7 @@ const serif = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://kiddiechic.ua"),
   title: {
     template: "%s | Kiddie Chic",
     default: "Kiddie Chic — преміум дитячі сукні",

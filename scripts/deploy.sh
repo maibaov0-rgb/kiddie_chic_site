@@ -38,11 +38,34 @@ check_healthy() {
   return 1
 }
 
+# Product/category pages use ISR with an empty generateStaticParams (the CI
+# build has no DB access), so every path renders fresh on its first request
+# after this container starts — otherwise the first real visitor per page
+# pays that render+DB cost. Warm them all from the sitemap right after
+# deploy so visitors only ever hit the cached version.
+warm_cache() {
+  local urls
+  urls=$(curl -fsS --max-time 10 "http://localhost:8090/sitemap.xml" \
+    | grep -oE '(<loc>|href=")https://kiddiechic\.ua[^"<]*' \
+    | sed -E 's#^(<loc>|href=")https://kiddiechic\.ua##' \
+    | sort -u)
+  if [ -z "$urls" ]; then
+    echo "Cache warm-up: sitemap.xml empty or unreachable, skipping"
+    return
+  fi
+  echo "Warming ISR cache for $(echo "$urls" | wc -l) URLs..."
+  echo "$urls" | while IFS= read -r path; do
+    curl -fsS --max-time 10 -o /dev/null "http://localhost:8090${path}" || true
+  done
+  echo "Cache warm-up done"
+}
+
 echo "Switching web container to tag: ${IMAGE_TAG}"
 deploy_tag "$IMAGE_TAG"
 
 if check_healthy; then
   echo "Health check passed for ${IMAGE_TAG}"
+  warm_cache
   echo "$IMAGE_TAG" > "$LAST_GOOD_FILE"
   exit 0
 fi
