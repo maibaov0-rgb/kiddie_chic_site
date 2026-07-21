@@ -10,6 +10,8 @@ cd /root/kiddie_chic
 COMPOSE="docker compose -f docker-compose.prod.yml"
 LAST_GOOD_FILE="/root/kiddie_chic/.last_good_tag"
 HEALTH_URL="http://localhost:8090/"
+# NEXT_PUBLIC_APP_URL (GitHub secret, baked in at image build time) drives
+# sitemap.xml, robots.txt, and og:image — keep it set to https://kiddiechic.ua.
 HEALTH_MARKER="Kiddie Chic"
 
 git fetch origin main
