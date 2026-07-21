@@ -74,7 +74,20 @@ export default function PhotoLightbox({
 
   useEffect(() => {
     if (!open) return;
-    document.body.style.overflow = 'hidden';
+    // In-app browsers (Telegram, Instagram, ...) mispositon `position: fixed`
+    // elements when the background can still scroll — `overflow: hidden`
+    // alone isn't enough there, so the fixed modal ends up short of the true
+    // top of the viewport and whatever sits behind it (the hero video) peeks
+    // through the gap. Locking the body itself via `position: fixed` with a
+    // negative top offset pins the layout viewport and closes that gap; we
+    // restore the scroll position on close.
+    const scrollY = window.scrollY;
+    const { style } = document.body;
+    style.position = 'fixed';
+    style.top = `-${scrollY}px`;
+    style.left = '0';
+    style.right = '0';
+    style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowLeft') {
@@ -88,7 +101,12 @@ export default function PhotoLightbox({
     };
     window.addEventListener('keydown', onKey);
     return () => {
-      document.body.style.overflow = '';
+      style.position = '';
+      style.top = '';
+      style.left = '';
+      style.right = '';
+      style.overflow = '';
+      window.scrollTo(0, scrollY);
       window.removeEventListener('keydown', onKey);
     };
   }, [open, onClose, onNavigate]);
