@@ -44,11 +44,15 @@ check_healthy() {
 # pays that render+DB cost. Warm them all from the sitemap right after
 # deploy so visitors only ever hit the cached version.
 warm_cache() {
+  # NEXT_PUBLIC_APP_URL (baked into sitemap.xml at build time) may not match
+  # kiddiechic.ua exactly (e.g. an internal IP:port) — match any http(s) host
+  # instead of hardcoding the domain, and never let a zero-match grep/pipefail
+  # take down the whole deploy (that's what broke this the first time).
   local urls
   urls=$(curl -fsS --max-time 10 "http://localhost:8090/sitemap.xml" \
-    | grep -oE '(<loc>|href=")https://kiddiechic\.ua[^"<]*' \
-    | sed -E 's#^(<loc>|href=")https://kiddiechic\.ua##' \
-    | sort -u)
+    | grep -oE '(<loc>|href=")https?://[^"<]*' \
+    | sed -E 's#^(<loc>|href=")https?://[^/]+##' \
+    | sort -u; true)
   if [ -z "$urls" ]; then
     echo "Cache warm-up: sitemap.xml empty or unreachable, skipping"
     return
