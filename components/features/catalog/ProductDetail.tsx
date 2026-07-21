@@ -5,11 +5,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Check, Minus, Plus, ShoppingBag, MessageCircle, ChevronDown, ChevronLeft, ChevronRight, Hand } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Minus, Plus, ShoppingBag, MessageCircle, ChevronDown, ChevronLeft, ChevronRight, Hand } from 'lucide-react';
 import { colorName, accessoryTypeName, cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
 import MessengerButtons from './MessengerButtons';
+
+const CATEGORY_TO_SLUG = {
+  dress: 'dresses',
+  couture: 'couture',
+  accessory: 'accessories',
+} as const;
 
 // Accessories are part of the dress's own configuration (like size/color),
 // not a separate purchase — checking one just adds its qty stepper; the
@@ -482,6 +488,18 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         {/* Secondary CTA — consultation via messenger */}
         <ConsultationCTA />
+
+        <Link
+          href={`/catalog/${CATEGORY_TO_SLUG[product.category]}`}
+          className="group mt-3 inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-full py-2 font-sans text-xs font-medium tracking-wide text-powder-300 transition-colors duration-300 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+        >
+          <ArrowLeft
+            size={14}
+            strokeWidth={1.5}
+            className="transition-transform duration-300 ease-in-out group-hover:-translate-x-1"
+          />
+          {t('backToCatalog')}
+        </Link>
       </div>
 
 {/* ── "Added to cart" toast with explicit next-step choices ───── */}
