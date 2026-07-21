@@ -305,7 +305,7 @@ export default function ClientPhotosShowcase() {
       <div className="mb-10 px-4 text-center md:mb-14">
         <h2
           id="client-photos-heading"
-          className="inline-flex items-center gap-2 rounded-full bg-powder-100 px-5 py-2.5 font-sans text-sm font-semibold tracking-wide text-gold md:text-base"
+          className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 font-sans text-sm font-semibold tracking-wide text-white shadow-card md:text-base"
         >
           <Camera size={16} />
           {t('title')}

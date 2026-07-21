@@ -110,7 +110,7 @@ export default function PhotoLightbox({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-white/95 p-6 backdrop-blur-md"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-milk p-6"
           onClick={onClose}
           role="dialog"
           aria-modal="true"
@@ -171,10 +171,14 @@ export default function PhotoLightbox({
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.5}
                 onDragEnd={(_, info) => {
-                  if (info.offset.x < -70) {
+                  // React to a quick flick (velocity) as well as distance, so a
+                  // short fast swipe still turns the page — feels more responsive.
+                  const { x: offsetX } = info.offset;
+                  const { x: velocityX } = info.velocity;
+                  if (offsetX < -70 || velocityX < -450) {
                     setDirection(1);
                     onNavigate(1);
-                  } else if (info.offset.x > 70) {
+                  } else if (offsetX > 70 || velocityX > 450) {
                     setDirection(-1);
                     onNavigate(-1);
                   }

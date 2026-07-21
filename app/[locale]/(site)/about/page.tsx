@@ -31,7 +31,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
         />
         <div className="relative mx-auto max-w-2xl">
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-gold">Kiddie Chic Showroom</p>
-          <h1 className="font-serif text-3xl font-semibold text-foreground md:text-5xl">
+          <h1 className="font-sans text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
             {t('heroTitle')}
           </h1>
           <p className="mt-5 text-base leading-relaxed text-foreground/65 md:text-lg">
@@ -42,7 +42,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
 
       {/* Story */}
       <div className="mx-auto max-w-3xl px-4 py-14 md:py-20">
-        <h2 className="mb-8 font-serif text-2xl font-semibold text-foreground md:text-3xl">
+        <h2 className="mb-8 font-sans text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
           {t('storyTitle')}
         </h2>
         <div className="space-y-5 text-base leading-relaxed text-foreground/70">
@@ -55,7 +55,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
       {/* Values */}
       <div className="bg-white px-4 py-14 md:py-20">
         <div className="mx-auto max-w-4xl">
-          <h2 className="mb-10 text-center font-serif text-2xl font-semibold text-foreground md:text-3xl">
+          <h2 className="mb-10 text-center font-sans text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
             {t('valuesTitle')}
           </h2>
           <div className="grid gap-6 md:grid-cols-3">
@@ -77,7 +77,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
       {/* Showroom */}
       <div className="mx-auto max-w-3xl px-4 py-14 md:py-20">
         <div className="rounded-3xl bg-white p-8 shadow-card md:p-12">
-          <h2 className="mb-4 font-serif text-2xl font-semibold text-foreground">
+          <h2 className="mb-4 font-sans text-2xl font-semibold tracking-tight text-foreground">
             {t('showroomTitle')}
           </h2>
           <p className="mb-6 text-base leading-relaxed text-foreground/70">{t('showroomText')}</p>
@@ -90,7 +90,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
 
       {/* CTA */}
       <div className="bg-powder-100 px-4 py-14 text-center md:py-20">
-        <h2 className="mb-6 font-serif text-2xl font-semibold text-foreground md:text-3xl">
+        <h2 className="mb-6 font-sans text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
           {t('ctaTitle')}
         </h2>
         <Link
