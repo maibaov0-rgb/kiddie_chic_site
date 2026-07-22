@@ -105,7 +105,7 @@ git commit -m "feat(catalog): add searchProducts and sortProducts helpers"
 
 **Interfaces:**
 - Consumes: nothing project-specific beyond `lucide-react` (`Search`, `X` icons — `X` already imported elsewhere in `CatalogView.tsx`, confirming it's an available icon in this lucide-react version).
-- Produces: `SearchInput` component with props `{ value: string; onChange: (v: string) => void; placeholder: string; className?: string }` — used by Task 4 and Task 5.
+- Produces: `SearchInput` component with props `{ value: string; onChange: (v: string) => void; placeholder: string; clearLabel: string; className?: string }` — used by Task 4 and Task 5. (Note: `clearLabel` was added after initial review flagged a hardcoded `aria-label="Clear"` as a CLAUDE.md "no hardcoded UI strings" violation — pass the project's existing `common.close` i18n key via `tCommon('close')`.)
 
 - [ ] **Step 1: Add i18n keys**
 
@@ -466,7 +466,7 @@ with:
         <div ref={resultsTopRef} className="mb-5">
           {/* Mobile: search above the filter/sort row. Desktop: sort + search in one row. */}
           <div className="mb-3 flex justify-center md:hidden">
-            <SearchInput value={query} onChange={setQuery} placeholder={t('search')} />
+            <SearchInput value={query} onChange={setQuery} placeholder={t('search')} clearLabel={tCommon('close')} />
           </div>
           <div className="flex items-center justify-between gap-2 md:justify-start">
             <button
@@ -484,7 +484,7 @@ with:
             </button>
             <SortMenu sort={sort} onChange={setSort} />
             <div className="hidden md:block">
-              <SearchInput value={query} onChange={setQuery} placeholder={t('search')} />
+              <SearchInput value={query} onChange={setQuery} placeholder={t('search')} clearLabel={tCommon('close')} />
             </div>
           </div>
           <p className="mt-3 text-sm text-foreground/65" aria-live="polite">{resultsLabel(filtered.length)}</p>
@@ -550,6 +550,7 @@ Inside `CoutureGallery`, after the existing `const t = useTranslations('couture'
 
 ```tsx
   const tCatalog = useTranslations('catalog');
+  const tCommon = useTranslations('common');
   const [query, setQuery] = useState('');
   const filtered = useMemo(() => searchProducts(products, query, locale), [products, query, locale]);
 ```
@@ -572,7 +573,7 @@ with:
   return (
     <>
       <div className="mb-6 flex justify-center">
-        <SearchInput value={query} onChange={setQuery} placeholder={tCatalog('search')} />
+        <SearchInput value={query} onChange={setQuery} placeholder={tCatalog('search')} clearLabel={tCommon('close')} />
       </div>
 
       {/* Gallery — tap a dress to browse its photos (no price, no purchase) */}
