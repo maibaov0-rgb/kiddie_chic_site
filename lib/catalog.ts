@@ -209,3 +209,29 @@ export function filterProducts(products: Product[], f: Filters): Product[] {
     return sizeOk && colorOk;
   });
 }
+
+export function searchProducts(products: Product[], query: string, locale: string): Product[] {
+  const q = query.trim().toLowerCase();
+  if (q === '') return products;
+  return products.filter((p) => {
+    const name = locale === 'en' ? p.name_en : p.name_uk;
+    return name.toLowerCase().includes(q);
+  });
+}
+
+export type SortOption = 'default' | 'price-asc' | 'price-desc';
+
+export const SORT_OPTIONS: SortOption[] = ['default', 'price-asc', 'price-desc'];
+
+export function sortProducts(products: Product[], sort: SortOption): Product[] {
+  if (sort === 'default') return products;
+  const direction = sort === 'price-asc' ? 1 : -1;
+  return [...products].sort((a, b) => {
+    const priceA = minPrice(a);
+    const priceB = minPrice(b);
+    if (priceA === null && priceB === null) return 0;
+    if (priceA === null) return 1;
+    if (priceB === null) return -1;
+    return (priceA - priceB) * direction;
+  });
+}
