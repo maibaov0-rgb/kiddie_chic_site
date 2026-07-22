@@ -17,7 +17,7 @@ export default function SearchInput({
 }) {
   return (
     <div
-      className={`flex h-10 w-full items-center gap-2 rounded-full border border-white/60 bg-white/50 px-4 shadow-card backdrop-blur-sm ${className}`}
+      className={`flex h-9 w-full items-center gap-2 rounded-full border border-white/60 bg-white/50 px-4 shadow-card backdrop-blur-sm md:h-10 ${className}`}
     >
       <Search size={15} className="shrink-0 text-foreground/45" />
       <input

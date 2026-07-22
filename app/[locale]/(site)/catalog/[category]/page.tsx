@@ -48,7 +48,6 @@ export default async function CatalogCategoryPage({
 
   const products = await getProductsByCategory(cat);
   const t = await getTranslations({ locale, namespace: 'catalog' });
-  const tCouture = await getTranslations({ locale, namespace: 'couture' });
 
   const isCouture = cat === 'couture';
 
@@ -84,11 +83,6 @@ export default async function CatalogCategoryPage({
             ))}
           </div>
 
-          {isCouture && (
-            <p className="mx-auto mt-4 max-w-xl font-sans text-base leading-relaxed text-foreground/55">
-              {tCouture('subtitle')}
-            </p>
-          )}
         </header>
 
         {isCouture ? (

@@ -147,14 +147,16 @@ export default function CatalogView({ products }: { products: Product[] }) {
           <div className="mb-3 md:hidden">
             <SearchInput value={query} onChange={setQuery} placeholder={t('search')} clearLabel={tCommon('close')} />
           </div>
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-sm text-foreground/65" aria-live="polite">{resultsLabel(filtered.length)}</p>
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2 md:justify-start md:gap-3">
+            <p className="text-sm text-foreground/65 md:shrink-0" aria-live="polite">{resultsLabel(filtered.length)}</p>
+
+            {/* Mobile: sort + filter grouped on the right */}
+            <div className="flex items-center gap-2 md:hidden">
               <SortMenu sort={sort} onChange={setSort} />
               <button
                 type="button"
                 onClick={() => setDrawerOpen(true)}
-                className="bg-pink-soft inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-foreground/75 shadow-card transition-all duration-300 ease-in-out hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:hidden"
+                className="bg-pink-soft inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-foreground/75 shadow-card transition-all duration-300 ease-in-out hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
                 <SlidersHorizontal size={15} />
                 {t('filters.open')}
@@ -164,9 +166,18 @@ export default function CatalogView({ products }: { products: Product[] }) {
                   </span>
                 )}
               </button>
-              <div className="hidden md:block md:w-80">
-                <SearchInput value={query} onChange={setQuery} placeholder={t('search')} clearLabel={tCommon('close')} />
-              </div>
+            </div>
+
+            {/* Desktop: sort stays on the left (next to the count), search stretches to the right edge */}
+            <div className="hidden md:flex md:flex-1 md:items-center md:gap-3">
+              <SortMenu sort={sort} onChange={setSort} />
+              <SearchInput
+                value={query}
+                onChange={setQuery}
+                placeholder={t('search')}
+                clearLabel={tCommon('close')}
+                className="flex-1"
+              />
             </div>
           </div>
         </div>
