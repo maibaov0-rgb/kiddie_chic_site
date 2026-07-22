@@ -39,6 +39,11 @@ export default function CoutureGallery({ products }: { products: Product[] }) {
       </div>
 
       {/* Gallery — tap a dress to browse its photos (no price, no purchase) */}
+      {filtered.length === 0 ? (
+        <div className="rounded-3xl bg-white px-6 py-20 text-center shadow-card">
+          <p className="text-foreground/70">{tCatalog('emptySearch')}</p>
+        </div>
+      ) : (
       <div className="columns-2 gap-3 [column-fill:balance] md:columns-3 md:gap-5">
         {filtered.map((p, i) => {
           const name = locale === 'en' ? p.name_en : p.name_uk;
@@ -76,6 +81,7 @@ export default function CoutureGallery({ products }: { products: Product[] }) {
           );
         })}
       </div>
+      )}
 
       {/* Section CTA — reveals messengers (Viber + WhatsApp), no form modal */}
       <div className="mx-auto mt-10 flex w-full max-w-xs flex-col items-center">

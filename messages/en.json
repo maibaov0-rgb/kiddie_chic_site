@@ -269,6 +269,7 @@
     "dressesDesc": "Ready-to-wear models available to order online",
     "coutureDesc": "Exclusive handcrafted dresses made to order",
     "empty": "No products match the selected filters",
+    "emptySearch": "Nothing found",
     "resultsOne": "{count} model",
     "resultsFew": "{count} models",
     "resultsMany": "{count} models",
