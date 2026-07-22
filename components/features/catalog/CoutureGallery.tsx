@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Sparkles, Expand, ChevronDown } from 'lucide-react';
-import { cover, type Product } from '@/lib/catalog';
+import { cover, searchProducts, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import PhotoLightbox from '@/components/features/reviews/PhotoLightbox';
 import MessengerButtons from './MessengerButtons';
+import SearchInput from './SearchInput';
 
 // Resolve a product's browsable photos. Falls back to the single no-image
 // placeholder so a photo-less couture item still opens the lightbox.
@@ -18,6 +19,10 @@ function photosOf(p: Product): string[] {
 export default function CoutureGallery({ products }: { products: Product[] }) {
   const locale = useLocale();
   const t = useTranslations('couture');
+  const tCatalog = useTranslations('catalog');
+  const tCommon = useTranslations('common');
+  const [query, setQuery] = useState('');
+  const filtered = useMemo(() => searchProducts(products, query, locale), [products, query, locale]);
   const [lightbox, setLightbox] = useState<{ photos: string[]; name: string; index: number } | null>(null);
   const [consultOpen, setConsultOpen] = useState(false);
 
@@ -29,9 +34,13 @@ export default function CoutureGallery({ products }: { products: Product[] }) {
 
   return (
     <>
+      <div className="mb-6 flex justify-center">
+        <SearchInput value={query} onChange={setQuery} placeholder={tCatalog('search')} clearLabel={tCommon('close')} />
+      </div>
+
       {/* Gallery — tap a dress to browse its photos (no price, no purchase) */}
       <div className="columns-2 gap-3 [column-fill:balance] md:columns-3 md:gap-5">
-        {products.map((p, i) => {
+        {filtered.map((p, i) => {
           const name = locale === 'en' ? p.name_en : p.name_uk;
           return (
             <div key={p.id} className="mb-3 break-inside-avoid md:mb-5">
