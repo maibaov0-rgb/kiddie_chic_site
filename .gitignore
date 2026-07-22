@@ -46,3 +46,6 @@ next-env.d.ts
 /hero_video_original
 
 .tokensave
+
+# git worktrees for isolated feature work
+/.worktrees
