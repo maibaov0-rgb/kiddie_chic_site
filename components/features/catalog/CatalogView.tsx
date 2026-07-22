@@ -143,30 +143,32 @@ export default function CatalogView({ products }: { products: Product[] }) {
       <div className="min-w-0 flex-1">
         {/* Controls: search + sort + mobile filter trigger */}
         <div ref={resultsTopRef} className="mb-5">
-          {/* Mobile: search above the filter/sort row. Desktop: sort + search in one row. */}
-          <div className="mb-3 flex justify-center md:hidden">
+          {/* Mobile: full-width search row above the count/sort/filter row. */}
+          <div className="mb-3 md:hidden">
             <SearchInput value={query} onChange={setQuery} placeholder={t('search')} clearLabel={tCommon('close')} />
           </div>
-          <div className="flex items-center justify-between gap-2 md:justify-start">
-            <button
-              type="button"
-              onClick={() => setDrawerOpen(true)}
-              className="bg-pink-soft inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-foreground/75 shadow-card transition-all duration-300 ease-in-out hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:hidden"
-            >
-              <SlidersHorizontal size={15} />
-              {t('filters.open')}
-              {activeCount > 0 && (
-                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[11px] font-bold text-white">
-                  {activeCount}
-                </span>
-              )}
-            </button>
-            <SortMenu sort={sort} onChange={setSort} />
-            <div className="hidden md:block">
-              <SearchInput value={query} onChange={setQuery} placeholder={t('search')} clearLabel={tCommon('close')} />
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-sm text-foreground/65" aria-live="polite">{resultsLabel(filtered.length)}</p>
+            <div className="flex items-center gap-2">
+              <SortMenu sort={sort} onChange={setSort} />
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(true)}
+                className="bg-pink-soft inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-foreground/75 shadow-card transition-all duration-300 ease-in-out hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:hidden"
+              >
+                <SlidersHorizontal size={15} />
+                {t('filters.open')}
+                {activeCount > 0 && (
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[11px] font-bold text-white">
+                    {activeCount}
+                  </span>
+                )}
+              </button>
+              <div className="hidden md:block md:w-80">
+                <SearchInput value={query} onChange={setQuery} placeholder={t('search')} clearLabel={tCommon('close')} />
+              </div>
             </div>
           </div>
-          <p className="mt-3 text-sm text-foreground/65" aria-live="polite">{resultsLabel(filtered.length)}</p>
         </div>
 
         {filtered.length === 0 ? (
