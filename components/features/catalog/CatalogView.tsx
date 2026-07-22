@@ -3,15 +3,22 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { SlidersHorizontal, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import {
   COLORS,
   SIZES,
   filterProducts,
+  searchProducts,
+  sortProducts,
   type Filters,
   type Product,
+  type SortOption,
 } from '@/lib/catalog';
 import ProductCard from './ProductCard';
 import { CheckboxItem } from '@/components/ui/checkbox-item';
+import SearchInput from './SearchInput';
+import SortMenu from './SortMenu';
 
 const EMPTY: Filters = { sizes: [], colors: [] };
 const PAGE_SIZE = 24;
@@ -25,17 +32,42 @@ export default function CatalogView({ products }: { products: Product[] }) {
   const t = useTranslations('catalog');
   const tCommon = useTranslations('common');
   const [filters, setFilters] = useState<Filters>(EMPTY);
+  const [query, setQuery] = useState('');
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const sortParam = searchParams.get('sort');
+  const sort: SortOption =
+    sortParam === 'price-asc' || sortParam === 'price-desc' ? sortParam : 'default';
+
+  function setSort(next: SortOption) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (next === 'default') {
+      params.delete('sort');
+    } else {
+      params.set('sort', next);
+    }
+    const qs = params.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  }
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  const filtered = useMemo(() => filterProducts(products, filters), [products, filters]);
+  const filtered = useMemo(() => {
+    const byFilters = filterProducts(products, filters);
+    const bySearch = searchProducts(byFilters, query, locale);
+    return sortProducts(bySearch, sort);
+  }, [products, filters, query, sort, locale]);
   const activeCount = filters.sizes.length + filters.colors.length;
 
-  // Reset pagination whenever the filters change (React-recommended pattern:
-  // adjust state during render instead of in an effect, avoiding an extra render pass)
-  const [prevFilters, setPrevFilters] = useState(filters);
-  if (prevFilters !== filters) {
-    setPrevFilters(filters);
+  // Reset pagination whenever the filters, search query, or sort change
+  // (React-recommended pattern: adjust state during render instead of in an
+  // effect, avoiding an extra render pass)
+  const [prevKey, setPrevKey] = useState(`${filters.sizes.join(',')}|${filters.colors.join(',')}|${query}|${sort}`);
+  const resetKey = `${filters.sizes.join(',')}|${filters.colors.join(',')}|${query}|${sort}`;
+  if (prevKey !== resetKey) {
+    setPrevKey(resetKey);
     setVisibleCount(PAGE_SIZE);
   }
 
@@ -93,7 +125,10 @@ export default function CatalogView({ products }: { products: Product[] }) {
             {activeCount > 0 && (
               <button
                 type="button"
-                onClick={() => setFilters(EMPTY)}
+                onClick={() => {
+                  setFilters(EMPTY);
+                  setQuery('');
+                }}
                 className="inline-flex min-h-11 items-center px-1 text-xs font-medium text-gold transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:rounded"
               >
                 {t('filters.reset')}
@@ -106,22 +141,34 @@ export default function CatalogView({ products }: { products: Product[] }) {
 
       {/* Main column */}
       <div className="min-w-0 flex-1">
-        {/* Top bar: count + mobile filter trigger */}
-        <div ref={resultsTopRef} className="mb-5 flex items-center justify-between">
-          <p className="text-sm text-foreground/65" aria-live="polite">{resultsLabel(filtered.length)}</p>
-          <button
-            type="button"
-            onClick={() => setDrawerOpen(true)}
-            className="bg-pink-soft inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-foreground/75 shadow-card transition-all hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:hidden"
-          >
-            <SlidersHorizontal size={15} />
-            {t('filters.open')}
-            {activeCount > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[11px] font-bold text-white">
-                {activeCount}
-              </span>
-            )}
-          </button>
+        {/* Controls: search + sort + mobile filter trigger */}
+        <div ref={resultsTopRef} className="mb-5">
+          {/* Mobile: full-width search row above the count/sort/filter row. */}
+          <div className="mb-3 md:hidden">
+            <SearchInput value={query} onChange={setQuery} placeholder={t('search')} clearLabel={tCommon('close')} />
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-sm text-foreground/65" aria-live="polite">{resultsLabel(filtered.length)}</p>
+            <div className="flex items-center gap-2">
+              <SortMenu sort={sort} onChange={setSort} />
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(true)}
+                className="bg-pink-soft inline-flex h-11 items-center gap-2 rounded-full px-4 text-sm font-medium text-foreground/75 shadow-card transition-all duration-300 ease-in-out hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 md:hidden"
+              >
+                <SlidersHorizontal size={15} />
+                {t('filters.open')}
+                {activeCount > 0 && (
+                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[11px] font-bold text-white">
+                    {activeCount}
+                  </span>
+                )}
+              </button>
+              <div className="hidden md:block md:w-80">
+                <SearchInput value={query} onChange={setQuery} placeholder={t('search')} clearLabel={tCommon('close')} />
+              </div>
+            </div>
+          </div>
         </div>
 
         {filtered.length === 0 ? (
@@ -129,7 +176,10 @@ export default function CatalogView({ products }: { products: Product[] }) {
             <p className="text-foreground/70">{t('empty')}</p>
             <button
               type="button"
-              onClick={() => setFilters(EMPTY)}
+              onClick={() => {
+                setFilters(EMPTY);
+                setQuery('');
+              }}
               className="mt-4 inline-flex min-h-11 items-center px-3 text-sm font-semibold text-gold underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:rounded-full"
             >
               {t('filters.reset')}
@@ -195,7 +245,10 @@ export default function CatalogView({ products }: { products: Product[] }) {
           {activeCount > 0 && (
             <button
               type="button"
-              onClick={() => setFilters(EMPTY)}
+              onClick={() => {
+                  setFilters(EMPTY);
+                  setQuery('');
+                }}
               className="h-12 flex-1 rounded-full bg-powder-100 text-sm font-semibold text-foreground/80 transition-colors hover:bg-powder-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
             >
               {t('filters.reset')}
