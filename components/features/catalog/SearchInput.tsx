@@ -1,0 +1,41 @@
+'use client';
+
+import { Search, X } from 'lucide-react';
+
+export default function SearchInput({
+  value,
+  onChange,
+  placeholder,
+  className = '',
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`bg-pink-soft flex h-11 w-full max-w-[220px] items-center gap-2 rounded-full px-4 shadow-card sm:max-w-xs ${className}`}
+    >
+      <Search size={15} className="shrink-0 text-foreground/45" />
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className="min-w-0 flex-1 bg-transparent text-sm text-foreground/85 placeholder:text-foreground/40 focus:outline-none"
+      />
+      {value !== '' && (
+        <button
+          type="button"
+          onClick={() => onChange('')}
+          aria-label="Clear"
+          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-foreground/40 transition-colors duration-300 ease-in-out hover:bg-powder-200 hover:text-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+        >
+          <X size={13} />
+        </button>
+      )}
+    </div>
+  );
+}
