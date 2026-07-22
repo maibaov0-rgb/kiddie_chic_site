@@ -100,6 +100,15 @@ enum AccessoryType {
   wristbandSet2 // Прикраса на руку (2 шт)
   dressBowSet2  // Банти на сукні (2 шт)
   skirt         // Спідниця
+  hairBows5        // Бантики на волосі 5шт
+  headbandButterfly // Обруч з метеликами
+  headbandFlower    // Обруч з квіткою
+  hairBowMedium     // Бант на волосся середній
+  hairBowLarge      // Бант на волосся великий
+  headbandPlain     // Пов'язка на волосся
+  glovesWithBows    // Рукавички з бантами
+  glovesPlain       // Рукавички без бантів
+  handBows          // Бантики на руки
 }
 
 // ─── Domain models ─────────────────────────────────────────────────────────────

@@ -124,7 +124,16 @@ export type AccessoryType =
   | 'sleeves'
   | 'wristbandSet2'
   | 'dressBowSet2'
-  | 'skirt';
+  | 'skirt'
+  | 'hairBows5'
+  | 'headbandButterfly'
+  | 'headbandFlower'
+  | 'hairBowMedium'
+  | 'hairBowLarge'
+  | 'headbandPlain'
+  | 'glovesWithBows'
+  | 'glovesPlain'
+  | 'handBows';
 
 export interface AccessoryTypeOption {
   id: AccessoryType;
@@ -148,6 +157,15 @@ export const ACCESSORY_TYPES: AccessoryTypeOption[] = [
   { id: 'wristbandSet2', name_uk: 'Прикраса на руку (2 шт)', name_en: 'Wrist accessory (2 pcs)' },
   { id: 'dressBowSet2', name_uk: 'Банти на сукні (2 шт)', name_en: 'Dress bows (2 pcs)' },
   { id: 'skirt', name_uk: 'Спідниця', name_en: 'Skirt' },
+  { id: 'hairBows5', name_uk: 'Бантики на волосі 5шт', name_en: 'Hair bows (5 pcs)' },
+  { id: 'headbandButterfly', name_uk: 'Обруч з метеликами', name_en: 'Headband with butterflies' },
+  { id: 'headbandFlower', name_uk: 'Обруч з квіткою', name_en: 'Headband with flower' },
+  { id: 'hairBowMedium', name_uk: 'Бант на волосся середній', name_en: 'Hair bow (medium)' },
+  { id: 'hairBowLarge', name_uk: 'Бант на волосся великий', name_en: 'Hair bow (large)' },
+  { id: 'headbandPlain', name_uk: "Пов'язка на волосся", name_en: 'Hair band' },
+  { id: 'glovesWithBows', name_uk: 'Рукавички з бантами', name_en: 'Gloves with bows' },
+  { id: 'glovesPlain', name_uk: 'Рукавички без бантів', name_en: 'Gloves without bows' },
+  { id: 'handBows', name_uk: 'Бантики на руки', name_en: 'Hand bows' },
 ];
 
 export function accessoryTypeName(type: string, en: boolean): string {
