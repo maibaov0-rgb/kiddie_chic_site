@@ -275,6 +275,12 @@
     "priceFrom": "from",
     "showMore": "Show more",
     "search": "Search by name",
+    "sort": {
+      "label": "Sort",
+      "default": "Newest",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low"
+    },
     "filters": {
       "title": "Filters",
       "open": "Filters",
