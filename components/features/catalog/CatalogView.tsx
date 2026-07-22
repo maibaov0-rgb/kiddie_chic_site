@@ -175,9 +175,9 @@ export default function CatalogView({ products }: { products: Product[] }) {
             <button
               type="button"
               onClick={() => {
-                  setFilters(EMPTY);
-                  setQuery('');
-                }}
+                setFilters(EMPTY);
+                setQuery('');
+              }}
               className="mt-4 inline-flex min-h-11 items-center px-3 text-sm font-semibold text-gold underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:rounded-full"
             >
               {t('filters.reset')}
