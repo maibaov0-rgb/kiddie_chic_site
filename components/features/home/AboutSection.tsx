@@ -28,13 +28,13 @@ export default function AboutSection() {
 
           {/* Text side */}
           <div className="flex flex-col justify-center">
-            <span className="mb-4 inline-flex w-fit rounded-full bg-white/80 px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.2em] text-gold shadow-card">
-              {t('badge')}
-            </span>
             <h2 className="font-sans text-3xl font-semibold leading-snug tracking-tight text-foreground md:text-4xl">
               {t('title')}
             </h2>
-            <p className="mt-5 font-sans text-base leading-relaxed text-foreground/60 md:text-[17px]">
+            <p className="mt-4 font-sans text-base font-medium leading-relaxed text-foreground/75 md:text-[17px]">
+              {t('tagline')}
+            </p>
+            <p className="mt-3 font-sans text-base leading-relaxed text-foreground/60 md:text-[17px]">
               {t('body')}
             </p>
 
@@ -42,14 +42,14 @@ export default function AboutSection() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/about"
-                className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-foreground/90 px-6 text-sm font-semibold text-white transition-all hover:bg-gold hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-gold px-6 text-sm font-semibold text-white transition-all hover:bg-gold/90 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
                 {t('learnMore')}
                 <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/contacts"
-                className="inline-flex min-h-11 items-center rounded-full bg-white/80 px-6 text-sm font-medium text-foreground/75 shadow-card transition-all hover:bg-white hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+                className="inline-flex min-h-11 items-center rounded-full bg-gold px-6 text-sm font-semibold text-white shadow-card transition-all hover:bg-gold/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
               >
                 {t('showroom')}
               </Link>

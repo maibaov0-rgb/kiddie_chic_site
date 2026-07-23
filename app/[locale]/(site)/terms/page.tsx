@@ -18,6 +18,11 @@ export default async function TermsPage({ params }: { params: Promise<Params> })
   return (
     <LegalPageLayout title={t('title')}>
 
+      <section className="space-y-3">
+        <p>{t('introP1')}</p>
+        <p>{t('introP2')}</p>
+      </section>
+
       <section>
         <h2 className="mb-4 font-sans text-sm font-bold uppercase tracking-widest text-gold">
           1. {t('howToOrder')}
@@ -46,18 +51,6 @@ export default async function TermsPage({ params }: { params: Promise<Params> })
           <p>{t('deliveryItem1')}</p>
           <p>{t('deliveryItem2')}</p>
           <p>{t('deliveryItem3')}</p>
-          <p>{t('deliveryItem4')}</p>
-        </div>
-      </section>
-
-      <section>
-        <h2 className="mb-4 font-sans text-sm font-bold uppercase tracking-widest text-gold">
-          4. {t('receiving')}
-        </h2>
-        <div className="space-y-2">
-          <p>{t('receivingItem1')}</p>
-          <p>{t('receivingItem2')}</p>
-          <p>{t('receivingItem3')}</p>
         </div>
       </section>
 

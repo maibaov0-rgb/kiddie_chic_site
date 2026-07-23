@@ -31,24 +31,20 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
         />
         <div className="relative mx-auto max-w-2xl">
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-gold">Kiddie Chic Showroom</p>
-          <h1 className="font-sans text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          <h1 className="font-serif text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
             {t('heroTitle')}
           </h1>
-          <p className="mt-5 text-base leading-relaxed text-foreground/65 md:text-lg">
-            {t('heroSubtitle')}
-          </p>
         </div>
       </div>
 
       {/* Story */}
       <div className="mx-auto max-w-3xl px-4 py-14 md:py-20">
-        <h2 className="mb-8 font-sans text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-          {t('storyTitle')}
-        </h2>
         <div className="space-y-5 text-base leading-relaxed text-foreground/70">
           <p>{t('storyP1')}</p>
           <p>{t('storyP2')}</p>
           <p>{t('storyP3')}</p>
+          <p>{t('storyP4')}</p>
+          <p>{t('storyP5')}</p>
         </div>
       </div>
 
