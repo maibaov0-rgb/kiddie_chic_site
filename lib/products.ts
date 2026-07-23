@@ -45,6 +45,7 @@ function mapProduct(p: {
   inStock: boolean;
   isNew: boolean;
   isBestseller: boolean;
+  featuredPosition: number | null;
   variants: Parameters<typeof mapVariant>[0][];
   accessories: Parameters<typeof mapAccessory>[0][];
 }): Product {
@@ -61,6 +62,7 @@ function mapProduct(p: {
     inStock: p.inStock,
     isNew: p.isNew,
     isBestseller: p.isBestseller,
+    featuredPosition: p.featuredPosition,
     variants: p.variants.map(mapVariant),
     accessories: p.accessories.map(mapAccessory),
   };
@@ -71,7 +73,10 @@ export async function getProductsByCategory(
 ): Promise<Product[]> {
   const rows = await prisma.product.findMany({
     where: { category, isHidden: false },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [
+      { featuredPosition: { sort: 'asc', nulls: 'last' } },
+      { createdAt: 'desc' },
+    ],
     include: { variants: { orderBy: { price: 'asc' } }, accessories: true },
   });
   return rows.map(mapProduct);
