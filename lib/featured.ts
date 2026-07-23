@@ -62,3 +62,33 @@ export function computeFeaturedReorder(
 
   return diff;
 }
+
+import type { Prisma } from "@/app/generated/prisma/client";
+
+/**
+ * Reads every product in `category`, computes the reorder diff, and writes
+ * it. Must be called inside the same transaction as the product
+ * create/update/delete that triggered it, so the two writes are atomic.
+ */
+export async function applyFeaturedPosition(
+  tx: Prisma.TransactionClient,
+  params: {
+    productId: string;
+    category: "dress" | "couture";
+    requestedPosition: number | null;
+  },
+): Promise<void> {
+  const rows = await tx.product.findMany({
+    where: { category: params.category },
+    select: { id: true, featuredPosition: true },
+  });
+
+  const diff = computeFeaturedReorder(rows, params.productId, params.requestedPosition);
+
+  for (const change of diff) {
+    await tx.product.update({
+      where: { id: change.id },
+      data: { featuredPosition: change.featuredPosition },
+    });
+  }
+}
