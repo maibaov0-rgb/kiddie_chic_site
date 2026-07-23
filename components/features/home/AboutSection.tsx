@@ -47,12 +47,6 @@ export default function AboutSection() {
                 {t('learnMore')}
                 <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
               </Link>
-              <Link
-                href="/contacts"
-                className="inline-flex min-h-11 items-center rounded-full bg-gold px-6 text-sm font-semibold text-white shadow-card transition-all hover:bg-gold/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
-              >
-                {t('showroom')}
-              </Link>
             </div>
           </div>
 

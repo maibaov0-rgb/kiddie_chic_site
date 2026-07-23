@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Heart, Star, Sparkles } from 'lucide-react';
+import ShowroomGallery from '@/components/features/about/ShowroomGallery';
 
 type Params = { locale: string };
 
@@ -81,6 +82,7 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
             <p>📍 {t('showroomAddress')}</p>
             <p>🕐 {t('showroomHours')}</p>
           </div>
+          <ShowroomGallery />
         </div>
       </div>
 
