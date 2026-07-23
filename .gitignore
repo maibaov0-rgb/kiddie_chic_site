@@ -49,3 +49,6 @@ next-env.d.ts
 
 # git worktrees for isolated feature work
 /.worktrees
+
+# superpowers scratch (subagent-driven-development progress ledger, task briefs)
+.superpowers/
