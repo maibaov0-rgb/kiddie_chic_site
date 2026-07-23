@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray, useWatch, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,6 +39,7 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<z.input<typeof productSchema>, unknown, ProductInput>({
     resolver: zodResolver(productSchema),
@@ -51,6 +52,15 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
   const availableAccessoryTypes = ACCESSORY_TYPES.filter(
     (t) => !watchedAccessories.some((a) => a?.type === t.id),
   );
+
+  const category = useWatch({ control, name: "category" });
+  const initialCategory = useRef(defaultValues.category);
+  useEffect(() => {
+    if (category !== initialCategory.current) {
+      setValue("featuredPosition", null);
+      initialCategory.current = category;
+    }
+  }, [category, setValue]);
 
   async function submit(data: ProductInput) {
     setServerError(null);
@@ -166,6 +176,40 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
             </label>
           ))}
         </div>
+
+        <Controller
+          control={control}
+          name="featuredPosition"
+          render={({ field }) => {
+            const isFeatured = field.value !== null && field.value !== undefined;
+            return (
+              <div className="flex flex-wrap items-center gap-3">
+                <label className="flex items-center gap-2 text-base">
+                  <input
+                    type="checkbox"
+                    checked={isFeatured}
+                    onChange={(e) => field.onChange(e.target.checked ? 1 : null)}
+                    className="h-5 w-5 rounded-md"
+                  />
+                  Показувати в топі
+                </label>
+                {isFeatured && (
+                  <select
+                    value={(field.value as number | null) ?? 1}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                    className="w-auto rounded-2xl border border-[#EDE0D4] px-4 py-2 text-base outline-none transition-all duration-300 ease-in-out focus:border-[#C9A96E]"
+                  >
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                      <option key={n} value={n}>
+                        Позиція {n}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            );
+          }}
+        />
       </section>
 
       <section className="space-y-4 rounded-3xl bg-white p-6 shadow-soft">
