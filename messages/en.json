@@ -187,9 +187,7 @@
     "showroomText": "Visit us to find the best for your most precious moments.",
     "showroomAddress": "63/28 Saksahanskoho St., Kyiv",
     "showroomHours": "Daily: 11:00–19:00",
-    "showroomPhotoAlt": "Kiddie Chic showroom, photo {n}",
-    "ctaTitle": "Discover the Collection",
-    "ctaButton": "Browse Catalog"
+    "showroomPhotoAlt": "Kiddie Chic showroom, photo {n}"
   },
   "contacts": {
     "title": "Contacts",

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
 import { Heart, Star, Sparkles } from 'lucide-react';
 import ShowroomGallery from '@/components/features/about/ShowroomGallery';
 
@@ -84,19 +83,6 @@ export default async function AboutPage({ params }: { params: Promise<Params> })
           </div>
           <ShowroomGallery />
         </div>
-      </div>
-
-      {/* CTA */}
-      <div className="bg-powder-100 px-4 py-14 text-center md:py-20">
-        <h2 className="mb-6 font-sans text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-          {t('ctaTitle')}
-        </h2>
-        <Link
-          href="/catalog"
-          className="inline-flex items-center gap-2 rounded-full bg-foreground px-8 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-gold"
-        >
-          {t('ctaButton')}
-        </Link>
       </div>
     </div>
   );
