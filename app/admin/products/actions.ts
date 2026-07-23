@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { productSchema, type ProductInput } from "@/lib/validation/product";
 import { uniqueSlug } from "@/lib/slug";
 import { deleteImage, publicIdFromUrl } from "@/lib/cloudinary";
+import { applyFeaturedPosition } from "@/lib/featured";
 
 export type ActionResult =
   | { ok: true; id?: string }
@@ -65,37 +66,49 @@ export async function createProductAction(
   );
 
   try {
-    const created = await prisma.product.create({
-      data: {
-        slug,
-        category: data.category,
-        name_uk: data.name_uk,
-        name_en: data.name_en,
-        description_uk: data.description_uk,
-        description_en: data.description_en,
-        images: data.images,
-        colors: data.colors,
-        // "In stock" is no longer a concept admins manage — every product is
-        // treated as in stock. Force true so stale data (or historic rows)
-        // never disables purchasing.
-        inStock: true,
-        isNew: data.isNew,
-        isBestseller: data.isBestseller,
-        isHidden: false,
-        variants: {
-          create: data.variants.map((v) => ({
-            size: v.size,
-            price: v.price,
-            images: [],
-          })),
+    const created = await prisma.$transaction(async (tx) => {
+      const product = await tx.product.create({
+        data: {
+          slug,
+          category: data.category,
+          name_uk: data.name_uk,
+          name_en: data.name_en,
+          description_uk: data.description_uk,
+          description_en: data.description_en,
+          images: data.images,
+          colors: data.colors,
+          // "In stock" is no longer a concept admins manage — every product is
+          // treated as in stock. Force true so stale data (or historic rows)
+          // never disables purchasing.
+          inStock: true,
+          isNew: data.isNew,
+          isBestseller: data.isBestseller,
+          isHidden: false,
+          variants: {
+            create: data.variants.map((v) => ({
+              size: v.size,
+              price: v.price,
+              images: [],
+            })),
+          },
+          accessories: {
+            create: data.accessories.map((a) => ({
+              type: a.type,
+              price: a.price,
+            })),
+          },
         },
-        accessories: {
-          create: data.accessories.map((a) => ({
-            type: a.type,
-            price: a.price,
-          })),
-        },
-      },
+      });
+
+      if (data.featuredPosition !== null) {
+        await applyFeaturedPosition(tx, {
+          productId: product.id,
+          category: data.category,
+          requestedPosition: data.featuredPosition,
+        });
+      }
+
+      return product;
     });
 
     revalidatePath("/admin/products");
@@ -128,10 +141,30 @@ export async function updateProductAction(
   // stable once created. Variants are replaced wholesale; OrderItem snapshots
   // its own copy, so order history is unaffected.
   try {
-    await prisma.$transaction([
-      prisma.productVariant.deleteMany({ where: { productId: id } }),
-      prisma.productAccessory.deleteMany({ where: { productId: id } }),
-      prisma.product.update({
+    await prisma.$transaction(async (tx) => {
+      const old = await tx.product.findUniqueOrThrow({
+        where: { id },
+        select: { category: true, featuredPosition: true },
+      });
+      const categoryChanged = old.category !== data.category;
+
+      // `old.category` is typed as the full Prisma `ProductCategory` enum
+      // (dress | couture | accessory), but featured positions only ever
+      // apply to dress/couture — the admin form's Zod schema never allows
+      // "accessory" as a product's own category (see lib/validation/product.ts),
+      // so this narrows away a case that shouldn't occur in practice while
+      // keeping strict types intact.
+      if (categoryChanged && old.featuredPosition !== null && old.category !== "accessory") {
+        await applyFeaturedPosition(tx, {
+          productId: id,
+          category: old.category,
+          requestedPosition: null,
+        });
+      }
+
+      await tx.productVariant.deleteMany({ where: { productId: id } });
+      await tx.productAccessory.deleteMany({ where: { productId: id } });
+      await tx.product.update({
         where: { id },
         data: {
           category: data.category,
@@ -158,8 +191,23 @@ export async function updateProductAction(
             })),
           },
         },
-      }),
-    ]);
+      });
+
+      if (categoryChanged) {
+        // Category changed: featured status is intentionally reset, not
+        // carried over — the position only ever made sense in the old
+        // category's list. `old.featuredPosition` was already cleared above.
+        if (old.featuredPosition !== null) {
+          await tx.product.update({ where: { id }, data: { featuredPosition: null } });
+        }
+      } else {
+        await applyFeaturedPosition(tx, {
+          productId: id,
+          category: data.category,
+          requestedPosition: data.featuredPosition,
+        });
+      }
+    });
   } catch {
     return { ok: false, error: "Не вдалося зберегти зміни. Спробуйте ще раз." };
   }
@@ -174,7 +222,7 @@ export async function deleteProductAction(id: string): Promise<ActionResult> {
   await requireAdmin();
   const product = await prisma.product.findUnique({
     where: { id },
-    select: { images: true },
+    select: { images: true, category: true, featuredPosition: true },
   });
   if (!product) return { ok: false, error: "Товар не знайдено" };
 
@@ -187,7 +235,18 @@ export async function deleteProductAction(id: string): Promise<ActionResult> {
   );
 
   try {
-    await prisma.product.delete({ where: { id } }); // variants cascade
+    await prisma.$transaction(async (tx) => {
+      // See comment in updateProductAction: narrowing away "accessory",
+      // which the admin form never assigns as a product's own category.
+      if (product.featuredPosition !== null && product.category !== "accessory") {
+        await applyFeaturedPosition(tx, {
+          productId: id,
+          category: product.category,
+          requestedPosition: null,
+        });
+      }
+      await tx.product.delete({ where: { id } }); // variants cascade
+    });
   } catch (error) {
     if (isPrismaErrorWithCode(error, "P2003")) {
       return {
