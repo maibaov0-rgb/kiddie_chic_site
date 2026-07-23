@@ -15,6 +15,7 @@ const EMPTY: ProductInput = {
   inStock: true, // no longer editable — actions.ts forces this true on save
   isNew: false,
   isBestseller: false,
+  featuredPosition: null,
   variants: [{ size: "86-92", price: undefined as unknown as number }],
   accessories: [],
 };

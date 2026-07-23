@@ -47,6 +47,15 @@ export const productSchema = z
     inStock: z.boolean().default(true),
     isNew: z.boolean().default(false),
     isBestseller: z.boolean().default(false),
+    featuredPosition: z
+      .preprocess(
+        (v) => (v === "" || v === undefined || v === null ? null : Number(v)),
+        z.union([
+          z.number().int().min(1, "Позиція від 1 до 10").max(10, "Позиція від 1 до 10"),
+          z.null(),
+        ]),
+      )
+      .default(null),
     variants: z.array(variantSchema).min(1, "Додайте хоча б один варіант"),
     accessories: z.array(accessorySchema).max(4).default([]),
   })

@@ -131,6 +131,8 @@ model Product {
   isBestseller Boolean @default(false)
   isHidden     Boolean @default(false)
 
+  featuredPosition Int? // null = not featured; 1..10 = position within its category's top list
+
   variants    ProductVariant[]
   accessories ProductAccessory[]
   orderItems  OrderItem[]
@@ -140,6 +142,7 @@ model Product {
 
   @@index([category])
   @@index([slug])
+  @@index([category, featuredPosition])
 }
 
 model ProductVariant {

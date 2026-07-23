@@ -200,6 +200,7 @@ export interface Product {
   inStock: boolean;
   isNew: boolean;
   isBestseller: boolean;
+  featuredPosition: number | null;
   variants: ProductVariant[]; // empty for couture
   accessories: ProductAccessory[]; // empty for couture and dresses with no accessories
 }
