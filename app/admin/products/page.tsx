@@ -80,8 +80,9 @@ export default async function ProductsPage() {
                     </p>
 
                     {/* Badges */}
-                    {(p.isNew || p.isBestseller) && (
+                    {(p.isNew || p.isBestseller || p.featuredPosition !== null) && (
                       <div className="mt-1.5 flex flex-wrap gap-1">
+                        {p.featuredPosition !== null && <Badge>Топ #{p.featuredPosition}</Badge>}
                         {p.isNew && <Badge>Новинка</Badge>}
                         {p.isBestseller && <Badge>Хіт</Badge>}
                       </div>
