@@ -81,3 +81,31 @@ test("rejects an unknown accessory type", () => {
   });
   assert.equal(r.success, false);
 });
+
+test("featuredPosition defaults to null", () => {
+  const r = productSchema.safeParse(valid);
+  assert.equal(r.success, true);
+  if (r.success) assert.equal(r.data.featuredPosition, null);
+});
+
+test("accepts featuredPosition 1..10", () => {
+  const r = productSchema.safeParse({ ...valid, featuredPosition: 5 });
+  assert.equal(r.success, true);
+  if (r.success) assert.equal(r.data.featuredPosition, 5);
+});
+
+test("rejects featuredPosition 0", () => {
+  const r = productSchema.safeParse({ ...valid, featuredPosition: 0 });
+  assert.equal(r.success, false);
+});
+
+test("rejects featuredPosition 11", () => {
+  const r = productSchema.safeParse({ ...valid, featuredPosition: 11 });
+  assert.equal(r.success, false);
+});
+
+test("treats empty string featuredPosition (unset select) as null", () => {
+  const r = productSchema.safeParse({ ...valid, featuredPosition: "" });
+  assert.equal(r.success, true);
+  if (r.success) assert.equal(r.data.featuredPosition, null);
+});
