@@ -109,6 +109,11 @@ enum AccessoryType {
   glovesWithBows    // Рукавички з бантами
   glovesPlain       // Рукавички без бантів
   handBows          // Бантики на руки
+  glovesEurofatinBarbie // Рукавичка з єврофатину
+  glovesWithBeads       // Рукавички з бусінками
+  glovesWithButterflies // Рукавички з метеликами
+  headbandWithBow       // Обруч з бантиком
+  headbandBow           // Обруч-бантик
 }
 
 // ─── Domain models ─────────────────────────────────────────────────────────────

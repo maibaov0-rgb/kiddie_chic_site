@@ -31,6 +31,11 @@ export const accessorySchema = z.object({
     "glovesWithBows",
     "glovesPlain",
     "handBows",
+    "glovesEurofatinBarbie",
+    "glovesWithBeads",
+    "glovesWithButterflies",
+    "headbandWithBow",
+    "headbandBow",
   ]),
   price: z.coerce.number().positive("Ціна обов'язкова і має бути більшою за 0"),
 });
@@ -57,7 +62,7 @@ export const productSchema = z
       )
       .default(null),
     variants: z.array(variantSchema).min(1, "Додайте хоча б один варіант"),
-    accessories: z.array(accessorySchema).max(4).default([]),
+    accessories: z.array(accessorySchema).default([]),
   })
   .refine(
     (data) => new Set(data.accessories.map((a) => a.type)).size === data.accessories.length,

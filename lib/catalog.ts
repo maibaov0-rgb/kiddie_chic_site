@@ -86,6 +86,7 @@ export const COLORS: ColorOption[] = [
   { id: 'gray', name_uk: 'Сірий', name_en: 'Gray' },
   { id: 'blue', name_uk: 'Синій', name_en: 'Blue' },
   { id: 'silver', name_uk: 'Срібний', name_en: 'Silver' },
+  { id: 'emerald', name_uk: 'Смарагд', name_en: 'Emerald' },
   { id: 'tiffany', name_uk: 'Тіфані', name_en: 'Tiffany' },
   { id: 'navy', name_uk: 'Темно-синій', name_en: 'Navy' },
   { id: 'violet', name_uk: 'Фіолетовий', name_en: 'Violet' },
@@ -133,7 +134,12 @@ export type AccessoryType =
   | 'headbandPlain'
   | 'glovesWithBows'
   | 'glovesPlain'
-  | 'handBows';
+  | 'handBows'
+  | 'glovesEurofatinBarbie'
+  | 'glovesWithBeads'
+  | 'glovesWithButterflies'
+  | 'headbandWithBow'
+  | 'headbandBow';
 
 export interface AccessoryTypeOption {
   id: AccessoryType;
@@ -166,6 +172,15 @@ export const ACCESSORY_TYPES: AccessoryTypeOption[] = [
   { id: 'glovesWithBows', name_uk: 'Рукавички з бантами', name_en: 'Gloves with bows' },
   { id: 'glovesPlain', name_uk: 'Рукавички без бантів', name_en: 'Gloves without bows' },
   { id: 'handBows', name_uk: 'Бантики на руки', name_en: 'Hand bows' },
+  { id: 'glovesEurofatinBarbie', name_uk: 'Рукавичка з єврофатину', name_en: 'Eurotulle glove' },
+  { id: 'glovesWithBeads', name_uk: 'Рукавички з бусінками', name_en: 'Gloves with beads' },
+  {
+    id: 'glovesWithButterflies',
+    name_uk: 'Рукавички з метеликами',
+    name_en: 'Gloves with butterflies',
+  },
+  { id: 'headbandWithBow', name_uk: 'Обруч з бантиком', name_en: 'Headband with bow' },
+  { id: 'headbandBow', name_uk: 'Обруч-бантик', name_en: 'Headband-bow' },
 ];
 
 export function accessoryTypeName(type: string, en: boolean): string {
