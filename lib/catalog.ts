@@ -139,7 +139,11 @@ export type AccessoryType =
   | 'glovesWithBeads'
   | 'glovesWithButterflies'
   | 'headbandWithBow'
-  | 'headbandBow';
+  | 'headbandBow'
+  | 'roseOnSkirt'
+  | 'bowsOnCorset'
+  | 'chokerWithRoses'
+  | 'chokerSequin';
 
 export interface AccessoryTypeOption {
   id: AccessoryType;
@@ -148,39 +152,43 @@ export interface AccessoryTypeOption {
 }
 
 export const ACCESSORY_TYPES: AccessoryTypeOption[] = [
-  { id: 'headband', name_uk: 'Обруч', name_en: 'Headband' },
-  { id: 'gloves', name_uk: 'Рукавички', name_en: 'Gloves' },
-  { id: 'bag', name_uk: 'Сумочка', name_en: 'Bag' },
-  { id: 'choker', name_uk: 'Чокер', name_en: 'Choker' },
-  { id: 'train', name_uk: 'Шлейф', name_en: 'Train' },
-  { id: 'wristband', name_uk: 'Прикраса на руку', name_en: 'Wrist accessory' },
-  { id: 'hairpiece', name_uk: 'Прикраса на волосся', name_en: 'Hair accessory' },
   { id: 'bowTrain', name_uk: 'Бант зі шлейфом', name_en: 'Bow with train' },
+  { id: 'hairBowLarge', name_uk: 'Бант на волосся великий', name_en: 'Hair bow (large)' },
+  { id: 'hairBowMedium', name_uk: 'Бант на волосся середній', name_en: 'Hair bow (medium)' },
   { id: 'dressBow', name_uk: 'Бант на сукні', name_en: 'Bow on dress' },
+  { id: 'dressBowSet2', name_uk: 'Банти на сукні (2 шт)', name_en: 'Dress bows (2 pcs)' },
+  { id: 'hairBows5', name_uk: 'Бантики на волосі 5шт', name_en: 'Hair bows (5 pcs)' },
+  { id: 'bowsOnCorset', name_uk: 'Бантики на корсеті', name_en: 'Bows on corset' },
+  { id: 'handBows', name_uk: 'Бантики на руки', name_en: 'Hand bows' },
   { id: 'basqueTrain', name_uk: 'Баска шлейф', name_en: 'Basque train' },
   { id: 'slipperTies', name_uk: "Зав'язки до чешок", name_en: 'Ballet flat ties' },
-  { id: 'sleeves', name_uk: 'Рукава', name_en: 'Sleeves' },
-  { id: 'wristbandSet2', name_uk: 'Прикраса на руку (2 шт)', name_en: 'Wrist accessory (2 pcs)' },
-  { id: 'dressBowSet2', name_uk: 'Банти на сукні (2 шт)', name_en: 'Dress bows (2 pcs)' },
-  { id: 'skirt', name_uk: 'Спідниця', name_en: 'Skirt' },
-  { id: 'hairBows5', name_uk: 'Бантики на волосі 5шт', name_en: 'Hair bows (5 pcs)' },
-  { id: 'headbandButterfly', name_uk: 'Обруч з метеликами', name_en: 'Headband with butterflies' },
+  { id: 'headband', name_uk: 'Обруч', name_en: 'Headband' },
+  { id: 'headbandWithBow', name_uk: 'Обруч з бантиком', name_en: 'Headband with bow' },
   { id: 'headbandFlower', name_uk: 'Обруч з квіткою', name_en: 'Headband with flower' },
-  { id: 'hairBowMedium', name_uk: 'Бант на волосся середній', name_en: 'Hair bow (medium)' },
-  { id: 'hairBowLarge', name_uk: 'Бант на волосся великий', name_en: 'Hair bow (large)' },
+  { id: 'headbandButterfly', name_uk: 'Обруч з метеликами', name_en: 'Headband with butterflies' },
+  { id: 'headbandBow', name_uk: 'Обруч-бантик', name_en: 'Headband-bow' },
   { id: 'headbandPlain', name_uk: "Пов'язка на волосся", name_en: 'Hair band' },
-  { id: 'glovesWithBows', name_uk: 'Рукавички з бантами', name_en: 'Gloves with bows' },
-  { id: 'glovesPlain', name_uk: 'Рукавички без бантів', name_en: 'Gloves without bows' },
-  { id: 'handBows', name_uk: 'Бантики на руки', name_en: 'Hand bows' },
+  { id: 'hairpiece', name_uk: 'Прикраса на волосся', name_en: 'Hair accessory' },
+  { id: 'wristband', name_uk: 'Прикраса на руку', name_en: 'Wrist accessory' },
+  { id: 'wristbandSet2', name_uk: 'Прикраса на руку (2 шт)', name_en: 'Wrist accessory (2 pcs)' },
+  { id: 'sleeves', name_uk: 'Рукава', name_en: 'Sleeves' },
   { id: 'glovesEurofatinBarbie', name_uk: 'Рукавичка з єврофатину', name_en: 'Eurotulle glove' },
+  { id: 'gloves', name_uk: 'Рукавички', name_en: 'Gloves' },
+  { id: 'glovesPlain', name_uk: 'Рукавички без бантів', name_en: 'Gloves without bows' },
+  { id: 'glovesWithBows', name_uk: 'Рукавички з бантами', name_en: 'Gloves with bows' },
   { id: 'glovesWithBeads', name_uk: 'Рукавички з бусінками', name_en: 'Gloves with beads' },
   {
     id: 'glovesWithButterflies',
     name_uk: 'Рукавички з метеликами',
     name_en: 'Gloves with butterflies',
   },
-  { id: 'headbandWithBow', name_uk: 'Обруч з бантиком', name_en: 'Headband with bow' },
-  { id: 'headbandBow', name_uk: 'Обруч-бантик', name_en: 'Headband-bow' },
+  { id: 'skirt', name_uk: 'Спідниця', name_en: 'Skirt' },
+  { id: 'bag', name_uk: 'Сумочка', name_en: 'Bag' },
+  { id: 'roseOnSkirt', name_uk: 'Троянда на спідниці', name_en: 'Rose on skirt' },
+  { id: 'choker', name_uk: 'Чокер', name_en: 'Choker' },
+  { id: 'chokerWithRoses', name_uk: 'Чокер з трояндами', name_en: 'Choker with roses' },
+  { id: 'chokerSequin', name_uk: 'Чокер паєтка', name_en: 'Choker sequin' },
+  { id: 'train', name_uk: 'Шлейф', name_en: 'Train' },
 ];
 
 export function accessoryTypeName(type: string, en: boolean): string {

@@ -114,6 +114,10 @@ enum AccessoryType {
   glovesWithButterflies // Рукавички з метеликами
   headbandWithBow       // Обруч з бантиком
   headbandBow           // Обруч-бантик
+  roseOnSkirt           // Троянда на спідниці
+  bowsOnCorset          // Бантики на корсеті
+  chokerWithRoses       // Чокер з трояндами
+  chokerSequin          // Чокер паєтка
 }
 
 // ─── Domain models ─────────────────────────────────────────────────────────────
