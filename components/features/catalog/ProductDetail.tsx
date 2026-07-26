@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
@@ -9,6 +9,8 @@ import { ArrowLeft, ArrowRight, Check, Minus, Plus, ShoppingBag, MessageCircle, 
 import { colorName, accessoryTypeName, cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
+import { formatPrice } from '@/lib/currency';
+import { useUsdRate } from '@/lib/currency-context';
 import MessengerButtons from './MessengerButtons';
 
 const CATEGORY_TO_SLUG = {
@@ -42,6 +44,8 @@ function AccessoryRow({
   increaseLabel: string;
   selectLabel: string;
 }) {
+  const locale = useLocale();
+  const usdRate = useUsdRate();
   return (
     <div className="rounded-2xl bg-white px-4 py-3 shadow-card">
       <label className="flex cursor-pointer items-center justify-between gap-3">
@@ -62,7 +66,7 @@ function AccessoryRow({
           />
           <span className="font-sans text-sm font-medium text-foreground/80">{name}</span>
         </span>
-        <span className="font-sans text-sm font-bold text-powder-300">{price.toLocaleString('uk-UA')} ₴</span>
+        <span className="font-sans text-sm font-bold text-powder-300">{formatPrice(price, locale, usdRate)}</span>
       </label>
 
       {checked && (
@@ -153,6 +157,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const t = useTranslations('product');
   const tc = useTranslations('catalog');
   const addItem = useCartStore((s) => s.addItem);
+  const usdRate = useUsdRate();
 
   const name = en ? product.name_en : product.name_uk;
   const description = en ? product.description_en : product.description_uk;
@@ -165,6 +170,13 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [size, setSize] = useState('');
   const [color, setColor] = useState('');
   const requiresColor = product.colors.length > 0;
+  // "Add to cart" is always clickable; a missing size/color surfaces as an
+  // inline error under the relevant selector instead of a silently disabled
+  // button, so the shopper always knows what's blocking the purchase.
+  const [sizeError, setSizeError] = useState(false);
+  const [colorError, setColorError] = useState(false);
+  const sizeRef = useRef<HTMLSelectElement>(null);
+  const colorRef = useRef<HTMLSelectElement>(null);
 
   const [qty, setQty] = useState(1);
   // Accessory selection: id -> qty. Presence in the map means "checked".
@@ -227,7 +239,15 @@ export default function ProductDetail({ product }: { product: Product }) {
   // the dress in one cart write, as a kit (still independently removable in
   // the cart, since each cart item carries its own key).
   function handleAdd() {
-    if (!variant || (requiresColor && !color)) return;
+    const missingSize = !variant;
+    const missingColor = requiresColor && !color;
+    setSizeError(missingSize);
+    setColorError(missingColor);
+    if (missingSize || missingColor) {
+      (missingSize ? sizeRef : colorRef).current?.focus();
+      (missingSize ? sizeRef : colorRef).current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
     addItem({
       kind: 'product',
       productId: product.id,
@@ -364,7 +384,7 @@ export default function ProductDetail({ product }: { product: Product }) {
         {fromPrice !== null && (
           <p className="mt-3 font-sans text-2xl font-semibold text-powder-300">
             <span className="text-base font-medium text-powder-300">{tc('priceFrom')} </span>
-            {fromPrice.toLocaleString('uk-UA')} ₴
+            {formatPrice(fromPrice, locale, usdRate)}
           </p>
         )}
 
@@ -376,11 +396,16 @@ export default function ProductDetail({ product }: { product: Product }) {
             {t('size')}
           </h3>
           <select
+            ref={sizeRef}
             value={size}
-            onChange={(e) => setSize(e.target.value)}
-            className={`w-full min-h-11 rounded-2xl border-2 border-powder-200 bg-white px-4 text-sm font-medium outline-none transition-all hover:border-powder-300 focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-              size === '' ? 'text-foreground/40' : 'text-foreground/80'
-            }`}
+            onChange={(e) => {
+              setSize(e.target.value);
+              setSizeError(false);
+            }}
+            aria-invalid={sizeError}
+            className={`w-full min-h-11 rounded-2xl border-2 bg-white px-4 text-sm font-medium outline-none transition-all hover:border-powder-300 focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
+              sizeError ? 'border-red-300' : 'border-powder-200'
+            } ${size === '' ? 'text-foreground/40' : 'text-foreground/80'}`}
           >
             <option value="" disabled>
               {t('selectSize')}
@@ -390,11 +415,16 @@ export default function ProductDetail({ product }: { product: Product }) {
               return (
                 <option key={s} value={s}>
                   {s}
-                  {sizePrice !== null ? ` (${sizePrice.toLocaleString('uk-UA')} ₴)` : ''}
+                  {sizePrice !== null ? ` (${formatPrice(sizePrice, locale, usdRate)})` : ''}
                 </option>
               );
             })}
           </select>
+          {sizeError && (
+            <p className="mt-1.5 font-sans text-xs font-medium text-red-400" role="alert">
+              {t('sizeRequired')}
+            </p>
+          )}
         </div>
 
         {/* Color */}
@@ -404,11 +434,16 @@ export default function ProductDetail({ product }: { product: Product }) {
               {t('color')}
             </h3>
             <select
+              ref={colorRef}
               value={color}
-              onChange={(e) => setColor(e.target.value)}
-              className={`w-full min-h-11 rounded-2xl border-2 border-powder-200 bg-white px-4 text-sm font-medium outline-none transition-all hover:border-powder-300 focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
-                color === '' ? 'text-foreground/40' : 'text-foreground/80'
-              }`}
+              onChange={(e) => {
+                setColor(e.target.value);
+                setColorError(false);
+              }}
+              aria-invalid={colorError}
+              className={`w-full min-h-11 rounded-2xl border-2 bg-white px-4 text-sm font-medium outline-none transition-all hover:border-powder-300 focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 ${
+                colorError ? 'border-red-300' : 'border-powder-200'
+              } ${color === '' ? 'text-foreground/40' : 'text-foreground/80'}`}
             >
               <option value="" disabled>
                 {t('selectColor')}
@@ -419,6 +454,11 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </option>
               ))}
             </select>
+            {colorError && (
+              <p className="mt-1.5 font-sans text-xs font-medium text-red-400" role="alert">
+                {t('colorRequired')}
+              </p>
+            )}
           </div>
         )}
 
@@ -478,8 +518,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           <button
             type="button"
             onClick={handleAdd}
-            disabled={!variant || (requiresColor && !color)}
-            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 px-6 font-sans text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float disabled:pointer-events-none disabled:opacity-40"
+            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-powder-200 px-6 font-sans text-base font-semibold text-foreground/85 shadow-card transition-all hover:bg-powder-300 hover:text-foreground hover:shadow-float"
           >
             {productJustAdded ? <Check size={18} /> : <ShoppingBag size={17} />}
             {t('addToCart')}

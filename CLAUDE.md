@@ -29,6 +29,10 @@
 - `npx prisma migrate dev` — міграції БД
 - `npx prisma studio` — GUI БД
 
+### Тестування UI (КРИТИЧНО)
+
+Користувач завжди тестує UI-зміни **сам** на dev-сервері — не тому що заборонено, а тому що це його свідомий вибір. Після реалізації UI-фічі: `npm run lint && npm run typecheck`, коротко опиши що зроблено і що перевірити — і чекай. Не запускай сам `npm run dev`, не відкривай браузер, не роби скріншотів/verify для UI без прямого прохання користувача.
+
 ## Стек
 
 Next.js 16 (App Router, TS strict) · PostgreSQL + Prisma · Tailwind + shadcn/ui · Framer Motion · next-intl · Auth.js · Zustand · Cloudinary · Resend · grammy · Docker + nginx (в контейнері `pearl-of-art`, див. вище)

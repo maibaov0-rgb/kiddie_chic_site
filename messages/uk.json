@@ -76,7 +76,9 @@
     "decreaseQty": "Зменшити кількість",
     "increaseQty": "Збільшити кількість",
     "accessoriesTitle": "Аксесуари",
-    "selectAccessory": "Обрати {name}"
+    "selectAccessory": "Обрати {name}",
+    "sizeRequired": "Будь ласка, оберіть розмір",
+    "colorRequired": "Будь ласка, оберіть колір"
   },
   "cart": {
     "title": "Кошик",
@@ -141,6 +143,7 @@
     "yourOrder": "Ваше замовлення",
     "items": "{count, plural, one {# товар} few {# товари} other {# товарів}}",
     "rowTotal": "Разом",
+    "usdNote": "Орієнтовно за курсом НБУ — списання відбудеться в гривнях",
     "submit": "Перейти до оплати",
     "submitShort": "До оплати",
     "submitting": "Обробка…",

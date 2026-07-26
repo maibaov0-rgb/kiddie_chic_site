@@ -76,7 +76,9 @@
     "decreaseQty": "Decrease quantity",
     "increaseQty": "Increase quantity",
     "accessoriesTitle": "Accessories",
-    "selectAccessory": "Select {name}"
+    "selectAccessory": "Select {name}",
+    "sizeRequired": "Please select a size",
+    "colorRequired": "Please select a color"
   },
   "cart": {
     "title": "Cart",
@@ -141,6 +143,7 @@
     "yourOrder": "Your order",
     "items": "{count, plural, one {# item} other {# items}}",
     "rowTotal": "Total",
+    "usdNote": "Estimated at the current NBU rate — you'll be charged the equivalent amount in UAH",
     "submit": "Proceed to payment",
     "submitShort": "Pay now",
     "submitting": "Processing…",
