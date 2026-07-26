@@ -140,7 +140,7 @@ model Product {
   isBestseller Boolean @default(false)
   isHidden     Boolean @default(false)
 
-  featuredPosition Int? // null = not featured; 1..10 = position within its category's top list
+  featuredPosition Int? // null = not featured; 1..30 = position within its category's top list
 
   variants    ProductVariant[]
   accessories ProductAccessory[]

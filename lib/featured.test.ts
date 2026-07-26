@@ -2,8 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { computeFeaturedReorder, MAX_FEATURED_POSITION } from "./featured.ts";
 
-test("MAX_FEATURED_POSITION is 10", () => {
-  assert.equal(MAX_FEATURED_POSITION, 10);
+test("MAX_FEATURED_POSITION is 30", () => {
+  assert.equal(MAX_FEATURED_POSITION, 30);
 });
 
 test("no-op: requesting the position the row already has", () => {
@@ -89,8 +89,8 @@ test("move: existing featured row moves from position 2 to 4 in a 4-item list", 
   );
 });
 
-test("cap: inserting an 11th featured row at position 1 evicts whoever falls to position 11", () => {
-  const rows: Array<{ id: string; featuredPosition: number | null }> = Array.from({ length: 10 }, (_, i) => ({
+test("cap: inserting a 31st featured row at position 1 evicts whoever falls to position 31", () => {
+  const rows: Array<{ id: string; featuredPosition: number | null }> = Array.from({ length: 30 }, (_, i) => ({
     id: `p${i + 1}`,
     featuredPosition: i + 1,
   }));
@@ -100,9 +100,9 @@ test("cap: inserting an 11th featured row at position 1 evicts whoever falls to 
   diff.forEach((d) => byId.set(d.id, d.featuredPosition));
   assert.equal(byId.get("new"), 1);
   assert.equal(byId.get("p1"), 2);
-  assert.equal(byId.get("p9"), 10);
-  assert.equal(byId.get("p10"), null); // evicted — fell off the end of the top 10
-  assert.equal(diff.length, 11); // new + p1..p9 shift + p10 evicted
+  assert.equal(byId.get("p29"), 30);
+  assert.equal(byId.get("p30"), null); // evicted — fell off the end of the top 30
+  assert.equal(diff.length, 31); // new + p1..p29 shift + p30 evicted
 });
 
 test("a product not present in categoryRows is treated as not featured", () => {

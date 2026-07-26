@@ -88,7 +88,7 @@ test("featuredPosition defaults to null", () => {
   if (r.success) assert.equal(r.data.featuredPosition, null);
 });
 
-test("accepts featuredPosition 1..10", () => {
+test("accepts featuredPosition 1..30", () => {
   const r = productSchema.safeParse({ ...valid, featuredPosition: 5 });
   assert.equal(r.success, true);
   if (r.success) assert.equal(r.data.featuredPosition, 5);
@@ -99,8 +99,8 @@ test("rejects featuredPosition 0", () => {
   assert.equal(r.success, false);
 });
 
-test("rejects featuredPosition 11", () => {
-  const r = productSchema.safeParse({ ...valid, featuredPosition: 11 });
+test("rejects featuredPosition 31", () => {
+  const r = productSchema.safeParse({ ...valid, featuredPosition: 31 });
   assert.equal(r.success, false);
 });
 

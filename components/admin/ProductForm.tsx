@@ -9,6 +9,7 @@ import { productSchema, type ProductInput } from "@/lib/validation/product";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { CheckboxItem } from "@/components/ui/checkbox-item";
 import { SIZES, COLORS, ACCESSORY_TYPES } from "@/lib/catalog";
+import { MAX_FEATURED_POSITION } from "@/lib/featured";
 import type { ActionResult } from "@/app/admin/products/actions";
 
 interface Props {
@@ -199,7 +200,7 @@ export function ProductForm({ defaultValues, onSubmit, submitLabel }: Props) {
                     onChange={(e) => field.onChange(Number(e.target.value))}
                     className="w-auto rounded-2xl border border-[#EDE0D4] px-4 py-2 text-base outline-none transition-all duration-300 ease-in-out focus:border-[#C9A96E]"
                   >
-                    {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                    {Array.from({ length: MAX_FEATURED_POSITION }, (_, i) => i + 1).map((n) => (
                       <option key={n} value={n}>
                         Позиція {n}
                       </option>

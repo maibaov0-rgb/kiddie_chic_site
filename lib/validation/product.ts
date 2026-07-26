@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+// Kept in sync manually with MAX_FEATURED_POSITION in lib/featured.ts —
+// this file stays import-free of other lib modules so its test can run
+// standalone with plain `node --test`.
+const MAX_FEATURED_POSITION = 30;
+
 export const variantSchema = z.object({
   size: z.string().min(1, "Оберіть розмір"),
   price: z.coerce.number().positive("Ціна обов'язкова і має бути більшою за 0"),
@@ -60,7 +65,10 @@ export const productSchema = z
       .preprocess(
         (v) => (v === "" || v === undefined || v === null ? null : Number(v)),
         z.union([
-          z.number().int().min(1, "Позиція від 1 до 10").max(10, "Позиція від 1 до 10"),
+          z.number()
+            .int()
+            .min(1, `Позиція від 1 до ${MAX_FEATURED_POSITION}`)
+            .max(MAX_FEATURED_POSITION, `Позиція від 1 до ${MAX_FEATURED_POSITION}`),
           z.null(),
         ]),
       )

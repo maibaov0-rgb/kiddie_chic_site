@@ -7,7 +7,7 @@ export interface FeaturedRow {
   featuredPosition: number | null;
 }
 
-export const MAX_FEATURED_POSITION = 10;
+export const MAX_FEATURED_POSITION = 30;
 
 /**
  * Given every row in one category (only rows with a non-null
