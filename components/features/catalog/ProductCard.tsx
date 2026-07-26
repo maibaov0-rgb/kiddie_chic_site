@@ -5,12 +5,15 @@ import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { cover, minPrice, type Product } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
+import { formatPrice } from '@/lib/currency';
+import { useUsdRate } from '@/lib/currency-context';
 
 export default function ProductCard({ product }: { product: Product }) {
   const locale = useLocale();
   const en = locale === 'en';
   const t = useTranslations('product');
   const tc = useTranslations('catalog');
+  const usdRate = useUsdRate();
 
   const name = en ? product.name_en : product.name_uk;
   const from = minPrice(product);
@@ -50,7 +53,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </h3>
         {from !== null && (
           <p className="mt-1 font-sans text-sm font-medium text-powder-300">
-            {tc('priceFrom')} {from.toLocaleString('uk-UA')} ₴
+            {tc('priceFrom')} {formatPrice(from, locale, usdRate)}
           </p>
         )}
       </div>

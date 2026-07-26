@@ -18,20 +18,20 @@ import {
 import { COLORS } from '@/lib/catalog';
 import { asset } from '@/lib/asset';
 import { useCartStore, cartItemKey, type CartItem } from '@/lib/stores/cart';
+import { formatPrice } from '@/lib/currency';
+import { useUsdRate } from '@/lib/currency-context';
 
 function colorName(id: string | null, en: boolean): string | null {
   if (!id) return null;
   const c = COLORS.find((x) => x.id === id);
   return c ? (en ? c.name_en : c.name_uk) : id;
 }
-function fmt(amount: number, locale: string): string {
-  return amount.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA');
-}
 
 export default function CartView() {
   const locale = useLocale();
   const en = locale === 'en';
   const t = useTranslations('cart');
+  const usdRate = useUsdRate();
 
   const items = useCartStore((s) => s.items);
   const updateQty = useCartStore((s) => s.updateQty);
@@ -226,7 +226,7 @@ export default function CartView() {
                         </div>
 
                         <p className="text-lg font-bold text-powder-300 md:text-xl">
-                          {fmt(item.price * item.qty, locale)} ₴
+                          {formatPrice(item.price * item.qty, locale, usdRate)}
                         </p>
                       </div>
                     </div>
@@ -251,7 +251,7 @@ export default function CartView() {
                             </span>
                             <div className="flex shrink-0 items-center gap-1.5">
                               <span className="text-[13px] font-semibold text-powder-300">
-                                {fmt(acc.price * acc.qty, locale)} ₴
+                                {formatPrice(acc.price * acc.qty, locale, usdRate)}
                               </span>
                               <button
                                 type="button"
@@ -287,7 +287,7 @@ export default function CartView() {
             <div className="flex items-baseline justify-between gap-3">
               <span className="font-sans text-lg font-semibold text-foreground md:text-xl">{t('total')}</span>
               <span className="text-2xl font-bold text-powder-300 md:text-3xl">
-                {hydrated ? `${fmt(subtotal, locale)} ₴` : '—'}
+                {hydrated ? formatPrice(subtotal, locale, usdRate) : '—'}
               </span>
             </div>
 

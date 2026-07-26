@@ -4,6 +4,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing, type Locale } from "@/i18n/routing";
+import { getUsdRate } from "@/lib/currency-server";
+import { CurrencyProvider } from "@/lib/currency-context";
 import "@/app/globals.css";
 
 // Body, navigation, buttons — Montserrat (client preference, Medium 500 default)
@@ -52,6 +54,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   const messages = await getMessages();
+  const usdRate = await getUsdRate();
 
   return (
     <html lang={locale} className={`${sans.variable} ${serif.variable} h-full antialiased`}>
@@ -61,7 +64,7 @@ export default async function LocaleLayout({
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <CurrencyProvider rate={usdRate}>{children}</CurrencyProvider>
         </NextIntlClientProvider>
       </body>
     </html>

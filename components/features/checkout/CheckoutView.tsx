@@ -13,6 +13,8 @@ import { asset } from '@/lib/asset';
 import { TOP_UA_CITIES } from '@/lib/np-fallback';
 import { placeOrder, createHutkoPayment } from '@/app/[locale]/(checkout)/checkout/actions';
 import type { Locale } from '@/i18n/routing';
+import { formatPrice } from '@/lib/currency';
+import { useUsdRate } from '@/lib/currency-context';
 
 interface Form {
   firstName: string;
@@ -34,6 +36,7 @@ export default function CheckoutView() {
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations('checkoutPage');
+  const usdRate = useUsdRate();
 
   // ───────── cart (hydration-safe) ─────────
   const items = useCartStore((s) => s.items);
@@ -463,7 +466,7 @@ export default function CheckoutView() {
                       <p className="mt-0.5 text-[12px] text-foreground/55">× {it.qty}</p>
                     </div>
                     <span className="shrink-0 text-sm font-semibold text-foreground">
-                      {(it.price * it.qty).toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴
+                      {formatPrice(it.price * it.qty, locale, usdRate)}
                     </span>
                   </div>
 
@@ -476,7 +479,7 @@ export default function CheckoutView() {
                             {acc.qty > 1 ? ` × ${acc.qty}` : ''}
                           </span>
                           <span className="shrink-0 text-[12px] font-semibold text-powder-300">
-                            {(acc.price * acc.qty).toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴
+                            {formatPrice(acc.price * acc.qty, locale, usdRate)}
                           </span>
                         </li>
                       ))}
@@ -488,8 +491,11 @@ export default function CheckoutView() {
 
             <div className="mt-5 flex items-center justify-between border-t border-foreground/10 pt-5 text-base font-semibold text-foreground">
               <span>{t('rowTotal')}</span>
-              <span className="text-powder-300">{subtotal.toLocaleString(locale === 'en' ? 'en-US' : 'uk-UA')} ₴</span>
+              <span className="text-powder-300">{formatPrice(subtotal, locale, usdRate)}</span>
             </div>
+            {locale === 'en' && (
+              <p className="mt-1.5 text-right text-[11px] text-foreground/50">{t('usdNote')}</p>
+            )}
 
             <button
               type="submit"
