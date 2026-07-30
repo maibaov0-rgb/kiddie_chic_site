@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import {

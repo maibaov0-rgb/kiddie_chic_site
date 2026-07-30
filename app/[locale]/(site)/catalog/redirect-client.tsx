@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { Link, useRouter } from '@/i18n/navigation';
 
 // Static-export (GitHub Pages) fallback only: there is no server to issue a
 // real redirect, so replace the URL client-side after hydration.
