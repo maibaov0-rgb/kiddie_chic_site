@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import { CheckCircle2 } from 'lucide-react';
 import OrderRef from '@/components/features/checkout/OrderRef';
 import OrderSuccessActions from '@/components/features/checkout/OrderSuccessActions';
+import PurchaseTracker from '@/components/features/checkout/PurchaseTracker';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('orderSuccess');
@@ -29,6 +30,7 @@ export default async function Page() {
 
       <Suspense fallback={null}>
         <OrderRef />
+        <PurchaseTracker />
       </Suspense>
 
       <OrderSuccessActions />

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Montserrat, Playfair_Display } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
@@ -6,6 +7,7 @@ import { notFound } from "next/navigation";
 import { routing, type Locale } from "@/i18n/routing";
 import { getUsdRate } from "@/lib/currency-server";
 import { CurrencyProvider } from "@/lib/currency-context";
+import MetaPixel from "@/components/analytics/MetaPixel";
 import "@/app/globals.css";
 
 // Body, navigation, buttons — Montserrat (client preference, Medium 500 default)
@@ -63,6 +65,9 @@ export default async function LocaleLayout({
         <link rel="preconnect" href="https://res.cloudinary.com" />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <Suspense fallback={null}>
+          <MetaPixel />
+        </Suspense>
         <NextIntlClientProvider messages={messages}>
           <CurrencyProvider rate={usdRate}>{children}</CurrencyProvider>
         </NextIntlClientProvider>

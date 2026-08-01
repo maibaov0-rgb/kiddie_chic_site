@@ -237,7 +237,7 @@ export async function createHutkoPayment(
     orderId: order.ref,
     amount,
     orderDesc: `Замовлення ${order.ref} — Kiddie Chic`,
-    responseUrl: `${appUrl}${localePath}/order-success?ref=${order.ref}`,
+    responseUrl: `${appUrl}${localePath}/order-success?ref=${order.ref}&value=${amount}&currency=UAH`,
     serverCallbackUrl: `${appUrl}/api/webhooks/hutko`,
   });
 }

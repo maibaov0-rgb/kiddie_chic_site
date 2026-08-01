@@ -15,6 +15,7 @@ import { placeOrder, createHutkoPayment } from '@/app/[locale]/(checkout)/checko
 import type { Locale } from '@/i18n/routing';
 import { formatPrice } from '@/lib/currency';
 import { useUsdRate } from '@/lib/currency-context';
+import { trackMetaPixel } from '@/lib/meta-pixel';
 
 interface Form {
   firstName: string;
@@ -80,6 +81,21 @@ export default function CheckoutView() {
   useEffect(() => {
     if (!submitted && hydrated && items.length === 0) router.replace('/catalog');
   }, [submitted, hydrated, items.length, router]);
+
+  // Fires once per checkout visit, right after hydration confirms there's a
+  // real cart to check out — guards against firing on an empty cart that's
+  // about to redirect away.
+  const initiateCheckoutFired = useRef(false);
+  useEffect(() => {
+    if (initiateCheckoutFired.current || !hydrated || items.length === 0) return;
+    initiateCheckoutFired.current = true;
+    trackMetaPixel('InitiateCheckout', {
+      content_ids: items.map((i) => (i.kind === 'product' ? i.productId : i.accessoryId)),
+      num_items: itemCount,
+      value: subtotal,
+      currency: 'UAH',
+    });
+  }, [hydrated, items, itemCount, subtotal]);
 
   const setField = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => ({ ...f, [k]: v }));
   const blur = (k: string) => setTouched((t) => ({ ...t, [k]: true }));

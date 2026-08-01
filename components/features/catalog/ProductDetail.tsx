@@ -11,6 +11,7 @@ import { asset } from '@/lib/asset';
 import { useCartStore } from '@/lib/stores/cart';
 import { formatPrice } from '@/lib/currency';
 import { useUsdRate } from '@/lib/currency-context';
+import { trackMetaPixel } from '@/lib/meta-pixel';
 import MessengerButtons from './MessengerButtons';
 
 const CATEGORY_TO_SLUG = {
@@ -219,6 +220,19 @@ export default function ProductDetail({ product }: { product: Product }) {
   // per size is already visible inline in the size dropdown's options.
   const fromPrice = minPrice(product);
 
+  useEffect(() => {
+    trackMetaPixel('ViewContent', {
+      content_ids: [product.id],
+      content_name: name,
+      content_type: 'product',
+      value: fromPrice ?? undefined,
+      currency: 'UAH',
+    });
+    // Fire once per product page visit, not on every re-render caused by
+    // size/color selection (name and fromPrice are derived from product.id).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id]);
+
   function toggleAccessory(id: string) {
     setSelectedAccessories((prev) => {
       const next = { ...prev };
@@ -271,6 +285,18 @@ export default function ProductDetail({ product }: { product: Product }) {
         qty: accessoryQty,
       });
     }
+    const accessoriesValue = product.accessories.reduce((sum, a) => {
+      const accessoryQty = selectedAccessories[a.id];
+      return accessoryQty ? sum + a.price * accessoryQty : sum;
+    }, 0);
+    trackMetaPixel('AddToCart', {
+      content_ids: [product.id],
+      content_name: name,
+      content_type: 'product',
+      value: variant.price * qty + accessoriesValue,
+      currency: 'UAH',
+    });
+
     setAddedTick((n) => n + 1);
     setProductJustAdded(true);
   }
