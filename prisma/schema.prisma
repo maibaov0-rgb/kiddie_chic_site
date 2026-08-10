@@ -118,6 +118,9 @@ enum AccessoryType {
   bowsOnCorset          // Бантики на корсеті
   chokerWithRoses       // Чокер з трояндами
   chokerSequin          // Чокер паєтка
+  topFlower             // Квітка на топ
+  dressFlower           // Квітка на сукні
+  collarBow             // Комір-бант
 }
 
 // ─── Domain models ─────────────────────────────────────────────────────────────

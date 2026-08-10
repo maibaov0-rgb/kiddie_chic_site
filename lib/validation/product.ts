@@ -45,6 +45,9 @@ export const accessorySchema = z.object({
     "chokerWithRoses",
     "chokerSequin",
     "train",
+    "topFlower",
+    "dressFlower",
+    "collarBow",
   ]),
   price: z.coerce.number().positive("Ціна обов'язкова і має бути більшою за 0"),
 });
