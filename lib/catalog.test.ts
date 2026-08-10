@@ -16,6 +16,9 @@ test("ACCESSORY_TYPES has exactly the fixed entries", () => {
       "handBows",
       "basqueTrain",
       "slipperTies",
+      "dressFlower",
+      "topFlower",
+      "collarBow",
       "headband",
       "headbandWithBow",
       "headbandFlower",
@@ -39,9 +42,6 @@ test("ACCESSORY_TYPES has exactly the fixed entries", () => {
       "chokerWithRoses",
       "chokerSequin",
       "train",
-      "topFlower",
-      "dressFlower",
-      "collarBow",
     ],
   );
 });

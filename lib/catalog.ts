@@ -48,8 +48,8 @@ export const COLORS: ColorOption[] = [
   { id: 'white', name_uk: 'Білий', name_en: 'White' },
   { id: 'white-blue', name_uk: 'Білий+блакитний', name_en: 'White+Blue' },
   { id: 'white-raspberry', name_uk: 'Білий+малиновий', name_en: 'White+Raspberry' },
-  { id: 'white-black', name_uk: 'Білий+чорний', name_en: 'White+Black' },
   { id: 'white-powder', name_uk: 'Білий+пудра', name_en: 'White+Powder' },
+  { id: 'white-black', name_uk: 'Білий+чорний', name_en: 'White+Black' },
   { id: 'blue-light', name_uk: 'Блакитний', name_en: 'Light Blue' },
   { id: 'blue-light-ivory', name_uk: 'Блакитний+айворі', name_en: 'Light Blue+Ivory' },
   { id: 'burgundy', name_uk: 'Бордовий', name_en: 'Burgundy' },
@@ -166,6 +166,9 @@ export const ACCESSORY_TYPES: AccessoryTypeOption[] = [
   { id: 'handBows', name_uk: 'Бантики на руки', name_en: 'Hand bows' },
   { id: 'basqueTrain', name_uk: 'Баска шлейф', name_en: 'Basque train' },
   { id: 'slipperTies', name_uk: "Зав'язки до чешок", name_en: 'Ballet flat ties' },
+  { id: 'dressFlower', name_uk: 'Квітка на сукні', name_en: 'Flower on dress' },
+  { id: 'topFlower', name_uk: 'Квітка на топ', name_en: 'Flower on top' },
+  { id: 'collarBow', name_uk: 'Комір-бант', name_en: 'Collar bow' },
   { id: 'headband', name_uk: 'Обруч', name_en: 'Headband' },
   { id: 'headbandWithBow', name_uk: 'Обруч з бантиком', name_en: 'Headband with bow' },
   { id: 'headbandFlower', name_uk: 'Обруч з квіткою', name_en: 'Headband with flower' },
@@ -193,9 +196,6 @@ export const ACCESSORY_TYPES: AccessoryTypeOption[] = [
   { id: 'chokerWithRoses', name_uk: 'Чокер з трояндами', name_en: 'Choker with roses' },
   { id: 'chokerSequin', name_uk: 'Чокер паєтка', name_en: 'Choker sequin' },
   { id: 'train', name_uk: 'Шлейф', name_en: 'Train' },
-  { id: 'topFlower', name_uk: 'Квітка на топ', name_en: 'Flower on top' },
-  { id: 'dressFlower', name_uk: 'Квітка на сукні', name_en: 'Flower on dress' },
-  { id: 'collarBow', name_uk: 'Комір-бант', name_en: 'Collar bow' },
 ];
 
 export function accessoryTypeName(type: string, en: boolean): string {
