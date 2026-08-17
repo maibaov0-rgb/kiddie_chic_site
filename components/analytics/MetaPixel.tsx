@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Script from 'next/script';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
@@ -10,9 +10,17 @@ const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 // script's own `fbq('track', 'PageView')` only fires once per full page
 // load. Re-fire it on every route change, but skip the very first render —
 // the base script already covers that one.
+//
+// Deliberately NOT using useSearchParams() here: this component sits in the
+// root layout, so it renders on every route including static/ISR pages.
+// useSearchParams() forces the entire page's Suspense boundary (loading.tsx)
+// into full client-side rendering during static generation — crawlers that
+// don't execute JS (e.g. facebookexternalhit) then see only the loading
+// skeleton instead of real content. Pathname changes alone are enough to
+// detect real navigations; query-only changes (filters/sort) shouldn't fire
+// a PageView anyway.
 export default function MetaPixel() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const isFirstRender = useRef(true);
 
   useEffect(() => {
@@ -22,7 +30,7 @@ export default function MetaPixel() {
       return;
     }
     window.fbq('track', 'PageView');
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   if (!PIXEL_ID) return null;
 

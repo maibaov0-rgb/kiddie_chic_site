@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { SlidersHorizontal, X } from 'lucide-react';
-import { useSearchParams } from 'next/navigation';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import {
   COLORS,
@@ -23,6 +22,18 @@ import SortMenu from './SortMenu';
 const EMPTY: Filters = { sizes: [], colors: [] };
 const PAGE_SIZE = 24;
 
+function getSortFromUrl(): SortOption {
+  const sortParam = new URLSearchParams(window.location.search).get('sort');
+  return sortParam === 'price-asc' || sortParam === 'price-desc' ? sortParam : 'default';
+}
+function getServerSort(): SortOption {
+  return 'default';
+}
+function subscribeToUrlSort(callback: () => void) {
+  window.addEventListener('popstate', callback);
+  return () => window.removeEventListener('popstate', callback);
+}
+
 function toggle(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
 }
@@ -36,13 +47,20 @@ export default function CatalogView({ products }: { products: Product[] }) {
 
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const sortParam = searchParams.get('sort');
-  const sort: SortOption =
-    sortParam === 'price-asc' || sortParam === 'price-desc' ? sortParam : 'default';
+  // Not using useSearchParams(): this page is statically generated (ISR), and
+  // that hook forces the whole route's Suspense boundary into client-only
+  // rendering during static generation — crawlers that don't run JS (e.g.
+  // facebookexternalhit) would then see only the loading skeleton. Instead,
+  // read the `sort` param the same hydration-safe way Header.tsx reads the
+  // cart count: server snapshot is always 'default', client picks up the
+  // real URL value right after hydration without a mismatch.
+  const urlSort = useSyncExternalStore(subscribeToUrlSort, getSortFromUrl, getServerSort);
+  const [sortOverride, setSortOverride] = useState<SortOption | null>(null);
+  const sort = sortOverride ?? urlSort;
 
   function setSort(next: SortOption) {
-    const params = new URLSearchParams(searchParams.toString());
+    setSortOverride(next);
+    const params = new URLSearchParams(window.location.search);
     if (next === 'default') {
       params.delete('sort');
     } else {
